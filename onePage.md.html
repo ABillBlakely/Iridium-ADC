@@ -1,0 +1,83 @@
+     **Iridium ADC**
+     Bill Blakely
+
+(#) Abstract
+
+Modern digital audio systems are pushing performance boundaries. Most high quality digital to analog converters for audio are capable of 24 bit 96 kHz conversion. Professional audio interfaces frequently use 24 or 32 bit, 192 kHz sample rates. These systems are able to achieve a dynamic ranges greater than 100 dB, and distortion on the magnitude of just a few parts per million. This project proposes a high resolution analog digital converter (ADC) to measure and characterize these types of devices. The digitized data will be transferred over USB. Identified as a USB Audio Class device, the system can be used with existing software such as ARTA labs, or Rightmark audio analyzer.
+
+(#) Goals/Deliverables
+
+(##) Minimum
+
+1. 24-bit, 384 kSPS converter.
+4. Single Channel
+4. USB Audio Class device.
+5. Precise, accurate voltage reference.
+2. SNR > 100 dB
+3. THD < 0.01 %
+
+
+(##) Desired
+
+1. > 1 MSPS
+2. SNR > 110 dB
+3. THD < 0.001 %
+4. Two channels of conversion
+
+(#) Level 0 Block Diagram
+
+**************************************************************************************************
+* 
+*                           .---------------------.
+*                          |                       |
+*          Channel 1 ----->|                       |
+*          Channel 2 ----->|                       |
+*                          |      Iridium ADC      +-----> USB Connection
+*   Impedance Switch ----->|                       |
+*                          |                       |
+*     Power, 120V AC ----->|                       |
+*                          |                       |
+*                           '---------------------'
+*
+**************************************************************************************************
+
+(#) Level 1 Block Diagram
+
+***************************************************************************************************
+*           
+*           
+*            .----------------------------------------------------------------------------.
+*           |                                                                              |
+*           |   .------------.     .-------------.     .----------------.    .----------.  |
+*           |  |              |   |               |   |                  |  |            | |
+* Signals --+->| Differential +-->| Anti-aliasing +-->| 24 bit ADC       +  | USB Bridge +-+-> USB
+*           |  | Input        |   | Filter        |   | >=300 kSPS       |  |            | |
+*           |  |              |   |               |   |                  |  |            | |
+*           |   '------------'     '-------------'     '------+---------'    '---+--+---'  |
+*           |      ^                                          |  ^               |  ^      |
+*     Zin --+------+   +---> To All                           v  |               v  |      |
+*  Select   |   .------+-----.     .------------.          .-----+------------------+---.  |
+*           |  | AC/DC        |   |              |        |                              | |
+*           |  | Power        |   | Voltage      |        | Controller                   | |
+*           |  | Supply       |   | Reference    |        | (Micro or FPGA)              | |
+*           |  |              |   |              |        |                              | |
+*           |   '------------'     '------------'          '----------------------------'  |
+*           |         ^                                                                    |
+*            '--------+-------------------------------------------------------------------'
+*                     |    
+*                   Power
+*           
+*           
+*           
+***************************************************************************************************
+
+
+
+<!-- Markdeep footer -->
+    <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
+    <link rel="stylesheet" href="X:/Google Drive/_misc/markdeep/markdeep.css">
+    <link rel="stylesheet" href="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.css">
+    <script src="X:/Google Drive/_misc/markdeep/markdeep.js"></script>
+    <script src="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.js"></script>
+    <script src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script>
+    <script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>

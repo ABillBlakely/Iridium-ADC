@@ -1,0 +1,217 @@
+@import url('https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,600,600i,700,700i');
+@import url('https://fonts.googleapis.com/css?family=Gentium+Book+Basic:400,400i,700,700i');
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900,900i');
+
+/*
+font-family: 'Gentium Book Basic', serif;
+font-family: 'Crimson Text', serif;
+font-family: 'Josefin Sans', sans-serif;
+font-family: 'Source Sans Pro', sans-serif;
+*/
+
+
+html, body {
+    font-family: 'Crimson Text', serif;
+    font-size: 110%;
+    line-height: 1.5 ;
+    max-width: 800px;
+    margin: auto;
+}
+
+@media print {
+    html, body {
+        font-size: 12pt;
+        max-width: 100%
+        @bottom-left {
+            content: page;
+        }
+    }
+}
+
+@page {
+    size: auto;
+    margin: 25.4mm 25.4mm 25.4mm 25.4mm;
+    @bottom-rightn {
+        content: page;
+   }
+}
+
+@page:first{
+    @bottom-left {
+        content: "";
+    }
+}
+
+.markdeepfooter {
+    visibility: hidden;
+}
+
+.md div.titlepage {
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.md div.title, contents, .md .tocHeader, h1, h2, h3, h4, h5, h6, .md .shortTOC, .md .mediumTOC, .nonumberh1, .nonumberh2, .nonumberh3, .nonumberh4, .nonumberh5, .nonumberh6 {
+    font-family: 'Gentium Book Basic', serif;
+    font-weight: 700;
+    color: midnightblue;
+
+    border: 0;
+    margin: 0;
+    margin-top: 0.5rem;
+    padding: 0;
+    /*padding-top: 0.5em;*/
+    /*padding-bottom: 0.1em;*/
+
+    page-break-after: avoid;
+}
+
+h1, .md div.nonumberh1, .md div.tocHeader{
+    font-size: 1.3em;
+/*    line-height: 1rem;
+    padding-top: 1em;
+*/
+}
+
+h2, .nonumberh2 {
+    font-size: 1.1em;
+    color: black;
+
+}
+
+h3, .nonumberh3 {
+    font-size: 1.0em;
+    color: black;
+
+}
+
+.md a{
+    font-family: inherit;
+}
+.md a:link, .md a:visited {
+    color: black;
+    font-weight: bold;
+}
+
+.md .shortTOC, .md .mediumTOC {
+    /*visibility: hidden;*/
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 0.8em;
+}
+
+.md .longTOC {
+    page-break-after: always;
+}
+
+
+/*Headers immediately followed by paragraphs*/
+h1 ~ p, h2 ~ p, h3 ~ p, h4 ~ p, h5 ~ p, h6 ~ p {
+    margin-top: 0;
+}
+
+.md .image, div.imagecaption, .md img {
+    display: block;
+    margin: auto;
+    max-width: 80%;
+}
+
+.md div.imagecaption, .md div.tablecaption, .md div.listingcaption {
+    text-align: center;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 0.8rem;
+    font-style: normal;
+    font-weight: bold;
+    color: dimgrey;
+    /*width: 80%;*/
+}
+
+.table {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 0.8em;
+    line-height: 1rem;
+}
+
+.md svg.diagram {
+    display: block;
+    font-family: Consolas, monospace;
+}
+
+/* Canvas is used for floating text boxes for the business canvas */
+
+.canvas {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+}
+
+.canvas ul {
+    padding-left: 25;
+    padding-right: 25;
+}
+
+.canvas .top, .canvas .bottom {
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+    width: 100%;
+}
+
+.canvas .column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.canvas .canvasentry{
+    flex: 1;
+    margin: 2px;
+    padding: 0.5rem;
+    border: 1px solid;
+    font-size: 0.7em;
+    border-radius: 10px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    line-height: 1.1rem;
+}
+
+/*table th {
+    background: lightgrey;
+}
+*/
+
+/*Gantt Chart Related Formatting*/
+
+table.gantt {
+    table-layout: fixed;
+    width: 100%;
+
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+table.table td.complete,
+table.table td.current,
+table.table td.unblocked,
+table.table td.blocked {
+    font-size: 0.6rem;
+    font-weight: bold;
+    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+td.complete {
+    background: lightgreen;
+}
+
+td.current {
+    background: gold;
+}
+
+td.unblocked {
+    background: lightblue;
+}
+
+td.blocked {
+    background: lightcoral;
+}
