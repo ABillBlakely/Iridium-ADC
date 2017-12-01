@@ -32,15 +32,13 @@ html, body {
 @page {
     size: auto;
     margin: 25.4mm 25.4mm 25.4mm 25.4mm;
-    @bottom-rightn {
-        content: page;
+    @bottom-right {
+        content: counter(page);
    }
 }
 
 @page:first{
-    @bottom-left {
-        content: "";
-    }
+
 }
 
 .markdeepfooter {
@@ -52,10 +50,13 @@ html, body {
     font-size: 1.2em;
 }
 
-.md div.title, contents, .md .tocHeader, h1, h2, h3, h4, h5, h6, .md .shortTOC, .md .mediumTOC, .nonumberh1, .nonumberh2, .nonumberh3, .nonumberh4, .nonumberh5, .nonumberh6 {
+.md div.title, contents, .md .tocHeader,
+.md h1, .md h2, .md h3, .md h4, .md h5, .md h6,
+.md .shortTOC, .md .mediumTOC,
+.md .nonumberh1, .md .nonumberh2, .md .nonumberh3, .md .nonumberh4, .md .nonumberh5, .md .nonumberh6 {
     font-family: 'Gentium Book Basic', serif;
     font-weight: 700;
-    color: midnightblue;
+    color: navy;
 
     border: 0;
     margin: 0;
@@ -67,23 +68,16 @@ html, body {
     page-break-after: avoid;
 }
 
-h1, .md div.nonumberh1, .md div.tocHeader{
-    font-size: 1.3em;
-/*    line-height: 1rem;
-    padding-top: 1em;
-*/
+.md h1, .md div.nonumberh1, .md div.tocHeader{
+    font-size: 1.4em;
 }
 
-h2, .nonumberh2 {
-    font-size: 1.1em;
-    color: black;
-
+.md h2, .nonumberh2 {
+    font-size: 1.2em;
 }
 
-h3, .nonumberh3 {
+.md h3, .nonumberh3 {
     font-size: 1.0em;
-    color: black;
-
 }
 
 .md a{
@@ -122,7 +116,7 @@ h1 ~ p, h2 ~ p, h3 ~ p, h4 ~ p, h5 ~ p, h6 ~ p {
     font-size: 0.8rem;
     font-style: normal;
     font-weight: bold;
-    color: dimgrey;
+    color: slategrey;
     /*width: 80%;*/
 }
 
@@ -130,6 +124,22 @@ h1 ~ p, h2 ~ p, h3 ~ p, h4 ~ p, h5 ~ p, h6 ~ p {
     font-family: 'Source Sans Pro', sans-serif;
     font-size: 0.8em;
     line-height: 1rem;
+}
+
+.md table.table td, .md table.table th {
+    /*border-color: navajowhite;*/
+}
+
+.md table.table th {
+    color: white;
+    background-color: slategrey;
+    font-weight: bold;
+    font-size: 1.2em;
+    font-color: navy;
+}
+
+.md table.table tr:nth-child(even){
+    /*background: lightsteelblue;*/
 }
 
 .md svg.diagram {
@@ -167,7 +177,7 @@ h1 ~ p, h2 ~ p, h3 ~ p, h4 ~ p, h5 ~ p, h6 ~ p {
     flex: 1;
     margin: 2px;
     padding: 0.5rem;
-    border: 1px solid;
+    border: 1px solid darkorange;
     font-size: 0.7em;
     border-radius: 10px;
     font-family: 'Source Sans Pro', sans-serif;
@@ -185,8 +195,6 @@ h1 ~ p, h2 ~ p, h3 ~ p, h4 ~ p, h5 ~ p, h6 ~ p {
 table.gantt {
     table-layout: fixed;
     width: 100%;
-
-    font-family: 'Source Sans Pro', sans-serif;
 }
 
 table.table td.complete,
