@@ -27,57 +27,62 @@ Professor Richard Murray
 </div>
 
 # Abstract.
-Today's modern digital audio systems are pushing performance boundaries. Most high quality digital to analog converters for audio are capable of 24 bit 96 kHz conversion. Professional audio interfaces frequently use 24 or 32 bit 192 kHz sample rates. These systems are able to achieve a dynamic ranges greater than 100 dB, and distortion on the magnitude of single parts per million. This project proposes a high resolution analog digital converter (ADC) to measure and characterize these types of devices.
+Today's modern digital audio systems are pushing performance boundaries. 
+Most high quality digital to analog converters for audio are capable of 24 bit 96 kHz conversion. 
+Professional audio interfaces frequently use 24 or 32 bit 192 kHz sample rates. 
+These systems are able to achieve a dynamic ranges greater than 100 dB, and distortion on the magnitude of single parts per million. 
+This project proposes a high resolution analog digital converter (ADC) to measure and characterize these types of devices.
 
-The proposed system will be capable of 24 bit conversion and an extended frequency range of up to 2 MHz. This allows for a theoretical Dynamic range of over 140 dB, ensuring the systems noise performance is limited by other factors. The extended frequency response offers several benefits:
+The proposed system will be capable of 24 bit conversion and an extended frequency range of at least 300 kHz. 
+This allows for a theoretical Dynamic range of over 140 dB, ensuring the systems noise performance is limited by other factors. 
+The extended frequency response offers several benefits:
 
 1. Measurement of distortion products that occur on fundamental frequencies above 10kHz. Even though these products are not necessarily audible, they should be observed if present.
 2. Observation of out-of-band oscillations or other noise. Various issues in a device could result in unintentional self oscillation which will likely be at a greater frequency than conventional audio measurement equipment operating at a maximum of 192kHz can observe.
-3. Measurement of non audio signals. Industrial, scientific, and medical equipment may use ultrasonic equipment, and vibration or resonant analysis may produce signals that go well beyond 20 kHz.
+3. Measurement of non audio signals. Many common signals operate in the tens or hundreds of kHz range. Switch mode power supplies operate in frequencies of 100kHz and up [^switchmode]. Industrial, scientific, and medical equipment may use ultrasonic equipment, and vibration or resonant analysis may produce signals that go well beyond 20 kHz.
 
-The digitized data will be transferred over USB. Identification as a USB Audio Class device, the system can be used with existing software such as ARTA labs, or Rightmark audio analyzer. However, the companion project to this is a free, open source, audio analysis software. In addition to displaying the FFT of the signal, it can measure distortion and frequency response. The program will be extensible with custom scripts and that makes it ideally suited to use within research based fields.
+The digitized data will be transferred over USB. As a USB Audio Class device, the system can be used with almost any computer. 
+The data can be analyzed with custom scripts in MATLAB or Python or in existing software such as ARTA labs [^Arta]. 
+This allows for frequency domain measurements such as: frequency response, Total Harmonic Distortion (THD), Intermodulation Distortion(IMD), and more
 
 # Background.
-High quality audio is a field full of interesting challenges. Audio reproduction involves maintaining a flat response across three decades of bandwidth. Additionally, human hearing has an incredibly broad dynamic range. When designing and building these devices a very sensitive, stable, and transparent measurement equipment must be used.
+High quality audio is a field full of interesting challenges. 
+Audio reproduction involves maintaining a flat response across a minimum three decades of bandwidth. 
+Additionally, human hearing has an incredibly broad dynamic range and audio equipment even wider. 
+It is not uncommon for consumer devices to claim SNR of over 110dB [^APfundamentals]. 
+When designing and building these devices a very sensitive, stable, and transparent measurement equipment must be used.
 
-The Iridium ADC fits these needs and more by supplying a high quality 24 bit converter with a bandwidth greatly in excess of what is normally required for audio. This allows an engineer to perform tests that they can not do with ordinary systems, and allows the Iridium ADC to be used in for measurement in other engineering and scientific fields.
+The Iridium ADC fits these needs and more by supplying a high quality converter with a bandwidth greatly in excess of what is normally required for audio and a dynamic range of over 110 dB. 
+This allows an engineer to perform tests that they can not do with ordinary systems, and allows the Iridium ADC to be used in for measurement in other engineering and scientific fields.
 
 ![Figure [THD]: A measurement of total harmonic distortion at 1 kHz using ARTA.](Images/thd_1kHz.png)
 
-Many audio quality measurement are performed in the frequency domain, and the first step in that analysis is to convert the analog signal to a digital one. Metrics such as frequency response, signal-to-noise ratio, and, as seen in figure [THD], harmonic distortion are often easier to perform in the frequency domain. However, to accurately characterize an analog system using these digital tools, an accurate and precise ADC must be used.
+Many audio quality measurements are performed in the frequency domain, and the first step in that analysis is to convert the analog signal to a digital one. Metrics such as frequency response, signal-to-noise ratio, and, as seen in figure [THD], harmonic distortion are often easier to perform in the frequency domain. However, to accurately characterize an analog system using these digital tools, an accurate and precise ADC must be used.
 
-What makes an ADC precise and accurate. ADC's have several key qualities. Bit depth determines the number of signal magnitude levels that are available. Since the lowest noise floor that can be achieved is equal to one bit of conversion, this also sets the theoretical dynamic range. A 24 bit converter has a theoretical dynamic range of $20\log(2^{24}) = 144 dB $. The sample rate determines the maximum frequency that can be accurately measured. This has an available sample rate of 4 MSPS, allowing for measurement of frequencies up to 2 MHz. ADC's have two types of nonlinearities, integral non-linearity (INL), and differential non-linearity (DNL) as seen in figure [NL].
+What makes an ADC precise and accurate? ADC's have several key qualities. Bit depth determines the number of signal magnitude levels that are available. Since the lowest noise floor that can be achieved is equal to one bit of conversion, this also sets the theoretical dynamic range. A 24 bit converter has a theoretical dynamic range of $20\log(2^{24}) = 144 dB $. The sample rate determines the maximum frequency that can be accurately measured. There are several types of analog to digital conversion, but in this frequency range delta sigma converters dominate. These currently have an upper frequency limit of a few MHz, but offer very good linearity. In general, ADC's have two types of nonlinearities, integral non-linearity (INL), and differential non-linearity (DNL) as seen in figure [NL].
 
-![Figure [NL]: Diagram of INL (left) and DNL (right), from *The Art of electronics, 3rd* by Horowitz and Hill](Images/nonlinearities.PNG)
+![Figure [NL]: Diagram of INL (left) and DNL (right), from *The Art of electronics, 3rd* by Horowitz and Hill.](Images/nonlinearities.PNG)
 
-INL determines the maximum deviation from a straight line over all conversion levels while DNL determines the maximum step change from each level to adjacent levels. The delta-sigma topology that lies at the core of the Iridium ADC features guaranteed monotonicity for less than 1 bit DNL. Delta-sigma converters also feature very low INL with 3 ppm typical.
+INL determines the maximum deviation from a straight line over all conversion levels while DNL determines the maximum step change from each level to adjacent levels. Delta sigma converters are guaranteed monotonic for less than 1 bit DNL. Delta-sigma converters also feature very low INL with 3 ppm typical.
 
 # Overview of the Need.
+
 ## Product Description.
 
-![Figure [model]: Model of enclosure.](Images/3DModel.png)
+The Iridium ADC has two extremely low noise balanced input channels. 
+The stable, calibrated reference voltage makes it suitable for measurement of absolute (instead of relative) signal levels. 
+It features a bandwidth greatly in excess of existing audio measurement solutions. 
+The data is transferred over USB to a computer where it identifies itself as a USB Audio Class Device. 
+This makes it easy to process and analyze the data using an array of already available tools. 
+The Iridium ADC allows for very sensitive measurement with minimal setup and at a lower cost.
 
-The Iridium ADC is a 24 bit, 4 MSPS, analog to digital converter. It has two extremely low noise balanced input channels. The stable, calibrated reference voltage makes it suitable for measurement of absolute (instead of relative) signal levels. It features a bandwidth greatly in excess of existing audio measurement solutions. The data is transferred over USB to a computer where it identifies itself as a USB Audio Class Device. This makes it easy to process and analyze the data using an array of already available tools. The Iridium ADC allows for very sensitive measurement with minimal setup and at a lower cost.
-
-As seen in figure [model], the Iridium ADC is a low profile box with inputs on the front panel. It features two balanced inputs for low noise stereo measurement capability.
-The front panel controls include:
-
-
-Front Panel:
-- 2 XLR 1/4" combo balanced inputs.
-- Impedance switch for high and low input impedance.
-- Power switch.
-
-Rear panel:
-- USB output
-- Power input.
-
+![Figure [model]: Model of enclosure.]("Images/printed_enclosure.jpg")
 
 ## Product Technology/Market Research.
-For audio analysis the current market leader is Audio Precision. Their audio measurement systems are the industry standard for professional audio companies.
+For audio analysis the current market leader is Audio Precision. 
+Their audio measurement systems are the industry standard for professional audio companies.
 But their equipment carries with it a heavy price tag, reaching into the thousands or tens of thousands of dollars.
-Common lab equipment for electrical engineering can not be used either.
-Oscilloscopes simply sacrifice sensitivity for bandwidth.
+Common lab equipment for electrical engineering can not be used either, oscilloscopes sacrifice sensitivity for bandwidth.
 Most oscilloscopes on the market offer 8 bit converters, and suffer from a correspondingly large noise floor.
 Even the best high resolution oscilloscopes only offer 12 bit conversion, unable to even measure the aged CD standard of 16 bit audio.
 Additionally, oscilloscopes are not designed for measurements like distortion that are ideally suited to the frequency domain.
@@ -90,9 +95,9 @@ Currently there is no available device that combines this level of dynamic range
 # Customer Archetype.
 The Iridium ADC is a tool that allows engineers, product developers, and researchers to obtain and process the data that they need to. The user of this device may fit into several categories.
 
-**Small audio companies.**
+**Specialty audio companies.**
 
-The market for small audio companies has been expanding. Increasingly, independent companies like Schitt audio are becoming the choice for home audio enthusiasts. Guitar effect pedals has seen an explosion in the number of companies developing and (successfully) selling pedals that take on all sorts of mixtures of digital and analog processing. Driven by the presence of mobile audio devices courtesy of our phones, a resurgence in popularity of high end headphones has spurred a market devoted to headphone amplifiers.
+The market for specialty audio companies has been expanding. Increasingly, independent companies like Schitt audio are becoming the choice for home audio enthusiasts. Guitar effect pedals has seen an explosion in the number of companies developing and (successfully) selling pedals that take on all sorts of mixtures of digital and analog processing. Driven by the presence of mobile audio devices courtesy of our phones, a resurgence in popularity of high end headphones has spurred a market devoted to headphone amplifiers.
 
 Many of these companies have product lines developed just one or two engineers on a shoe string budget. Many probably develop entirely by ear because there are no currently available solutions for audio measurement under the cost of one thousand dollars. By providing a much larger bandwidth than typical audio analysis devices, The Iridium is able to investigate the characteristics of switch mode power supply noise, out-of-band distortion products, EMI pickup, self oscillation, and more signals that would not be shown on most audio targeted device. By making the tools available, the Iridium ADC allows these engineers the tools to close the feedback path on these devices, thereby reducing development time, improving the performance, and accurately report technical specifications.
 
@@ -100,8 +105,44 @@ Many of these companies have product lines developed just one or two engineers o
 
 The Iridium ADC can function as a multi use data acquisition system. There are many signals similar to audio present in natural phenomenon and useful in scientific or industrial research. The ability to measure signals of a few micro volts and of a several volts simultaneously can open up the ability of a researcher to collect data and perform the cleanup and filtering in the digital domain. The bandwidth allows for research into both ultrasonic and subsonic bands. Accurately and confidently measure signals that could not be captured on most traditional lab equipment.
 
+## Pains and Gains
+One of the major problems with current solutions is the cost. 
+Audio Precision's introductory audio analyzer, the APx515, starts at over $6000 [^apcost]. 
+Additionally, this unit has a bandwidth of only 90 kHz. 
+By offering our unit at a lower price point, there is a great potential to increase the number of people who can perform this testing. 
+That means better designs and faster development. 
+
+The features of the Iridium ADC also can help during product development. 
+The wide bandwidth means fewer problems will be missed and the high dynamic range means huge swings in signal amplitude can be measured without changing the test setup.
+
+## Competitors
+
+The market for audio analyzers is small but there are several companies.
+
+**Audio Precision:**
+The market leader in audio measurement, Their devices lead the pack in performance and types of measurement. 
+They offer analyzers from the 2 channel APx515 to the modular multichannel APx586 with 16 input channels. 
+Their flagship offers a residual THD+N of -117dB +1.0 uV. 
+Thats a maximum of 0.00024% over a bandwidth of 1 MHz! 
+Audio Precision is almost always likely to dominate the competition on performance and testing standards, but they also carry a hefty price tag.
+
+**Prism Sound:** 
+Makers of the dScope audio analyzer, this offers the 90 kHz bandwidth with THD+N as low as 0.00040% [^dScope]. 
+An article from 2008 claimed they were slashing prices by 24% to $9,850 [^prismCost]. 
+This appears to offer similar testing capability to some of the Audio Precision line, but is starting to show its age technologically:
+It advertises automation using ActiveX, a technology now being shunned by it's creator, Microsoft.
+
+**Avermetrics:**
+A newer company, Avermetrics was founded in 2011 [^averFound]. 
+The AverLAB is relatively low cost, portable, desktop audio analyzer released in August 2017.
+It is available on Amazon for a cost of $3000.
+It has a bandwidth of 10 Hz to 88 kHz and a THD+N of 0.00032%. It features a unique ethernet interface instead of USB and a compact, fanless design [^averlab]. 
+The AverLAB is the nearest competitor to the Iridium ADC. 
+The AverLAB contains more features, but the Iridium ADC is targeting better performance.
 
 # Market Description.
+ 
+<!-- a. detailed description of of proposed product. -->
 The Iridium ADC is enabled by the development of several integrated circuits.
 Balanced inputs with selectable impedance allow for selection for lowest self noise or best transfer of signal from higher impedance sources.
 The low noise front end is enabled by the series of difference amplifiers produced by THAT corp. The THAT 1200 Balanced Line Receiver IC is able to condition the incoming with a minimum of added noise while providing up to 90dB of common mode noise rejection.
@@ -126,7 +167,16 @@ Audio measurement is currently underutilized in the hobby community. By encourag
 
 <!-- f. effort to enter market -->
 
-Cost to enter market is small, but entrance is not easy. There are limited marketing opportunities for these markets. Advertisement can be performed in trade journals. Dealing directly with specialty retailers is essential.
+Cost to enter market is small, but entrance is not easy. 
+We expect to sell very low volume in the first few years. 
+Expected sales are in the 100's of units per year. 
+This puts us well under the level where dedicated manufacturers are financially feasible. 
+We expect to hand assemble these units in the first few years, so the major capital outlay is in the cost to keep stock on hand. 
+Using the estimated BOM Cost for 100 units, this requires a capital outlay of $12,300, plus additional costs for shipping, defects, advertising, and other costs. 
+There are limited marketing opportunities for these markets. 
+Advertisement can be performed in trade journals. 
+Dealing directly with specialty retailers is essential.
+Using a direct sales approach ensures that margins are kept high and are another way of reducing customer cost.
 
 <!-- g. key partners -->
 <!-- h. key customers -->
@@ -221,19 +271,30 @@ Cost to enter market is small, but entrance is not easy. There are limited marke
 </div>
 </div>
 
-
 # Marketing Requirements.
 
-The customers for the Iridium ADC need the device to be high performance, reliable, robust, and accurate. These manifest as a system with balanced inputs, low noise, high bandwidth, and with a stable reference. For ease and flexibility of use, the unit should be compact and self-contained and provide the most common input types. The ideal form factor would be similar to many audio interfaces and the Audio Precision line of analyzers, such as those in Figure [interfaces]
+The customers for the Iridium ADC need the device to be high performance, reliable, robust, and accurate. 
+These manifest as a system with balanced inputs, low noise, high bandwidth, and with a stable reference. 
+Because most of the functionality comes through the software, it will be important to develop that side of the business when the hardware is completed. 
+For ease and flexibility of use, the unit should be compact and self-contained and provide the most common input types. 
+The ideal form factor would be similar to many audio interfaces and the Audio Precision line of analyzers, such as those in Figure [interfaces].
+
 
 ![Figure [interfaces]: A consumer audio interface from Focusrite and a professional Audio Analyzer from Audio Precision](Images/interfaces.jpg)
 
+To a large extent, we are trying to create a new customer with this product. 
+Audio analyzers are actually very sensitive data acquisition devices, and in today's world, data is everything. 
+It is important to develop and push the general purpose aspects of the device as well as the specific target market. 
+With the right software capabilities, this could be a much more flexible instrument for viewing low frequency signals than an oscilloscope is. 
 
+Specific marketing requirements are listed in table [marketReqs].
+
++++++
 
 ## Marketing Data Sheet.
 <!-- ![](Images/marketing_data_sheet.png) -->
-<div class="canvas">
-<div class="top">
+<div class="canvas marketing_datasheet" >
+<div class="top">   
 <div class="column" style="flex: 2;">
 <div class="canvasentry">
 **Project Name:** Iridium ADC
@@ -299,16 +360,16 @@ The customers for the Iridium ADC need the device to be high performance, reliab
 
 ## Marketing and Engineering Requirements.
 
-| Importance |     Marketing Requirement     |        Engineering Requirement        |                                                                                                           Justification                                                                                                            |
-|------------|-------------------------------|---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| High       | Low noise                     | Noise floor < -110dB                  | Low Self noise preserves as much of the available dynamic range as possible. This enables measurement of signal than span from a few micro volts to several volts.                                                                 |
-| High       | High bandwidth                | > 300 kHz                             | Bandwidth allows for measurement of signal and products that are beyond the scope of other signal analyzers including ultrasonics and switch mode power supplies.                                                                  |
-| High       | Low Distortion                | THD < 0.0005%                         | Attempting to measure device that have very low distortion requires a measurement unit with even lower distortion.                                                                                                                 |
-| High       | Stable, known reference       | 5V +/- 0.01% 25ppm tempco, low drift. | This allows for confidently transforming the relative measurement of decibel-full scale into an absolute voltage level. This is a large part of what separates this from the available consumer level devices.                     |
-| High       | Balanced inputs               | CMRR > 60 dB                          | Essential for eliminating noise pickup from sources with very low output levels. Professional audio systems are nearly always differential.                                                                                        |
-| Medium     | Built in power supply         | IEC C14 Inlet, 120VAC 60Hz            | A completely integrated power supply makes for a cohesive, professional product. It also allows for complete control over the power quality, while using an external supply may result in use of a noisier or insufficient supply. |
-| Medium     | Works with any computer       | USB Audio Class Device                | Allows device to be cross platform, using drivers already integrated into most systems. Alternative data transfer requires writing and maintaining our own driver.                                                                 |
-| Low        | Variety of source mesurements | Selectable Input Impedance            | Lower input impedance may provide lower self noise, at the expense of less signal from high impedance sources.                                                                                                                     |
+| Importance |     Marketing Requirement     |               Engineering Requirement               |                                                                                                           Justification                                                                                                            |
+|------------|-------------------------------|-----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| High       | Low noise                     | Noise floor < -110dB with 50 ohm input termination. | Low Self noise preserves as much of the available dynamic range as possible. This enables measurement of signal than span from a few micro volts to several volts.                                                                 |
+| High       | High bandwidth                | +/- 1 dB from 10Hz to 300 kHz.                      | Bandwidth allows for measurement of signal and products that are beyond the scope of other signal analyzers including ultrasonics and switch mode power supplies.                                                                  |
+| High       | Low Distortion                | THD < 0.001%                                       | Attempting to measure device that have very low distortion requires a measurement unit with even lower distortion.                                                                                                                 |
+| High       | Stable, known reference       | 5V +/- 0.01% 25ppm tempco, low drift.               | This allows for confidently transforming the relative measurement of decibel-full scale into an absolute voltage level. This is a large part of what separates this from the available consumer level devices.                     |
+| High       | Balanced inputs               | CMRR > 60 dB.                                       | Essential for eliminating noise pickup from sources with very low output levels. Professional audio systems are nearly always differential.                                                                                        |
+| Medium     | Built in power supply         | IEC C14 Inlet, 120VAC 60Hz.                         | A completely integrated power supply makes for a cohesive, professional product. It also allows for complete control over the power quality, while using an external supply may result in use of a noisier or insufficient supply. |
+| Medium     | Works with any computer       | USB Audio Class Device.                             | Allows device to be cross platform, using drivers already integrated into most systems. Alternative data transfer requires writing and maintaining our own driver.                                                                 |
+| Low        | Variety of source mesurements | Selectable Input Impedance of 50 Ω, 2 kΩ, or 1 MΩ.  | Lower input impedance may provide lower self noise, at the expense of less signal from high impedance sources.                                                                                                                     |
 [Table [marketReqs]: Marketing requirements.]
 
 ## Block Diagram, Requirements, Specifications.
@@ -351,8 +412,8 @@ Each block is summarized in table [L1table].
 *          |      ^                                          |  ^               |  ^      |       *
 *    Zin --+------+   +---> To All                           v  |               v  |      |       *
 * Select   |   .------+-----.     .------------.          .-----+------------------+---.  |       *
-*          |  | AC/DC        |   |              |        |                              | |       *
-*          |  | Power        |   | Voltage      |        | Controller                   | |       *
+*          |  |              |   |              |        |                              | |       *
+*          |  | AC/DC        |   | Voltage      |        | Controller                   | |       *
 *          |  | Supply       |   | Reference    |        | (Micro or FPGA)              | |       *
 *          |  |              |   |              |        |                              | |       *
 *          |   '------------'     '------------'          '----------------------------'  |       *
@@ -376,9 +437,35 @@ Each block is summarized in table [L1table].
 
 ## Testing and Verification.
 
+The product will be tested by performing frequency domain analysis on its digital output using software such as ARTA. 
+Using a low distortion signal input,  the SNR, THD, and THD+N can be measured. 
+With two sine waves input, the IMD may be measured. 
+Using a noise source, the frequency response can be measured.
+Acceptable performance will match what is set out in the Engineering requirements of table [marketReqs].
+
 # Schedule, Cost, Plan.
 
-**Gantt Chart for Fall 2017**
+Separate Gantt charts for each quarter are provide below. 
+They use a color coding system to indicate the status of the tasks.
+
+<div class="gantt table">
+<table class="table" id="legend">
+    <tr>
+        <td class=complete>Completed</td>
+    </tr>
+    <tr>
+        <td class=current>In Progress</td>
+    </tr>
+    <tr>
+        <td class=unblocked>Upcoming, not blocked</td>
+    </tr>
+    <tr>
+        <td class=blocked>Upcoming Blocked</td>
+    </tr>
+</table>
+</div>
+
+## Gantt Chart for Fall 2017
 
 <div class="table">
 <table class="gantt table">
@@ -449,7 +536,7 @@ Each block is summarized in table [L1table].
 </table>
 </div>
 
-**Gantt Chart for Winter 2018**
+## Gantt Chart for Winter 2018
 
 <div class="table">
 <table class="gantt table">
@@ -522,7 +609,7 @@ Each block is summarized in table [L1table].
 </table>
 </div>
 
-**Gantt Chart for Spring 2018**
+## Gantt Chart for Spring 2018
 
 <div class="table">
 <table class="gantt table">
@@ -594,7 +681,25 @@ Each block is summarized in table [L1table].
 </table>
 </div>
 
-<!-- Extimated BOM using excel template -->
+## Estimated Cost
+
+Final parts selection has not taken place so an estimation based on price range of parts is provided in table [costEst].
+The prices are based on single quantity purchase and result in a mininmum price estimate of $123 and a maximum price estimate of $303.
+This is the cost of only the prototyping BOM, actual cost of goods sold could be very different depending on the manufacturing and order quantities.
+
+| #  |            Part           | Cost Range (dollars/each) | Min Cost (dollars) | Max Cost (dollars) |
+|----|---------------------------|---------------------------|--------------------|--------------------|
+|  1 | Power transformer         | 10 - 20                   |                 10 |                 20 |
+|  2 | ADC (cost per channel)    | 5 - 40                    |                 10 |                 80 |
+|  1 | Microcontroller           | 5 - 10                    |                  5 |                 10 |
+|  6 | Precision op amps         | 2 - 5                     |                 12 |                 30 |
+|  1 | Voltage reference         | 2 - 5                     |                  2 |                  5 |
+|  4 | Connectors                | 1 - 2                     |                  4 |                  8 |
+| 10 | Additional ICs            | 1 - 2                     |                 10 |                 20 |
+| 50 | Passives (est. avg. cost) | 0.20                      |                 10 |                 20 |
+|  2 | PCB                       | 20 - 30                   |                 40 |                 60 |
+|  1 | Enclosure                 | 20 - 50                   |                 20 |                 50 |
+[Table [costEst]: Estimated BOM range.]
 
 # Analysis of Senior Project.
 <!-- Include Ethics section. -->
@@ -639,13 +744,15 @@ Serious development of this project into a company will require investment to ac
 It will also require that the manufacturing facilities and office space are acquired.
 
 **Natural Capital:**
-The device has similar environmental impact to much other lab equipment such as bench multimeters. Effort to reduce the natural can be made such as use of lead free parts and sustainable energy used in office and manufacturing facilities.
+The device has similar environmental impact to much other lab equipment such as bench multimeters. 
+Effort to reduce the natural can be made such as use of lead free parts and sustainable energy used in office and manufacturing facilities.
 The lack of a standby mode and display-less design help to reduce the power consumption of the device. 
 The best way to prevent wasted natural capital in this device is to create a robust, dependable product that will not need to be replaced due to performance limitations or breakage.
 
 ### Cost and Benefits.
 
-During prototype development stage, by far the largest associated cost is time. Large amounts of time must be put into the research of the techniques and methods of high performance analog design, parts selection, code development, careful PCB layout, and more. 
+During prototype development stage, by far the largest associated cost is time. 
+Large amounts of time must be put into the research of the techniques and methods of high performance analog design, parts selection, code development, careful PCB layout, and more. 
 The only significant capital expense is in the parts and PCB manufacture, no additional special equipment is required for development of the prototype.
 
 Since final part selection is still pending, a rough estimate of the cost may be performed. 
@@ -667,7 +774,8 @@ The estimate for range of cost is presented in table [rough_cost] and this provi
 [Table [rough_cost]: Estimated price and quantity per unit when purchased in single quantity.]
 
 
-The first prototype should be functional toward the end of March 2018 so that functionality can be verified. A second version with performance improvements should be produced in May 2018. 
+The first prototype should be functional toward the end of March 2018 so that functionality can be verified. 
+A second version with performance improvements should be produced in May 2018. 
 In June 2018, actual measured performance should be available for publication.
 At this point, steps forward can be made in finding investing and manufacturing partners.
 
@@ -675,36 +783,54 @@ At this point, steps forward can be made in finding investing and manufacturing 
 
 Initial estimated volume is expected to be low.
 The value to customers is high and this will justify a retail price of around 5x the BOM cost.
-Using the lower cost estimate fro table [rough_cost] this will result in a retail price of around $600. With a direct sales model and estimated first year volume of 100 units, this is a yearly revenue of $47,700. 
+Using the lower cost estimate fro table [rough_cost] this will result in a retail price of around $600. 
+With a direct sales model and estimated first year volume of 100 units, this is a yearly revenue of $47,700. 
 
 ## Environmental.
 
-Environmentally friendly products start in the design phase. This device is designed to be durable and should not need to be replaced for a long time. Additional environmental impact reduction will be had by seeking out environmentally friendly manufacturers. Reputable PCB vendors that are careful with the hazardous chemicals used in production. Ideally, we would use a manufacturing plant that makes use of sustainable energy sources to power their facilities. 
+Environmentally friendly products start in the design phase. 
+This device is designed to be durable and should not need to be replaced for a long time. 
+Additional environmental impact reduction will be had by seeking out environmentally friendly manufacturers. 
+Reputable PCB vendors that are careful with the hazardous chemicals used in production. 
+Ideally, we would use a manufacturing plant that makes use of sustainable energy sources to power their facilities. 
 
 ## Manufacturability.
 
-Units have several things that make manufacturing challenging. Each unit is expected to be tested and calibrated individually to assure high accuracy, precision, and performance.
-Aside from this, there is little that is especially challenging about the device. It reduces to PCB assemblies in a box, which is something that manufacturers have gotten very good at doing. While a custom enclosure may be desired, it is not critical to the function, so that the only really unique part of the unit is the PCB assembly.
+Units have several things that make manufacturing challenging. 
+Each unit is expected to be tested and calibrated individually to assure high accuracy, precision, and performance.
+Aside from this, there is little that is especially challenging about the device. 
+It reduces to PCB assemblies in a box, which is something that manufacturers have gotten very good at doing. 
+While a custom enclosure may be desired, it is not critical to the function, so that the only really unique part of the unit is the PCB assembly.
 
 
 ## Sustainability.
 
-The product is designed to have a long lifetime. The anticipated support issues are repairs and recalibration. By using existing standards for communication in USB and the USB audio class driver, problems of becoming obsolete due to software are largely removed. Even if production and support was stopped, the devices should continue to operate for a long time.
+The product is designed to have a long lifetime. 
+The anticipated support issues are repairs and recalibration. 
+By using existing standards for communication in USB and the USB audio class driver, problems of becoming obsolete due to software are largely removed. 
+Even if production and support was stopped, the devices should continue to operate for a long time.
 
 While an improved version of this device would add the ability to generate signals as well, the immediate next step in developing a product line would begin with developing an open source software package that is able to perform frequency domain analysis. This software would have a scripting API allowing engineers and scientists to write custom testing routines, perform data logging, or perform customized analysis. 
 
 ## Ethical. 
 
-There is an ethical obligation to design and manufacture a device that does not incorporate planned obsolescence. It must also be designed for safe operation, especially with regards to the power supply. Perhaps most critically  for this device is to publish the performance specifications as honestly and completely as possible. 
+There is an ethical obligation to design and manufacture a device that does not incorporate planned obsolescence. 
+It must also be designed for safe operation, especially with regards to the power supply. 
+Perhaps most critically  for this device is to publish the performance specifications as honestly and completely as possible. 
 
 ## Health and Safety. 
 
-This device is intended to be powered directly from the wall outlet. Most of the major safety concerns stem from this. Using an power transformer for isolation and observing safety precautions like an earth grounded chassis will be critical for the safe operation of the device. 
+This device is intended to be powered directly from the wall outlet. 
+Most of the major safety concerns stem from this. 
+Using a power transformer for isolation and observing safety precautions like an earth grounded chassis will be critical for the safe operation of the device. 
 Additionally, the device must be designed so that it can not damage either the connected computer or the connected signal source.
 
 ## Social and Political. 
 
-The audio market has a long history of rejecting measurement and characterization. To some extent, this is changing now that most purchasing is done online and can not be heard as much before hand. Currently small audio companies do not have a cost effective way to accurately characterize their devices. This has the potential to influence the way that audio companies publish their performance characteristics. 
+The audio market has a long history of rejecting measurement and characterization. 
+To some extent, this is changing now that most purchasing is done online and can not be heard as much before hand. 
+Currently small audio companies do not have a cost effective way to accurately characterize their devices. 
+This has the potential to influence the way that audio companies publish their performance characteristics. 
 
 <!-- ## Development. 
 
@@ -713,21 +839,57 @@ The audio market has a long history of rejecting measurement and characterizatio
 
 # Preliminary Design Analysis.
 <!-- Include picture and 3d Model render -->
+## Physical Design.
 
-<!-- Going to be a section about key components. microcontroller and adc especially.-->
+The enclosure is designed to be rugged and durable. 
+It should be metal for shielding and heat sinking purposes.
+The 3D Model seen in figure [3dmodel] shows off the concept.
+It should be a low profile unit, around 8" x 10" x 2", making it on the small side of lab equipment.
+The prototypes will likely use an extruded aluminum style enclosure.
+
+![Figure [3dmodel]: A not-to-scale render of possible enclosure and it's printed version]("Images/3dmodelandpic.png")
+
+## Electrical Design.
+
+The analog portions of the design will be based around a selection of low noise op amps and difference amps.
+Choice of an ADC is critical to meeting design criteria. 
+In this frequency range, delta sigma type converters are unbeatable for their inherent linearity and distortion.
+The oversampling of delta sigma converters also has the benefit of relaxing anti aliasing filter requirements. 
+Bit depth of the ADC should be picked to maximize the use of available dynamic range. 
+This will likely be limited by the predicted noise coming out of the analog stages. 
+It is expected that the effective number of bits will be in the 18-20 bit range.
+The performance of the ADC is dependent on having a stable, noise free voltage reference as any 
+
+The system must have a digital controller to correctly setup the ADC and USB bridge. 
+Because we are dealing with data words up to 24 bits, a 32 bit controller is a natural choice.
+ARM Cortex M4 microcontrollers have clock speeds of 50 MHz or higher and even include DSP instructions [^NXPK20].
+The USB Bridge handle the final transfer of information to and from the computer.
+It must be capable of at least USB 2.0 high speed for a data rate of up to 480 Mbps. 
+A 24 bit data word at 1 MSPS will use at least 24Mbps per channel, requiring this faster USB standard.
+
+Finally the power supply must be able to generate the required voltages without introducing noise into the sensitive circuitry.
+Ideally a toroidal transformer will be used for their better EMI performance, 
+and a separately shielded chamber within the unit could provide even more isolation.
+
 
 # References.
-<!-- I think this just applies to the market reqs and specs?
+[^switchmode]: (https://www.digikey.com/en/articles/techzone/2015/feb/design-trade-offs-when-selecting-a-high-frequency-switching-regulator)
 
-"Provide a complete set of references for both your market research
-and the emerging project/product description. For each reference
-provide a paragraph that describes the relevance of this reference
-to the work." 
+[^Arta]: Arta Labs Audio Measurement and Analysis Software (http://www.artalabs.hr/)
 
-"Provide an adequate and COMPLETE bibliographic
-reference using the IEEE bibliographic style [2]-[3]."
--->
+[^APfundamentals]: (https://www.ap.com/download/fundamentals-of-audio-test-2/)
 
+[^apcost]: (http://www.audioholics.com/news/audio-precision-apx515)
+
+[^dScope]: http://www.prismsound.com/test_measure/products_subs/dscope/dscope_spec.php
+
+[^prismCost]: https://www.edn.com/design/test-and-measurement/4378395/Prism-Sound-slashes-price-of-audio-analyzer
+
+[^averfound]: http://www.audioxpress.com/news/avermetrics-makes-high-performance-audio-testing-affordable-with-new-averlab-audio-analyzer
+
+[^averlab]: https://www.avermetrics.com/products/averlab/
+
+[^NXPK20]: NXP Semiconductor Kinetis K20 family Product Brief, (http://cache.freescale.com/files/32bit/doc/prod_brief/K20PB.pdf)
 
 <!-- Markdeep footer -->
     <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>

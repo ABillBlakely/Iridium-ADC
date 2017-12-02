@@ -10,6 +10,13 @@ font-family: 'Josefin Sans', sans-serif;
 font-family: 'Source Sans Pro', sans-serif;
 */
 
+a[href^="#endnote"]:before {
+    content: "[";
+}
+
+a[href^="#endnote"]:after {
+    content: "]";
+}
 
 html, body {
     font-family: 'Crimson Text', serif;
@@ -185,12 +192,21 @@ h1 ~ p, h2 ~ p, h3 ~ p, h4 ~ p, h5 ~ p, h6 ~ p {
     line-height: 1.1rem;
 }
 
+.marketing_datasheet .canvasentry {
+    font-size: 1em;
+}
 /*table th {
     background: lightgrey;
 }
 */
 
 /*Gantt Chart Related Formatting*/
+
+#legend {
+    table-layout: auto;
+    width: auto;
+    margin-left: 0
+}
 
 table.gantt {
     table-layout: fixed;
@@ -204,8 +220,8 @@ table.table td.blocked {
     font-size: 0.6rem;
     font-weight: bold;
     text-align: center;
-    padding-left: 0;
-    padding-right: 0;
+    padding-left:  5;
+    padding-right: 5;
 }
 
 td.complete {
