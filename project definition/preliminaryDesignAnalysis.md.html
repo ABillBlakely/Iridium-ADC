@@ -1,0 +1,39 @@
+# Preliminary Design Analysis.
+<!-- Include picture and 3d Model render -->
+## Physical Design.
+
+The enclosure is designed to be rugged and durable. 
+It should be metal for shielding and heat sinking purposes.
+The 3D Model seen in figure [3dmodel] shows off the concept.
+It should be a low profile unit, around 8" x 10" x 2", making it on the small side of lab equipment.
+The prototypes will likely use an extruded aluminum style enclosure.
+
+![Figure [3dmodel]: A not-to-scale render of possible enclosure and it's printed version]("Images/3dmodelandpic.png")
+
+## Electrical Design.
+
+The analog portions of the design will be based around a selection of low noise op amps and difference amps.
+Choice of an ADC is critical to meeting design criteria. 
+In this frequency range, delta sigma type converters are unbeatable for their inherent linearity and distortion.
+The oversampling of delta sigma converters also has the benefit of relaxing anti aliasing filter requirements. 
+Bit depth of the ADC should be picked to maximize the use of available dynamic range. 
+This will likely be limited by the predicted noise coming out of the analog stages. 
+It is expected that the effective number of bits will be in the 18-20 bit range.
+The performance of the ADC is dependent on having a stable, noise free voltage reference as any 
+
+The system must have a digital controller to correctly setup the ADC and USB bridge. 
+Because we are dealing with data words up to 24 bits, a 32 bit controller is a natural choice.
+ARM Cortex M4 microcontrollers have clock speeds of 50 MHz or higher and even include DSP instructions [^NXPK20].
+The USB Bridge handles the final transfer of information to and from the computer.
+It must be capable of at least USB 2.0 high speed for a data rate of up to 480 Mbps. 
+A 24 bit data word at 1 MSPS will use at least 24Mbps per channel, requiring this faster USB standard.
+
+Finally, the power supply must be able to generate the required voltages without introducing noise into the sensitive circuitry.
+Ideally a toroidal transformer will be used for their better EMI performance, 
+and a separately shielded chamber within the unit could provide even more isolation.
+
+<!-- Markdeep footer -->
+    <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
+    <link rel="stylesheet" href="report_stylesheet.css">
+    <script src="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.js"></script>
+    <script src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script>

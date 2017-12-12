@@ -1,0 +1,174 @@
+# Marketing Requirements.
+
+The customers for the Iridium ADC need the device to be high performance, reliable, robust, and accurate. 
+These manifest as a system with balanced inputs, low noise, high bandwidth, and with a stable reference. 
+Because most of the functionality comes through the software, it will be important to develop that side of the business when the hardware is completed. 
+For ease and flexibility of use, the unit should be compact and self-contained and provide the most common input types. 
+The ideal form factor would be similar to many audio interfaces and the Audio Precision line of analyzers, such as those in Figure [interfaces].
+
+![Figure [interfaces]: A consumer audio interface from Focusrite and a professional Audio Analyzer from Audio Precision](Images/interfaces.jpg)
+
+To a large extent, we are trying to create a new customer with this product. 
+Audio analyzers are actually very sensitive data acquisition devices, and in today's world, data is everything. 
+It is important to develop and push the general purpose aspects of the device as well as the specific target market. 
+With the right software capabilities, this could be a much more flexible instrument for viewing low frequency signals than an oscilloscope is. 
+
+Specific marketing requirements are listed in table [marketReqs].
+
++++++
+
+## Marketing Data Sheet.
+<!-- ![](Images/marketing_data_sheet.png) -->
+<div class="canvas marketing_datasheet" >
+<div class="top">   
+<div class="column" style="flex: 2;">
+<div class="canvasentry">
+**Project Name:** Iridium ADC
+</div>
+<div class="canvasentry">
+**Unmet Customer Need:** Low Cost (100's of dollars) precision data acquisition.
+</div>
+<div class="canvasentry">
+**Unique Value Proposition:** Calibrated, high performance sampling across with a wide bandwidth and high dynamic range.
+</div>
+<div class="canvasentry">
+**Target Customer:** Small audio companies. Scientific, medical, and educational organizations.
+</div>
+<div class="canvasentry">
+**Positioning:** There is a very limited number of companies that target this market. By competing at a lower price point and appealing to a broader market, we can take part of the market.
+</div>
+</div>
+<div class="column">
+<div class="canvasentry">
+<!-- Images -->
+![](Images/3DModel.png)
+</div>
+<div class="canvasentry">
+**Pricing and Availability:**
+
+- $500
+- Available Spring 2018
+</div>
+<div class="canvasentry">
+**Product Objectives:**
+
+- Provide a low cost, high performance ADC.
+- Popularize audio analysis amongst hobbyists.
+</div>
+</div>
+</div>
+<div class="bottom">
+<div class="canvasentry">
+**Customer Benefits**
+
+- Access to audio analysis can shorten development and debugging cycles of products.
+- Lower cost gets the equipment in the hands of more people.
+</div>
+<div class="canvasentry">
+**Sustainable Differentiation**
+
+- Expanded bandwidth compared to competitors' base models.
+- Simple, direct interface.
+- Nearly universal compatibility without custom drivers.
+
+</div>
+<div class="canvasentry">
+**Disruptive Go-to-market**
+
+- Paid advertising in hobby forums.
+- Unpaid, non-traditional media through engineering and audio focused YouTube Channels and podcasts.
+</div>
+</div>
+</div>
++++++
+
+## Marketing and Engineering Requirements.
+
+| Importance |     Marketing Requirement     |               Engineering Requirement               |                                                                                                           Justification                                                                                                            |
+|------------|-------------------------------|-----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| High       | Low noise                     | Noise floor < -110dB with 50 ohm input termination. | Low Self noise preserves as much of the available dynamic range as possible. This enables measurement of signal than span from a few micro volts to several volts.                                                                 |
+| High       | High bandwidth                | +/- 1 dB from 10Hz to 300 kHz.                      | Bandwidth allows for measurement of signal and products that are beyond the scope of other signal analyzers including ultrasonic and switch mode power supplies.                                                                  |
+| High       | Low Distortion                | THD < 0.001%                                       | Attempting to measure device that have very low distortion requires a measurement unit with even lower distortion.                                                                                                                 |
+| High       | Stable, known reference       | 5V +/- 0.01% 25ppm temp co, low drift.               | This allows for confidently transforming the relative measurement of decibel-full scale into an absolute voltage level. This is a large part of what separates this from the available consumer level devices.                     |
+| High       | Balanced inputs               | CMRR > 60 dB.                                       | Essential for eliminating noise pickup from sources with very low output levels. Professional audio systems are nearly always differential.                                                                                        |
+| Medium     | Built in power supply         | IEC C14 Inlet, 120VAC 60Hz.                         | A completely integrated power supply makes for a cohesive, professional product. It also allows for complete control over the power quality, while using an external supply may result in use of a noisier or insufficient supply. |
+| Medium     | Works with any computer       | USB Audio Class Device.                             | Allows device to be cross platform, using drivers already integrated into most systems. Alternative data transfer requires writing and maintaining our own driver.                                                                 |
+| Low        | Variety of source measurements | Selectable Input Impedance of 50 Ω, 2 kΩ, or 1 MΩ.  | Lower input impedance may provide lower self noise, at the expense of less signal from high impedance sources.                                                                                                                     |
+[Table [marketReqs]: Marketing requirements.]
+
+## Block Diagram, Requirements, Specifications.
+
+The Level 0 block diagram is seen in figure [L0]. 
+At level 0 there are two signal inputs, each are balanced inputs and feature a selectable input impedance.
+The impedance is selectable through front panel switches and offer selection of 50 Ω, 2 kΩ, or 1 MΩ impedance.
+This allows for ideal selection of signal transfer, without compromising noise performance.
+Power is supplied through a standard IEC C14 power inlet. 
+The digital connection is over USB and uses a USB type B connector. 
+
+****************************************************************************
+*                           .---------------------.                        *
+*                          |                       |                       *
+*          Channel 1 ----->|                       |                       *
+*          Channel 2 ----->|                       |                       *
+*                          |      Iridium ADC      +-----> USB Connection  *
+*   Impedance Switch ----->|                       |                       *
+*                          |                       |                       *
+*     Power, 120V AC ----->|                       |                       *
+*                          |                       |                       *
+*                           '---------------------'                        *
+****************************************************************************
+[Figure [L0]: Level 0 Block Diagram]
+
+
+The level 1 block diagram in figure [L1] demonstrates the internal architecture of the device.
+Each block is summarized in table [L1table].
+
+
+***************************************************************************************************
+*           .----------------------------------------------------------------------------.        *
+*          |                                                                              |       *
+*          |   .------------.     .-------------.     .----------------.    .----------.  |       *
+*          |  |              |   |               |   |                  |  |            | |       *
+* Signal --+->| Differential +-->| Anti-aliasing +-->|       ADC        +  | USB Bridge +-+-> USB *
+*          |  | Input        |   | Filter        |   |                  |  |            | |       *
+*          |  |              |   |               |   |                  |  |            | |       *
+*          |   '------------'     '-------------'     '------+---------'    '---+--+---'  |       *
+*          |      ^                                          |  ^               |  ^      |       *
+*    Zin --+------+   +---> To All                           v  |               v  |      |       *
+* Select   |   .------+-----.     .------------.          .-----+------------------+---.  |       *
+*          |  |              |   |              |        |                              | |       *
+*          |  | AC/DC        |   | Voltage      |        | Controller                   | |       *
+*          |  | Supply       |   | Reference    |        | (Micro or FPGA)              | |       *
+*          |  |              |   |              |        |                              | |       *
+*          |   '------------'     '------------'          '----------------------------'  |       *
+*          |         ^                                                                    |       *
+*           '--------+-------------------------------------------------------------------'        *
+*                    |                                                                            *
+*                  Power                                                                          *
+***************************************************************************************************
+[Figure [L1]: Level 1 Block Diagram]
+
+|        Block         |                                                                  Description                                                                  |
+|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| Differential Input   | Low noise and distortion with selectable input impedance.                                                                                     |
+| Anti Aliasing Filter | Cut-off frequency will be determined by bandwidth of final ADC.                                                                               |
+| ADC                  | >20 bit to use all of the potential dynamic range. Delta-Sigma converters offer the best linearity and noise performance in this frequency range. |
+| Controller           | Responsible for setting up the digital devices and preparing data for USB transfer. Must be fast enough to handle stream of data from ADC.    |
+| USB Bridge           | USB 2.0 High Speed capable or better.                                                                                                         |
+| Voltage Reference    | Low Drift, Low Temp co. reference will be trimmed for accuracy.                                                                               |
+| Power Supply         | Must generate low noise +/- 15 V supply for input stage as well as 5V and 3.3V sources for digital devices.                                   |
+[Table [L1table]: description of level 1 block diagram.]
+
+## Testing and Verification.
+
+The product will be tested by performing frequency domain analysis on its digital output using software such as ARTA. 
+Using a low distortion signal input,  the SNR, THD, and THD+N can be measured. 
+With two sine waves input, the IMD may be measured. 
+Using a noise source, the frequency response can be measured.
+Acceptable performance will match what is set out in the Engineering requirements of table [marketReqs].
+
+<!-- Markdeep footer -->
+    <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
+    <link rel="stylesheet" href="report_stylesheet.css">
+    <script src="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.js"></script>
+    <script src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script>
