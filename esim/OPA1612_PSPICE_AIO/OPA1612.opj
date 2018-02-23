@@ -1,0 +1,62 @@
+(ExpressProject "OPA1612"
+  (ProjectVersion "19981106")
+  (ProjectType "Analog or A/D Mixed Mode")
+  (Folder "Design Resources"
+    (Folder "Library"
+      (File ".\OPA1612.olb"
+        (Type "Schematic Library")))
+    (NoModify)
+    (File "OPA1612.dsn"
+      (Type "Schematic Design"))
+    (BuildFileAddedOrDeleted "x")
+    (CompileFileAddedOrDeleted "x")
+    (PSPICE_Regenerate_Netlist_Flag "FALSE"))
+  (Folder "Outputs")
+  (Folder "PSpice Resources"
+    (Folder "Simulation Profiles"
+      (File.PSpice.{09528990-3187-11D2-BC7B-00A0C90CBF91}
+         ".\opa1612-pspicefiles\schematic1\ac.sim"
+        (DisplayName "SCHEMATIC1-ac")
+        (Type "PSpice Profile"))
+      (File.PSpice.{09528990-3187-11D2-BC7B-00A0C90CBF91}
+         ".\opa1612-pspicefiles\schematic1\tran.sim"
+        (DisplayName "SCHEMATIC1-tran")
+        (Type "PSpice Profile"))
+      (File.PSpice.{09528990-3187-11D2-BC7B-00A0C90CBF91}
+         ".\opa1612-pspicefiles\schematic1\noise.sim"
+        (DisplayName "SCHEMATIC1-noise")
+        (Type "PSpice Profile"))
+      (ActiveProfile ".\opa1612-pspicefiles\schematic1\tran.sim"))
+    (Folder "Stimulus Files"
+      (Sort User))
+    (Folder "Include Files"
+      (Sort User))
+    (Folder "Model Libraries"
+      (Sort User)
+      (File ".\OPA1612.lib"
+        (Type "PSpiceLibrary")
+        (DisplayName ".\OPA1612.lib"))))
+  (DefaultLibraryBrowseDirectory "library\PSpice")
+  (PartMRUSelector
+    (OPA1612
+      (FullPartName "OPA1612.Normal")
+      (LibraryName
+         ".\OPA1612.OLB")
+      (DeviceIndex "0"))
+    (VSRC
+      (FullPartName "VSRC.Normal")
+      (LibraryName
+         "C:\CADENCE\SPB_16.0\TOOLS\CAPTURE\LIBRARY\PSPICE\SOURCE.OLB")
+      (DeviceIndex "0")))
+  (LastUsedLibraryBrowseDirectory
+     "C:\ELABTRANS_WS\ELABTRANS_DS\Part_Numbers\OPA131\Active_Work_Sankalp\PSPICE\OPA131_PSPICE_AIO")
+  (MPSSessionName "x0140172")
+  (GlobalState
+    (FileView
+      (Path "Design Resources"))
+    (HierarchyView)
+    (Doc
+      (Type "COrCapturePMDoc")
+      (Frame
+        (Placement "44 2 3 -1 -1 -4 -23 0 200 0 566"))
+      (Tab 0))))

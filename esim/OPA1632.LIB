@@ -1,0 +1,246 @@
+* OPA1632 - Operational-amplifier SPICE MODEL
+*
+* Classification: High-performance, precision, differential-in/ differential-out
+*
+* Model Definition by Precision Analog, Linear Products group (tek) - Texas Instruments Inc.
+*
+* OPA1632 MODEL (Netlist Editor format)
+***************************************************************************
+** (C) Copyright 2009 Texas Instruments Incorporated. All rights reserved.
+** This model is designed as an aid for customers of Texas Instruments.
+** TI and its licensors and suppliers make no warranties, either expressed or implied, 
+** with respect to this  model, including the warranties of merchantability or fitness 
+** for a particular purpose. The model is provided solely on an "as is" basis. The entire
+** risk as to its quality and performance is with the customer.         
+***************************************************************************
+*  Rev. A - 15 January 2005, by W.K. SANDS         
+*  Rev. B - 20 March 2009, by W.K. SANDS
+*           a) improved convergence
+*           b) improved voltage and current noise vs. frequency
+*           c) added closed-loop output impedance vs. frequency
+*           d) added PSRR vs. frequency
+*
+*  This macromodel has been optimized to model the AC, DC, noise, and transient response performance within 
+*  the device data sheet specified limits. Correct operation of this macromodel has been verified on
+*  MicroSim P-Spice ver. 8.0, DesignSoft TINA, and on PENZAR Development TopSPICE ver. 6.82d. For help
+*  with other analog simulation software, please consult your software supplier.
+*
+***************************************************************************
+* BEGIN MODEL OPA1632
+* MODEL OPERATES FROM -40 TO +125 C
+* SOME PARAMETERS DO NOT TRACK THOSE
+* OF THE REAL PART VS TEMPERATURE
+* MODEL FEATURES INCLUDE:
+* OPEN LOOP GAIN, CLOSED LOOP BANDWIDTH, SLEW RATE,
+* INPUT VOLTAGE NOISE WITH 1/F,
+* INPUT CURRENT NOISE WITH 1/F,
+* VOCM FUNCTION, OUTPUT SWING VS CURRENT
+* CMRR, PSRR, VOS, TCVOS, OUTPUT CURRENT LIMIT
+* OUTPUT CURRENT IS DRAWN THROUGH SUPPLY RAILS
+* OUTPUT IMPEDANCE, INPUT CAPACITANCE
+* INPUT BIAS CURRENT, QUIESCENT CURRENT,
+* SHUTDOWN, QUIESCENT AT SHUTDOWN,
+* AND SHUTDOWN ENABLE AND DISABLE TIME DELAYS.
+* END FEATURES
+* PINOUT ORDER VIN- VOCM V+ VOUT+ VOUT- V- EN VIN+
+* PINOUT ORDER  1     2   3   4     5    6  7   8
+.SUBCKT OPA1632 1 2 3 4 5 6 7 8
+R51 6 2 30E3
+R52 2 3 30E3
+C3 5 9 1E-15
+C4 9 4 1E-15
+C8 8 10 4E-12
+C9 1 11 4E-12
+R62 0 10 0.1
+R63 0 11 0.1
+Q18 6 12 13 QOP
+Q22 3 14 13 QON
+R176 0 5 1E6
+D6 5 3 DD
+D7 6 5 DD
+D8 15 0 DIN
+D9 16 0 DIN
+I9 0 15 0.1E-3
+I10 0 16 0.1E-3
+E5 17 0 6 0 1
+E6 18 0 3 0 1
+D10 19 0 DVN
+D11 20 0 DVN
+I11 0 19 0.1E-3
+I12 0 20 0.1E-3
+E7 8 21 19 20 0.163
+G3 22 21 15 16 1.5E-22
+I13 3 6 1E-6
+R178 6 3 1E8
+E8 23 0 18 24 1
+E9 25 0 17 24 1
+E10 26 0 27 0 1
+R179 23 28 1E5
+R180 25 29 1E5
+R181 26 30 1E5
+R182 0 28 10
+R183 0 29 10
+R184 0 30 10
+E11 31 1 30 0 0.31
+R185 32 27 1E3
+R186 27 33 1E3
+C18 23 28 1E-12
+C19 25 29 0.25E-12
+C20 26 30 1E-12
+E12 34 31 29 0 -0.06
+E13 35 34 28 0 0.06
+Q29 18 36 12 QON
+Q30 17 36 14 QOP
+G7 37 24 38 24 0.1
+G8 36 24 37 24 0.1
+R187 24 37 10
+R188 24 36 10
+C22 37 24 2E-10
+C23 36 24 2E-14
+R191 13 5 5
+E19 32 0 21 24 1
+E20 33 0 22 24 1
+Q34 6 39 40 QOP
+Q35 3 41 40 QON
+R197 0 4 1E6
+D22 4 3 DD
+D23 6 4 DD
+E21 42 0 6 0 1
+E22 43 0 3 0 1
+I24 3 6 1E-6
+R199 6 3 1E8
+Q40 43 44 39 QON
+Q41 42 44 41 QOP
+G11 45 24 46 24 0.1
+G12 44 24 45 24 0.1
+R208 24 45 10
+R209 24 44 10
+C31 45 24 2E-10
+C32 44 24 2E-14
+R212 40 4 5
+G22 43 41 47 0 0.55E-3
+G23 39 42 47 0 0.55E-3
+G25 18 14 47 0 0.55E-3
+G26 12 17 47 0 0.55E-3
+G29 3 6 48 0 11.65E-3
+E54 49 0 47 0 1
+V31 49 48 0
+M44 50 7 17 17 NEO L=3U W=300U
+M45 51 52 17 17 NEN L=3U W=3000U
+R306 50 18 1E4
+R307 51 53 1E6
+V52 53 17 1
+C62 7 0 1E-12
+E55 54 0 55 17 1
+V53 51 56 1.111E-6
+R308 17 56 1E12
+C63 18 50 3E-15
+C64 53 51 2.5E-15
+M50 57 50 17 17 NEN L=3U W=300U
+M51 52 57 17 17 NEN L=3U W=300U
+R309 57 53 1E4
+R310 52 53 1E4
+C65 53 57 160E-12
+C106 53 52 300E-12
+V54 47 54 0.07U
+R312 0 54 1E12
+R313 0 47 1E12
+R314 0 47 1E12
+R315 47 0 1E12
+R316 47 0 1E12
+R317 48 0 1E12
+R318 48 0 1E12
+E56 9 4 5 4 0.5
+E60 58 59 47 0 45
+E61 60 38 47 0 -45
+V57 61 60 22.5
+V58 62 58 -22.5
+R328 58 24 1E12
+R329 60 24 1E12
+M52 38 62 59 63 PSW L=1.5U W=15000U
+M53 59 61 38 64 NSW L=1.5U W=15000U
+R330 63 24 1E12
+R331 64 24 1E12
+E62 24 6 3 6 0.5
+R332 46 59 0.1
+Q42 65 66 67 QIN
+Q43 68 21 69 QIN
+R338 70 67 15
+R339 70 69 15
+Q44 71 72 65 QIP
+Q45 73 72 68 QIP
+Q46 71 74 75 QIN
+Q47 73 74 76 QIN
+R340 17 75 333
+R341 17 76 333
+I39 77 78 2.1E-5
+I40 79 65 2.1E-3
+I41 79 68 2.1E-3
+V63 79 72 1.67
+Q48 80 81 82 QCP
+Q49 74 74 83 QCN
+Q50 74 2 84 QCP
+R342 82 85 200
+R343 84 85 200
+I42 3 85 1.05E-3
+Q51 80 80 86 QCN
+R344 6 86 666
+R345 6 83 666
+C109 87 71 19.5E-12
+C110 73 88 19.5E-12
+R346 24 87 60
+R347 24 88 60
+R348 71 73 7E5
+R349 55 51 1E8
+C111 55 0 1.5E-14
+Q53 70 78 77 QSN
+V64 18 79 1.2
+V65 77 17 1
+I44 0 89 1E-3
+D36 89 0 DD
+V66 89 90 0.6551
+R351 89 0 1E9
+E68 22 35 90 0 140E-6
+R352 0 90 1E9
+V69 66 22 50E-6
+V70 81 91 16.15E-3
+E69 91 9 90 0 -0.0285
+R353 35 22 1E9
+R354 34 35 1E9
+R355 31 34 1E9
+R356 1 31 1E9
+R357 6 24 1E9
+R358 9 91 1E9
+R359 9 4 1E9
+R360 7 18 5E4
+D37 92 18 DD
+D38 93 18 DD
+D39 17 94 DD
+D40 17 95 DD
+V71 92 46 2.14
+V72 93 38 2.14
+V73 46 94 2.18
+V74 38 95 2.18
+I45 22 0 1.48E-6
+I46 21 0 1.48E-6
+G35 3 6 3 6 -15E-6
+I47 6 3 0.242E-3
+R361 21 8 1E9
+V75 38 73 0.55
+V76 46 71 0.55
+.MODEL PSW PMOS KP=200U VTO=-7.5 IS=1E-18
+.MODEL NSW NMOS KP=200U VTO=7.5 IS=1E-18
+.MODEL QSN NPN
+.MODEL QCN NPN
+.MODEL QCP PNP
+.MODEL QON NPN VAF=90 RE=3 BF=150
+.MODEL QOP PNP VAF=90 RE=3 BF=150
+.MODEL QIN NPN BF=2000 RB=12.1 KF=3E-16
+.MODEL QIP PNP BF=2000 RB=12.1 KF=3E-16
+.MODEL DVN D KF=1.5E-15
+.MODEL DIN D KF=9E-16
+.MODEL DD D
+.MODEL NEN NMOS KP=200U VTO=0.5 IS=1E-18
+.MODEL NEO NMOS KP=200U VTO=0.8 IS=1E-18
+.ENDS
+* END MODEL OPA1632

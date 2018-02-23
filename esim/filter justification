@@ -1,0 +1,19 @@
+Filter design logic.
+
+Delta sigma modulators oversample the input signal. The nyquist rate is based on this oversampling.
+
+The AK55X8 will be running at a sample clock of 36.864 MHz placing the nyquist rate at 18.432 MHz.
+
+We need -120 db of attenuation. This can also tolerate folding of the signal most of the way back to the actual signal bandwidth.
+
+So actual bandwidth to stop band is
+BW = (18.432Mhz - 400kHz) * 2
+
+so attenuation band width is
+log10(36.864E6 / 400E3) = 1.96 decades
+
+we want 120 dB attenuation at the end so the filter order is
+
+120 / (20 * 1.96) = 3.05
+
+so maybe use a 4th order filter.
