@@ -96,4 +96,5 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\rtos\Mutex.o: mbed-os\rtos\Mutex.cpp \
  mbed-os/rtos/TARGET_CORTEX/mbed_rtx_conf.h \
  mbed-os/platform/NonCopyable.h mbed-os/platform/mbed_toolchain.h \
  mbed-os/platform/mbed_preprocessor.h mbed-os/platform/mbed_debug.h \
- mbed-os/platform/mbed_error.h mbed-os/platform/mbed_assert.h
+ mbed-os/rtos/Kernel.h mbed-os/platform/mbed_error.h \
+ mbed-os/platform/mbed_assert.h

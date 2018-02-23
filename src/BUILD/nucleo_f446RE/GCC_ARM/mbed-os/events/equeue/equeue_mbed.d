@@ -94,7 +94,7 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\events\equeue\equeue_mbed.o: \
  mbed-os/rtos/TARGET_CORTEX/mbed_rtx_conf.h \
  mbed-os/targets/TARGET_STM/mbed_rtx.h \
  mbed-os/rtos/TARGET_CORTEX/mbed_rtx_conf.h mbed-os/mbed.h \
- mbed-os/rtos/rtos.h mbed-os/rtos/Thread.h \
+ mbed-os/rtos/rtos.h mbed-os/rtos/Kernel.h mbed-os/rtos/Thread.h \
  mbed-os/rtos/TARGET_CORTEX/mbed_rtos1_types.h \
  mbed-os/rtos/TARGET_CORTEX/rtx4/cmsis_os.h mbed-os/platform/Callback.h \
  mbed-os/platform/mbed_assert.h mbed-os/platform/mbed_preprocessor.h \

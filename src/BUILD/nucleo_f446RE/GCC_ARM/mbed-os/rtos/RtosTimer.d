@@ -98,11 +98,11 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\rtos\RtosTimer.o: \
  mbed-os/platform/mbed_toolchain.h mbed-os/platform/mbed_debug.h \
  mbed-os/rtos/TARGET_CORTEX/mbed_rtos1_types.h \
  mbed-os/rtos/TARGET_CORTEX/rtx4/cmsis_os.h mbed-os/mbed.h \
- mbed-os/rtos/rtos.h mbed-os/rtos/Thread.h mbed-os/rtos/Semaphore.h \
- mbed-os/rtos/Mutex.h mbed-os/rtos/Mail.h mbed-os/rtos/Queue.h \
- mbed-os/platform/mbed_error.h mbed-os/rtos/MemoryPool.h \
- mbed-os/rtos/MemoryPool.h mbed-os/rtos/Queue.h mbed-os/rtos/EventFlags.h \
- mbed-os/rtos/ConditionVariable.h \
+ mbed-os/rtos/rtos.h mbed-os/rtos/Kernel.h mbed-os/rtos/Thread.h \
+ mbed-os/rtos/Semaphore.h mbed-os/rtos/Mutex.h mbed-os/rtos/Mail.h \
+ mbed-os/rtos/Queue.h mbed-os/platform/mbed_error.h \
+ mbed-os/rtos/MemoryPool.h mbed-os/rtos/MemoryPool.h mbed-os/rtos/Queue.h \
+ mbed-os/rtos/EventFlags.h mbed-os/rtos/ConditionVariable.h \
  mbed-os/rtos/TARGET_CORTEX/rtx4/cmsis_os.h \
  mbed-os/features/netsocket/nsapi.h \
  mbed-os/features/netsocket/nsapi_types.h \

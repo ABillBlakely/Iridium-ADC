@@ -3,32 +3,480 @@
         "module": "[fill]", 
         "size": {
             ".data": 4, 
-            ".bss": 25, 
-            ".text": 126
+            ".bss": 21, 
+            ".text": 70
         }
     }, 
     {
-        "module": "[lib]/c.a", 
-        "size": {
-            ".data": 2472, 
-            ".bss": 89, 
-            ".text": 24873
-        }
-    }, 
-    {
-        "module": "[lib]/gcc.a", 
+        "module": "[lib]\\c.a\\lib_a-callocr.o", 
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 3112
+            ".text": 104
         }
     }, 
     {
-        "module": "[lib]/misc", 
+        "module": "[lib]\\c.a\\lib_a-closer.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 36
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-ctype_.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 257
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-dtoa.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 3872
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-errno.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 12
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-fclose.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 208
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-fflush.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 468
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-findfp.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 204
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-fputwc.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 260
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-freer.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 648
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-fstatr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 40
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-fvwrite.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 764
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-fwalk.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 84
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-impure.o", 
+        "size": {
+            ".data": 1068, 
+            ".bss": 0, 
+            ".text": 4
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-init.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 72
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-isattyr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 36
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-locale.o", 
+        "size": {
+            ".data": 364, 
+            ".bss": 0, 
+            ".text": 40
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-localeconv.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 28
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-lock.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 33, 
+            ".text": 16
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-lseekr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 44
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-makebuf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 240
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-malloc.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 16
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-mallocr.o", 
+        "size": {
+            ".data": 1040, 
+            ".bss": 52, 
+            ".text": 1352
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-mbtowc_r.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 44
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-memchr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 160
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-memcpy.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 308
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-memmove.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 200
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-memset.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 148
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-mprec.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 1800
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-printf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 40
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-readr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 44
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-reallocr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 860
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-reent.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 4, 
+            ".text": 0
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-sbrkr.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 36
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-stdio.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 136
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-strlen.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 220
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-svfiprintf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 244
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-svfprintf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 5314
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-vfiprintf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 140
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-vfprintf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 5658
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-vsnprintf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 144
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-wbuf.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 176
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-wcrtomb.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 80
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-wctomb_r.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 28
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-writer.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 44
+        }
+    }, 
+    {
+        "module": "[lib]\\c.a\\lib_a-wsetup.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 204
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_aeabi_uldivmod.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 48
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_arm_addsubdf3.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 888
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_arm_cmpdf2.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 272
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_arm_fixdfsi.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 80
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_arm_muldivdf3.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 1060
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_arm_unorddf2.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 44
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_dvmd_tls.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 4
+        }
+    }, 
+    {
+        "module": "[lib]\\gcc.a\\_udivmoddi4.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 716
+        }
+    }, 
+    {
+        "module": "[lib]\\misc\\crt0.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 116
+        }
+    }, 
+    {
+        "module": "[lib]\\misc\\crtbegin.o", 
         "size": {
             ".data": 12, 
             ".bss": 28, 
-            ".text": 208
+            ".text": 64
+        }
+    }, 
+    {
+        "module": "[lib]\\misc\\crtend.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 4
+        }
+    }, 
+    {
+        "module": "[lib]\\misc\\crti.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 8
+        }
+    }, 
+    {
+        "module": "[lib]\\misc\\crtn.o", 
+        "size": {
+            ".data": 0, 
+            ".bss": 0, 
+            ".text": 16
         }
     }, 
     {
@@ -36,7 +484,7 @@
         "size": {
             ".data": 4, 
             ".bss": 253, 
-            ".text": 539
+            ".text": 505
         }
     }, 
     {
@@ -60,15 +508,7 @@
         "size": {
             ".data": 4, 
             ".bss": 144, 
-            ".text": 674
-        }
-    }, 
-    {
-        "module": "mbed-os\\features\\filesystem\\littlefs\\TESTS_COMMON\\atomic_usage.o", 
-        "size": {
-            ".data": 4, 
-            ".bss": 4, 
-            ".text": 65
+            ".text": 678
         }
     }, 
     {
@@ -100,7 +540,7 @@
         "size": {
             ".data": 0, 
             ".bss": 0, 
-            ".text": 804
+            ".text": 818
         }
     }, 
     {
@@ -443,8 +883,8 @@
         "module": "mbed-os\\targets\\TARGET_STM\\TARGET_STM32F4\\serial_device.o", 
         "size": {
             ".data": 0, 
-            ".bss": 720, 
-            ".text": 678
+            ".bss": 384, 
+            ".text": 72
         }
     }, 
     {
@@ -508,15 +948,15 @@
         "size": {
             ".data": 0, 
             ".bss": 32, 
-            ".text": 55
+            ".text": 63
         }
     }, 
     {
         "module": "mbed-os\\targets\\TARGET_STM\\serial_api.o", 
         "size": {
             ".data": 0, 
-            ".bss": 0, 
-            ".text": 188
+            ".bss": 80, 
+            ".text": 1043
         }
     }, 
     {
@@ -545,8 +985,8 @@
     }, 
     {
         "summary": {
-            "static_ram": 10440, 
-            "total_flash": 58354
+            "static_ram": 10172, 
+            "total_flash": 58430
         }
     }
 ]

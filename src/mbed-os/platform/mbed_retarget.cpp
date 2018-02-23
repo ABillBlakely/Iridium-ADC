@@ -753,7 +753,8 @@ extern "C" caddr_t _sbrk(int incr) {
 #else
 // Linker defined symbol used by _sbrk to indicate where heap should start.
 extern "C" uint32_t __end__;
-extern "C" caddr_t _sbrk(int incr) {
+// Weak attribute allows user to override, e.g. to use external RAM for dynamic memory.
+extern "C" WEAK caddr_t _sbrk(int incr) {
     static unsigned char* heap = (unsigned char*)&__end__;
     unsigned char*        prev_heap = heap;
     unsigned char*        new_heap = heap + incr;
@@ -1022,6 +1023,99 @@ extern "C" void __cxa_guard_abort(int *guard_object_p)
 
 #endif
 
+#if defined(MBED_MEM_TRACING_ENABLED) && (defined(__CC_ARM) || defined(__ICCARM__))
+
+// If the memory tracing is enabled, the wrappers in mbed_alloc_wrappers.cpp
+// provide the implementation for these. Note: this needs to use the wrappers
+// instead of malloc()/free() as the caller address would point to wrappers,
+// not the caller of "new" or "delete".
+extern "C" void* malloc_wrapper(size_t size, const void* caller);
+extern "C" void free_wrapper(void *ptr, const void* caller);
+    
+void *operator new(std::size_t count)
+{
+    void *buffer = malloc_wrapper(count, MBED_CALLER_ADDR());
+    if (NULL == buffer) {
+        error("Operator new out of memory\r\n");
+    }
+    return buffer;
+}
+
+void *operator new[](std::size_t count)
+{
+    void *buffer = malloc_wrapper(count, MBED_CALLER_ADDR());
+    if (NULL == buffer) {
+        error("Operator new[] out of memory\r\n");
+    }
+    return buffer;
+}
+
+void *operator new(std::size_t count, const std::nothrow_t& tag)
+{
+    return malloc_wrapper(count, MBED_CALLER_ADDR());
+}
+
+void *operator new[](std::size_t count, const std::nothrow_t& tag)
+{
+    return malloc_wrapper(count, MBED_CALLER_ADDR());
+}
+
+void operator delete(void *ptr)
+{
+    free_wrapper(ptr, MBED_CALLER_ADDR());
+}
+void operator delete[](void *ptr)
+{
+    free_wrapper(ptr, MBED_CALLER_ADDR());
+}
+
+#elif defined(MBED_MEM_TRACING_ENABLED) && defined(__GNUC__)
+
+#include <reent.h>
+
+extern "C" void* malloc_wrapper(struct _reent * r, size_t size, void * caller);
+extern "C" void free_wrapper(struct _reent * r, void * ptr, void * caller);
+
+void *operator new(std::size_t count)
+{
+    void *buffer = malloc_wrapper(_REENT, count, MBED_CALLER_ADDR());
+    if (NULL == buffer) {
+        error("Operator new out of memory\r\n");
+    }
+    return buffer;
+}
+
+void *operator new[](std::size_t count)
+{
+    void *buffer = malloc_wrapper(_REENT, count, MBED_CALLER_ADDR());
+    if (NULL == buffer) {
+        error("Operator new[] out of memory\r\n");
+    }
+    return buffer;
+}
+
+void *operator new(std::size_t count, const std::nothrow_t& tag)
+{
+    return malloc_wrapper(_REENT, count, MBED_CALLER_ADDR());
+}
+
+void *operator new[](std::size_t count, const std::nothrow_t& tag)
+{
+    return malloc_wrapper(_REENT, count, MBED_CALLER_ADDR());
+}
+
+void operator delete(void *ptr)
+{
+    free_wrapper(_REENT, ptr, MBED_CALLER_ADDR());
+}
+
+void operator delete[](void *ptr)
+{
+    free_wrapper(_REENT, ptr, MBED_CALLER_ADDR());
+}
+
+#else
+
 void *operator new(std::size_t count)
 {
     void *buffer = malloc(count);
@@ -1058,6 +1152,8 @@ void operator delete[](void *ptr)
 {
     free(ptr);
 }
+
+#endif
 
 /* @brief   standard c library clock() function.
  *

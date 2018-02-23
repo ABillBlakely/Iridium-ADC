@@ -108,7 +108,7 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\features\netsocket\TCPServer.o: \
  mbed-os/platform/mbed_assert.h mbed-os/platform/mbed_toolchain.h \
  mbed-os/features/netsocket/TCPSocket.h mbed-os/rtos/EventFlags.h \
  mbed-os/rtos/Semaphore.h mbed-os/mbed.h mbed-os/rtos/rtos.h \
- mbed-os/rtos/Thread.h mbed-os/platform/Callback.h \
+ mbed-os/rtos/Kernel.h mbed-os/rtos/Thread.h mbed-os/platform/Callback.h \
  mbed-os/rtos/RtosTimer.h mbed-os/rtos/Mail.h mbed-os/rtos/Queue.h \
  mbed-os/platform/mbed_error.h mbed-os/rtos/MemoryPool.h \
  mbed-os/rtos/MemoryPool.h mbed-os/rtos/Queue.h \

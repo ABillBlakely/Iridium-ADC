@@ -96,8 +96,8 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\features\frameworks\utest\source\utest_defau
  mbed-os/rtos/TARGET_CORTEX/rtx5/RTX/Config/RTX_Config.h \
  mbed-os/rtos/TARGET_CORTEX/mbed_rtx_conf.h \
  mbed-os/targets/TARGET_STM/mbed_rtx.h \
- mbed-os/rtos/TARGET_CORTEX/mbed_rtx_conf.h mbed-os/rtos/Thread.h \
- mbed-os/rtos/TARGET_CORTEX/mbed_rtos1_types.h \
+ mbed-os/rtos/TARGET_CORTEX/mbed_rtx_conf.h mbed-os/rtos/Kernel.h \
+ mbed-os/rtos/Thread.h mbed-os/rtos/TARGET_CORTEX/mbed_rtos1_types.h \
  mbed-os/rtos/TARGET_CORTEX/rtx4/cmsis_os.h mbed-os/platform/Callback.h \
  mbed-os/platform/mbed_assert.h mbed-os/platform/mbed_preprocessor.h \
  mbed-os/platform/mbed_toolchain.h mbed-os/platform/NonCopyable.h \

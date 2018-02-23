@@ -1,6 +1,7 @@
 BUILD\nucleo_f446RE\GCC_ARM\mbed-os\targets\TARGET_STM\lp_ticker.o: \
  mbed-os\targets\TARGET_STM\lp_ticker.c \
  BUILD\nucleo_f446RE\GCC_ARM\mbed_config.h \
+ mbed-os\targets\TARGET_STM\rtc_api_hal.h mbed-os/hal/rtc_api.h \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/device.h \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/objects.h \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/cmsis.h \
@@ -89,7 +90,10 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\targets\TARGET_STM\lp_ticker.o: \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/common_objects.h \
  mbed-os/targets/TARGET_STM/gpio_object.h mbed-os/platform/mbed_assert.h \
  mbed-os/platform/mbed_preprocessor.h \
- mbed-os/targets/TARGET_STM/PortNames.h \
- mbed-os\targets\TARGET_STM\rtc_api_hal.h mbed-os/hal/rtc_api.h \
- mbed-os/hal/ticker_api.h mbed-os/hal/lp_ticker_api.h \
- mbed-os/hal/ticker_api.h
+ mbed-os/targets/TARGET_STM/PortNames.h mbed-os/hal/ticker_api.h \
+ mbed-os/hal/lp_ticker_api.h mbed-os/hal/ticker_api.h \
+ mbed-os/hal/us_ticker_api.h \
+ mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/hal_tick.h \
+ mbed-os/targets/TARGET_STM/TARGET_STM32F4/device/stm32f4xx_ll_tim.h \
+ mbed-os/platform/mbed_critical.h mbed-os/platform/mbed_error.h \
+ mbed-os/platform/mbed_debug.h

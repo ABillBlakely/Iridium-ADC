@@ -1,8 +1,7 @@
 BUILD\nucleo_f446RE\GCC_ARM\mbed-os\targets\TARGET_STM\serial_api.o: \
  mbed-os\targets\TARGET_STM\serial_api.c \
- BUILD\nucleo_f446RE\GCC_ARM\mbed_config.h mbed-os/platform/mbed_assert.h \
- mbed-os/platform/mbed_preprocessor.h mbed-os/platform/mbed_error.h \
- mbed-os/hal/serial_api.h \
+ BUILD\nucleo_f446RE\GCC_ARM\mbed_config.h \
+ mbed-os\targets\TARGET_STM\serial_api_hal.h mbed-os/hal/serial_api.h \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/device.h \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/objects.h \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/device/cmsis.h \
@@ -89,7 +88,9 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\targets\TARGET_STM\serial_api.o: \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/TARGET_STM32F446xE/TARGET_NUCLEO_F446RE/PinNames.h \
  mbed-os/targets/TARGET_STM/PinNamesTypes.h \
  mbed-os/targets/TARGET_STM/TARGET_STM32F4/common_objects.h \
- mbed-os/targets/TARGET_STM/gpio_object.h \
+ mbed-os/targets/TARGET_STM/gpio_object.h mbed-os/platform/mbed_assert.h \
+ mbed-os/platform/mbed_preprocessor.h \
  mbed-os/targets/TARGET_STM/PortNames.h mbed-os/hal/buffer.h \
- mbed-os/hal/dma_api.h mbed-os\targets\TARGET_STM\serial_api_hal.h \
+ mbed-os/hal/dma_api.h mbed-os/platform/mbed_debug.h \
+ mbed-os/platform/mbed_error.h \
  mbed-os\targets\TARGET_STM\PeripheralPins.h mbed-os/hal/pinmap.h

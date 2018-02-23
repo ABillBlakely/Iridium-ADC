@@ -99,8 +99,8 @@ BUILD\nucleo_f446RE\GCC_ARM\mbed-os\rtos\Thread.o: \
  mbed-os/platform/mbed_toolchain.h mbed-os/platform/NonCopyable.h \
  mbed-os/platform/mbed_toolchain.h mbed-os/platform/mbed_debug.h \
  mbed-os/rtos/Semaphore.h mbed-os/rtos/Mutex.h mbed-os/mbed.h \
- mbed-os/rtos/rtos.h mbed-os/rtos/RtosTimer.h mbed-os/rtos/Mail.h \
- mbed-os/rtos/Queue.h mbed-os/platform/mbed_error.h \
+ mbed-os/rtos/rtos.h mbed-os/rtos/Kernel.h mbed-os/rtos/RtosTimer.h \
+ mbed-os/rtos/Mail.h mbed-os/rtos/Queue.h mbed-os/platform/mbed_error.h \
  mbed-os/rtos/MemoryPool.h mbed-os/rtos/MemoryPool.h mbed-os/rtos/Queue.h \
  mbed-os/rtos/EventFlags.h mbed-os/rtos/ConditionVariable.h \
  mbed-os/rtos/TARGET_CORTEX/rtx4/cmsis_os.h \
