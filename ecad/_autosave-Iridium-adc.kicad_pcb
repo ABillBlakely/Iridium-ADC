@@ -3,7 +3,7 @@
   (general
     (links 282)
     (no_connects 91)
-    (area 16.924999 36.424999 99.575001 106.575001)
+    (area -98.525 60.49857 209.875001 135.136667)
     (thickness 1.6)
     (drawings 4)
     (tracks 639)
@@ -4891,7 +4891,7 @@
   )
 
   (module Housings_QFP:LQFP-64_10x10mm_Pitch0.5mm (layer F.Cu) (tedit 58CC9A47) (tstamp 5AC437CC)
-    (at 203.2 94.6 180)
+    (at -76.8 108.8 180)
     (descr "64 LEAD LQFP 10x10mm (see MICREL LQFP10x10-64LD-PL-1.pdf)")
     (tags "QFP 0.5")
     (path /5A77D399/5ABBF563)

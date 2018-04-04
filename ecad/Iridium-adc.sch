@@ -31,6 +31,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:custom-parts
 LIBS:dk_Addressable-Specialty
 LIBS:dk_Alarms-Buzzers-and-Sirens
 LIBS:dk_Automotive-Relays
@@ -40,12 +41,12 @@ LIBS:dk_Battery-Holders-Clips-Contacts
 LIBS:dk_Clock-Timing-Clock-Generators-PLLs-Frequency-Synthesizers
 LIBS:dk_Clock-Timing-Programmable-Timers-and-Oscillators
 LIBS:dk_Clock-Timing-Real-Time-Clocks
-LIBS:dk_Coaxial-Connectors-(RF)
+LIBS:dk_Coaxial-Connectors-RF
 LIBS:dk_Current-Transducers
 LIBS:dk_Data-Acquisition-ADCs-DACs-Special-Purpose
-LIBS:dk_Data-Acquisition-Analog-to-Digital-Converters-(ADC)
+LIBS:dk_Data-Acquisition-Analog-to-Digital-Converters-ADC
 LIBS:dk_Data-Acquisition-Digital-Potentiometers
-LIBS:dk_Data-Acquisition-Digital-to-Analog-Converters-(DAC)
+LIBS:dk_Data-Acquisition-Digital-to-Analog-Converters-DAC
 LIBS:dk_Data-Acquisition-Touch-Screen-Controllers
 LIBS:dk_DC-DC-Converters
 LIBS:dk_Digital-Isolators
@@ -65,7 +66,7 @@ LIBS:dk_Gas-Sensors
 LIBS:dk_Humidity-Moisture-Sensors
 LIBS:dk_Image-Sensors-Camera
 LIBS:dk_Infrared-UV-Visible-Emitters
-LIBS:dk_Inrush-Current-Limiters-(ICL)
+LIBS:dk_Inrush-Current-Limiters-ICL
 LIBS:dk_Interface-Analog-Switches-Multiplexers-Demultiplexers
 LIBS:dk_Interface-Analog-Switches-Special-Purpose
 LIBS:dk_Interface-Controllers
@@ -87,16 +88,16 @@ LIBS:dk_Logic-Multivibrators
 LIBS:dk_Logic-Shift-Registers
 LIBS:dk_Logic-Signal-Switches-Multiplexers-Decoders
 LIBS:dk_Logic-Translators-Level-Shifters
-LIBS:dk_Magnetic-Sensors-Compass-Magnetic-Field-(Modules)
-LIBS:dk_Magnetic-Sensors-Linear-Compass-(ICs)
-LIBS:dk_Magnetic-Sensors-Switches-(Solid-State)
+LIBS:dk_Magnetic-Sensors-Compass-Magnetic-Field-Modules
+LIBS:dk_Magnetic-Sensors-Linear-Compass-ICs
+LIBS:dk_Magnetic-Sensors-Switches-Solid-State
 LIBS:dk_Memory
 LIBS:dk_Memory-Connectors-PC-Card-Sockets
 LIBS:dk_Microphones
 LIBS:dk_Modular-Connectors-Jacks
 LIBS:dk_Modular-Connectors-Jacks-With-Magnetics
 LIBS:dk_Motion-Sensors-Accelerometers
-LIBS:dk_Motion-Sensors-IMUs-(Inertial-Measurement-Units)
+LIBS:dk_Motion-Sensors-IMUs-Inertial-Measurement-Units
 LIBS:dk_Motion-Sensors-Tilt-Switches
 LIBS:dk_Navigation-Switches-Joystick
 LIBS:dk_Optical-Sensors-Ambient-Light-IR-UV-Sensors
@@ -156,15 +157,15 @@ LIBS:dk_Specialized-Sensors
 LIBS:dk_Surge-Suppression-ICs
 LIBS:dk_Tactile-Switches
 LIBS:dk_Temperature-Sensors-Analog-and-Digital-Output
-LIBS:dk_Thermal-Cutoffs-(Thermal-Fuses)
+LIBS:dk_Thermal-Cutoffs-Thermal-Fuses
 LIBS:dk_Thyristors-DIACs-SIDACs
 LIBS:dk_Thyristors-SCRs
 LIBS:dk_Thyristors-TRIACs
 LIBS:dk_Toggle-Switches
-LIBS:dk_Transistors-Bipolar-(BJT)-Arrays
-LIBS:dk_Transistors-Bipolar-(BJT)-RF
-LIBS:dk_Transistors-Bipolar-(BJT)-Single
-LIBS:dk_Transistors-Bipolar-(BJT)-Single-Pre-Biased
+LIBS:dk_Transistors-Bipolar-BJT-Arrays
+LIBS:dk_Transistors-Bipolar-BJT-RF
+LIBS:dk_Transistors-Bipolar-BJT-Single
+LIBS:dk_Transistors-Bipolar-BJT-Single-Pre-Biased
 LIBS:dk_Transistors-FETs-MOSFETs-Arrays
 LIBS:dk_Transistors-FETs-MOSFETs-RF
 LIBS:dk_Transistors-FETs-MOSFETs-Single
@@ -173,7 +174,6 @@ LIBS:dk_Trimmer-Potentiometers
 LIBS:dk_TVS-Diodes
 LIBS:dk_TVS-Mixed-Technology
 LIBS:dk_USB-DVI-HDMI-Connectors
-LIBS:custom-parts
 LIBS:Iridium-adc-cache
 EELAYER 25 0
 EELAYER END
@@ -190,27 +190,115 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Sheet
-S 2150 1150 1550 1050
-U 5A77D36E
-F0 "Power Supply" 60
-F1 "power-supply.sch" 60
-$EndSheet
-$Sheet
 S 2100 3100 1600 1000
 U 5A77D384
 F0 "Input" 60
 F1 "input.sch" 60
+F2 "PreOutP" O R 3700 3950 60 
+F3 "PreOutN" O R 3700 4050 60 
+F4 "+12" I L 2100 3250 60 
+F5 "BIAS" I L 2100 3350 60 
 $EndSheet
 $Sheet
 S 4300 3100 1600 1000
 U 5A77D399
 F0 "ADC" 60
 F1 "adc.sch" 60
+F2 "Vdd4" I L 4300 3650 60 
+F3 "Vdd1" I L 4300 3350 60 
+F4 "Vdd2" I L 4300 3450 60 
+F5 "Vdd3" I L 4300 3550 60 
+F6 "VDrive" I L 4300 3250 60 
+F7 "DVdd" I L 4300 3150 60 
+F8 "4.096" I L 4300 3750 60 
+F9 "~DRDY" O R 5900 3400 60 
+F10 "~RESET" O R 5900 3500 60 
+F11 "~SYNC" O R 5900 3600 60 
+F12 "~RD" O R 5900 3700 60 
+F13 "~CS" O R 5900 3800 60 
+F14 "InputP" I L 4300 3950 60 
+F15 "InputN" I L 4300 4050 60 
+F16 "DB[15..0]" O R 5900 3250 60 
 $EndSheet
+Wire Wire Line
+	3700 3950 4300 3950
+Wire Wire Line
+	4300 4050 3700 4050
+Wire Wire Line
+	2150 2050 2000 2050
+Wire Wire Line
+	2000 2050 2000 3250
+Wire Wire Line
+	2000 3250 2100 3250
+Wire Wire Line
+	2100 3350 1950 3350
+Wire Wire Line
+	1950 3350 1950 1950
+Wire Wire Line
+	1950 1950 2150 1950
+Wire Wire Line
+	3700 2050 3950 2050
+Wire Wire Line
+	3950 2050 3950 3750
+Wire Wire Line
+	3950 3750 4300 3750
+Wire Wire Line
+	3700 1750 4200 1750
+Wire Wire Line
+	4200 1750 4200 3350
+Wire Wire Line
+	4200 3150 4300 3150
+Wire Wire Line
+	4200 3250 4300 3250
+Connection ~ 4200 3150
+Wire Wire Line
+	4200 3350 4300 3350
+Connection ~ 4200 3250
+Wire Wire Line
+	3700 1850 4100 1850
+Wire Wire Line
+	4100 1850 4100 3650
+Wire Wire Line
+	4100 3450 4300 3450
+Wire Wire Line
+	4100 3550 4300 3550
+Connection ~ 4100 3450
+Wire Wire Line
+	4100 3650 4300 3650
+Connection ~ 4100 3550
 $Sheet
 S 6400 3100 1550 1000
 U 5A77D3A6
 F0 "Microcontroller" 60
 F1 "microcontroller.sch" 60
+F2 "DB[15..0]" I L 6400 3250 60 
+F3 "~DRDY" I L 6400 3400 60 
+F4 "~RESET" O L 6400 3500 60 
+F5 "~CS" O L 6400 3800 60 
+F6 "~RD" O L 6400 3700 60 
+F7 "~SYNC" O L 6400 3600 60 
 $EndSheet
+Wire Wire Line
+	5900 3400 6400 3400
+Wire Wire Line
+	5900 3500 6400 3500
+Wire Wire Line
+	5900 3600 6400 3600
+Wire Wire Line
+	5900 3700 6400 3700
+Wire Wire Line
+	5900 3800 6400 3800
+$Sheet
+S 2150 1150 1550 1050
+U 5A77D36E
+F0 "Power Supply" 60
+F1 "power-supply.sch" 60
+F2 "+12" O L 2150 2050 60 
+F3 "+5" O R 3700 1850 60 
+F4 "4.096" O R 3700 2050 60 
+F5 "BIAS" O L 2150 1950 60 
+F6 "2.5V" O R 3700 1750 60 
+$EndSheet
+Wire Bus Line
+	5900 3250 6400 3250
 $EndSCHEMATC
