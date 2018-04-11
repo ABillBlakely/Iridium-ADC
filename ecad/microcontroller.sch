@@ -189,28 +189,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L Conn_02x19_Counter_Clockwise J4
-U 1 1 5AC34133
-P 8600 2250
-F 0 "J4" H 8650 3250 50  0000 C CNN
-F 1 "Nucleo_F446_LHS" H 8650 1250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 8600 2250 50  0001 C CNN
-F 3 "" H 8600 2250 50  0001 C CNN
-	1    8600 2250
-	1    0    0    -1  
-$EndComp
-$Comp
-L Conn_02x19_Counter_Clockwise J5
-U 1 1 5AC34155
-P 10150 2250
-F 0 "J5" H 10200 3250 50  0000 C CNN
-F 1 "Nucleo_F446_RHS" H 10200 1250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 10150 2250 50  0001 C CNN
-F 3 "" H 10150 2250 50  0001 C CNN
-	1    10150 2250
-	1    0    0    -1  
-$EndComp
 Text Label 9050 3050 0    60   ~ 0
 PC1
 Text Label 8250 3050 2    60   ~ 0
@@ -473,58 +451,58 @@ Entry Wire Line
 	5550 2550 5650 2650
 Entry Wire Line
 	5550 2650 5650 2750
-Text HLabel 5250 2900 0    60   Input ~ 0
+Text HLabel 5250 3100 0    60   Input ~ 0
 ~DRDY
 Text HLabel 5250 3000 0    60   Output ~ 0
 ~RESET
-Text HLabel 5250 3100 0    60   Output ~ 0
+Text HLabel 5250 3300 0    60   Output ~ 0
 ~CS
 Text HLabel 5250 3200 0    60   Output ~ 0
 ~RD
-Text HLabel 5250 3300 0    60   Output ~ 0
+Text HLabel 5250 2900 0    60   Output ~ 0
 ~SYNC
-Text Label 6150 1250 0    60   ~ 0
-PA0
-Text Label 6150 1350 0    60   ~ 0
-PA1
-Text Label 6150 1450 0    60   ~ 0
-PA4
-Text Label 6150 2150 0    60   ~ 0
-PC1
-Text Label 6150 2250 0    60   ~ 0
-PC10
 Text Label 6150 2350 0    60   ~ 0
-PC11
-Text Label 6150 2450 0    60   ~ 0
-PC12
-Text Label 6150 2550 0    60   ~ 0
-PC13
-Text Label 6150 2650 0    60   ~ 0
-PC14
-Text Label 6150 2750 0    60   ~ 0
-PC15
-Text Label 6150 1850 0    60   ~ 0
-PA13
-Text Label 6150 1950 0    60   ~ 0
-PA14
+PA0
+Text Label 6150 2250 0    60   ~ 0
+PA1
+Text Label 6150 2150 0    60   ~ 0
+PA4
 Text Label 6150 2050 0    60   ~ 0
-PA15
-Text Label 6150 1750 0    60   ~ 0
-PA10
+PC1
 Text Label 6150 2900 0    60   ~ 0
-PC5
+PC10
 Text Label 6150 3000 0    60   ~ 0
-PC6
+PC11
 Text Label 6150 3100 0    60   ~ 0
-PC8
-Text Label 6150 3300 0    60   ~ 0
-PA12
+PC12
+Text Label 6150 2650 0    60   ~ 0
+PC13
+Text Label 6150 2550 0    60   ~ 0
+PC14
+Text Label 6150 2450 0    60   ~ 0
+PC15
 Text Label 6150 3200 0    60   ~ 0
+PA13
+Text Label 6150 3300 0    60   ~ 0
+PA14
+Text Label 6150 2750 0    60   ~ 0
+PA15
+Text Label 6150 1950 0    60   ~ 0
+PA10
+Text Label 6150 1450 0    60   ~ 0
+PC5
+Text Label 6150 1350 0    60   ~ 0
+PC6
+Text Label 6150 1250 0    60   ~ 0
+PC8
+Text Label 6150 1550 0    60   ~ 0
+PA12
+Text Label 6150 1650 0    60   ~ 0
 PA11
 NoConn ~ 9800 3050
-Text Label 6150 1550 0    60   ~ 0
+Text Label 6150 1850 0    60   ~ 0
 PA8
-Text Label 6150 1650 0    60   ~ 0
+Text Label 6150 1750 0    60   ~ 0
 PA9
 NoConn ~ 8250 1550
 NoConn ~ 8250 1650
@@ -548,10 +526,10 @@ NoConn ~ 10600 1650
 Text Label 9050 3600 0    60   ~ 0
 GND
 $Comp
-L GND #PWR035
+L GND #PWR034
 U 1 1 5AC5CD87
 P 9050 3750
-F 0 "#PWR035" H 9050 3500 50  0001 C CNN
+F 0 "#PWR034" H 9050 3500 50  0001 C CNN
 F 1 "GND" H 9050 3600 50  0000 C CNN
 F 2 "" H 9050 3750 50  0001 C CNN
 F 3 "" H 9050 3750 50  0001 C CNN
@@ -851,4 +829,26 @@ NoConn ~ 10250 5500
 NoConn ~ 9800 1650
 Wire Wire Line
 	5650 2750 6150 2750
+$Comp
+L Conn_02x19_Odd_Even J4
+U 1 1 5ACD5E6B
+P 8600 2250
+F 0 "J4" H 8650 3250 50  0000 C CNN
+F 1 "Nucleo_F446_LHS" H 8650 1250 50  0000 C CNN
+F 2 "" H 8600 2250 50  0001 C CNN
+F 3 "" H 8600 2250 50  0001 C CNN
+	1    8600 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_02x19_Odd_Even J5
+U 1 1 5ACD5EA9
+P 10150 2250
+F 0 "J5" H 10200 3250 50  0000 C CNN
+F 1 "Nucleo_F446_RHS" H 10200 1250 50  0000 C CNN
+F 2 "" H 10150 2250 50  0001 C CNN
+F 3 "" H 10150 2250 50  0001 C CNN
+	1    10150 2250
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
