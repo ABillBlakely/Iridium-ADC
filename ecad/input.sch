@@ -227,7 +227,7 @@ L R R11
 U 1 1 5A98CB19
 P 2950 3950
 F 0 "R11" V 3030 3950 50  0000 C CNN
-F 1 "1MR" V 2950 3950 50  0000 C CNN
+F 1 "1M" V 2950 3950 50  0000 C CNN
 F 2 "Resistors_SMD:R_0603_HandSoldering" V 2880 3950 50  0001 C CNN
 F 3 "" H 2950 3950 50  0001 C CNN
 	1    2950 3950
@@ -1036,9 +1036,6 @@ Wire Wire Line
 Wire Wire Line
 	5600 1900 5600 2000
 Wire Wire Line
-	5150 1950 5300 1950
-Connection ~ 5300 1950
-Wire Wire Line
 	5300 2350 5300 2300
 Wire Wire Line
 	5450 950  5450 1050
@@ -1090,8 +1087,6 @@ Text HLabel 3450 3850 3    60   Input ~ 0
 BIAS
 Text HLabel 3450 5050 3    60   Input ~ 0
 BIAS
-Text HLabel 5150 1950 0    60   Input ~ 0
-BIAS
 Text HLabel 7100 1950 0    60   Input ~ 0
 BIAS
 $Comp
@@ -1120,4 +1115,21 @@ Wire Wire Line
 	2650 3600 2650 3550
 Connection ~ 2650 3550
 Connection ~ 2950 3550
+Text Notes 2650 2950 0    60   ~ 0
+72.3mHz
+Text Notes 3850 3650 0    60   ~ 0
+9.7MHz\n
+Text Notes 5850 2700 0    60   ~ 0
+4th Order LPF at 2 MHz
+Text Notes 3250 2800 0    60   ~ 0
+R12, R13, C15, C16 not populated\nR14 and R15 zero ohm.
+Connection ~ 5300 1950
+Text HLabel 5150 1950 0    60   Input ~ 0
+BIAS
+Wire Wire Line
+	5150 1950 5300 1950
+Text Notes 6250 1600 0    60   ~ 0
+Since bias is 1/2 \nsupply, it is not \nstrictly necessary \nhere, but it may \nbe lower noise \nto feed in the \nlow impedance \nsource so we \nwill go with it.
+Text Notes 4450 1150 0    60   ~ 0
+Enable is internally \ntied high with \n50k resistor.
 $EndSCHEMATC
