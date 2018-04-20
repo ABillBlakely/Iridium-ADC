@@ -1,0 +1,67 @@
+Title,
+Revision,
+Date,
+Generated,4/17/2018 3:28:34 PM
+Company,
+Comment 1,
+Comment 2,
+Comment 3,
+Comment 4,
+Total Parts,111
+Total Unique Parts,46
+
+
+
+Ref,Qty,Value,Footprint,Datasheet,
+C1 C3 C7 C19 C22 C25 C28 C39 ,8,0.1u,Capacitors_SMD:C_0603_HandSoldering,
+C2 C4 C5 C10 C11 C12 C40 C41 ,8,22u,Capacitors_SMD:C_1210_HandSoldering,
+C6 ,1,10n,Capacitors_SMD:C_0603_HandSoldering,
+C9 ,1,39n,Capacitors_SMD:C_0603_HandSoldering,
+C13 C14 ,2,2.2u,Capacitors_SMD:C_0805_HandSoldering,
+C15 C16 ,2,47p,Capacitors_SMD:C_0603_HandSoldering,
+C17 C18 ,2,220p,Capacitors_SMD:C_0603_HandSoldering,
+C20 C21 C26 C27 C29 ,5,100p,Capacitors_SMD:C_0603_HandSoldering,
+C23 C24 ,2,1.5n,Capacitors_SMD:C_0603_HandSoldering,
+C30 C31 ,2,120p,Capacitors_SMD:C_0603_HandSoldering,
+C37 C38 ,2,20p,Capacitors_SMD:C_0603_HandSoldering,
+C42 C43 C44 C45 C46 C47 C48 C50 C51 C52 C53 C55 ,12,0.1u,Capacitors_SMD:C_0603,
+C49 C54 ,2,10n,Capacitors_SMD:C_0603,
+C56 ,1,33p,Capacitors_SMD:C_0603,
+D1 ,1,LED,LEDs:LED_0805_HandSoldering,
+J1 ,1,+15V,Pin_Headers:Pin_Header_Straight_2x02_Pitch2.54mm,
+J2 ,1,XLR3,Pin_Headers:Pin_Header_Straight_1x03_Pitch2.54mm,
+J4 ,1,Nucleo_F446_LHS,Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm,
+J5 ,1,Nucleo_F446_RHS,Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm,
+L1 L2 L3 L4 L5 L6 L7 L8 L9 L11 ,10,1k@100M,Inductors_SMD:L_0603_HandSoldering,
+L10 ,1,15n,Inductors_SMD:L_0603,
+R1 R2 R3 R8 R9 ,5,10k,Resistors_SMD:R_0603_HandSoldering,
+R4 ,1,82k,Resistors_SMD:R_0603_HandSoldering,
+R7 ,1,86k6,Resistors_SMD:R_0603_HandSoldering,
+R10 R11 ,2,1M,Resistors_SMD:R_0603_HandSoldering,
+R12 R13 R14 R15 ,4,349,Resistors_SMD:R_0603_HandSoldering,
+R16 R17 R20 R21 ,4,1k05,Resistors_SMD:R_0603_HandSoldering,
+R18 R19 ,2,698,Resistors_SMD:R_0603_HandSoldering,
+R22 R23 ,2,365,Resistors_SMD:R_0603_HandSoldering,
+R24 R25 ,2,332,Resistors_SMD:R_0603_HandSoldering,
+R26 R27 ,2,220,Resistors_SMD:R_0603_HandSoldering,
+R28 R29 ,2,1k,Resistors_SMD:R_0603_HandSoldering,
+R30 R31 ,2,649,Resistors_SMD:R_0603_HandSoldering,
+R32 R33 ,2,18,Resistors_SMD:R_0603_HandSoldering,
+R34 R35 ,2,10,Resistors_SMD:R_0603,
+R36 ,1,160k,Resistors_SMD:R_0603,
+U1 ,1,ADR434BRZ,Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm,
+U2 ,1,OPA207IDR,Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm,
+U3 ,1,ADP7105ARDZ,feetprints:SOIC-8-EP,
+U5 ,1,ADP7104ARDZ-5.0,feetprints:SOIC-8-EP,
+U6 ,1,OPA1612,Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm,
+U7 U8 ,2,OPA1632,Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm,
+U10 ,1,NCV1117ST25T3G,TO_SOT_Packages_SMD:TO-252-2,
+U11 ,1,CB3-3C-40M0000,feetprints:CTS_CB3_oscillator,
+U12 ,1,NC7SZ08M5,TO_SOT_Packages_SMD:SOT-23-5,
+U13 ,1,AD7760,feetprints:LQFP-EP-64_10x10mm_Pitch0.5mm_6mm_square_paddle,
+
+
+
+
+BOM made with KICAD_BOM_WIZARD (https://github.com/HashDefineElectronics/KiCad_BOM_Wizard.git)
+Generated 4/17/2018 3:28:34 PM

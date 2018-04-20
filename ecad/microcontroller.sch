@@ -451,15 +451,15 @@ Entry Wire Line
 	5550 2550 5650 2650
 Entry Wire Line
 	5550 2650 5650 2750
-Text HLabel 5250 3100 0    60   Input ~ 0
+Text HLabel 5250 3500 0    60   Input ~ 0
 ~DRDY
-Text HLabel 5250 3000 0    60   Output ~ 0
+Text HLabel 5250 3400 0    60   Output ~ 0
 ~RESET
 Text HLabel 5250 3300 0    60   Output ~ 0
 ~CS
 Text HLabel 5250 3200 0    60   Output ~ 0
 ~RD
-Text HLabel 5250 2900 0    60   Output ~ 0
+Text HLabel 5250 3100 0    60   Output ~ 0
 ~SYNC
 Text Label 6150 2350 0    60   ~ 0
 PA0
@@ -469,11 +469,11 @@ Text Label 6150 2150 0    60   ~ 0
 PA4
 Text Label 6150 2050 0    60   ~ 0
 PC1
-Text Label 6150 2900 0    60   ~ 0
-PC10
-Text Label 6150 3000 0    60   ~ 0
-PC11
 Text Label 6150 3100 0    60   ~ 0
+PC10
+Text Label 6150 3400 0    60   ~ 0
+PC11
+Text Label 6150 3500 0    60   ~ 0
 PC12
 Text Label 6150 2650 0    60   ~ 0
 PC13
@@ -750,11 +750,11 @@ Connection ~ 8250 3050
 Connection ~ 8250 3150
 Connection ~ 9050 3150
 Wire Wire Line
-	5250 2900 6150 2900
-Wire Wire Line
-	5250 3000 6150 3000
-Wire Wire Line
 	5250 3100 6150 3100
+Wire Wire Line
+	5250 3400 6150 3400
+Wire Wire Line
+	5250 3500 6150 3500
 Wire Wire Line
 	5250 3200 6150 3200
 Wire Wire Line
@@ -851,6 +851,8 @@ F 3 "" H 10150 2250 50  0001 C CNN
 	1    10150 2250
 	1    0    0    -1  
 $EndComp
-Entry Wire Line
-	5350 3700 5450 3800
+Text Notes 6500 2750 0    60   ~ 0
+PC13 is not reading correctly, \nPC4 possible alternate
+Text Notes 6450 2500 0    60   ~ 0
+May be issues with all of PC13, \nPC14 and PC15 due to battery \nmanagement system.
 $EndSCHEMATC
