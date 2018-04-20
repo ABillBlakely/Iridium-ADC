@@ -5,19 +5,15 @@ This is performed by alternating the pull up or pull down mode and taking a read
 */
 
 #include "unit_tests.h"
-#include "mbed.h"
 
-BusIn dataBus(PC_8, PC_6, PC_5, PA_12, PA_11, PA_9, PA_8, PA_10, PC_1, PA_4, PA_1, PA_0, PC_15, PC_4, PC_13, PC_9);
-BusIn controlBus(PC_10, PC_11, PC_12, PA_13, PA_14);
 
 void allTests()
 {
-    while(1)
+    for (int idx=0; idx < 1; idx++)
     {
         controlBusTest();
-        wait_ms(250);
         dataBusTest();
-        wait_ms(250);
+        twosComplementTest();
     }
 }
 
@@ -34,7 +30,7 @@ void controlBusTest()
     }
     else
     {
-        printf("controlBus pull up failed on bit %x\n", controlBus.read() ^ 0x1F);
+        printf("controlBus pull up FAILED on bit %02x\n", controlBus.read() ^ 0x1F);
     }
     controlBus.mode(PullDown);
     if ((controlBus.read() & 0x1F) == 0x00)
@@ -43,7 +39,7 @@ void controlBusTest()
     }
     else
     {
-        printf("controlBus pull down failed on bit 0x%x\n", controlBus.read());
+        printf("controlBus pull down FAILED on bit 0x%02x\n", controlBus.read());
     }
     printf("controlBus Test end.\n\n");
 }
@@ -60,7 +56,7 @@ void dataBusTest()
     }
     else
     {
-        printf("dataBus pull up failed on bit %x\n", dataBus.read() ^ 0xFF);
+        printf("dataBus pull up FAILED on bit %04x\n", dataBus.read() ^ 0xFF);
     }
     dataBus.mode(PullDown);
     if ((dataBus.read() & 0xFFFF) == 0x0000)
@@ -69,7 +65,24 @@ void dataBusTest()
     }
     else
     {
-        printf("dataBus pull down failed on bit 0x%x\n", dataBus.read());
+        printf("dataBus pull down FAILED on bit 0x%04x\n", dataBus.read());
     }
-    printf("dataBus testend.\n\n");
+    printf("dataBus test end.\n\n");
+}
+
+void twosComplementTest()
+{
+    int8_t signed_int = 0b11111101;
+    printf("\ntwosComplementTest begin\n");
+    if (signed_int == -3)
+    {
+        printf("twosComplementTest passed.\n");
+    }
+    else
+    {
+        printf("twosComplementTest FAILED\n");
+    }
+    printf("twosComplementTest end\n\n");
+
+
 }
