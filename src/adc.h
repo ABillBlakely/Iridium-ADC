@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include "mbed.h"
-#include "pinDefs.h"
+#include "pins.h"
 
 #define MCLK_FREQ 40000000
 
@@ -21,9 +21,12 @@ void get_LSB();
 
 void get_MSB();
 
-void store_DataWord();
-
 void wait_MCLK_cycles(uint8_t cycles);
 
+uint32_t read_data_word();
+
+void collect_samples();
+
+void receive_data();
 
 #endif

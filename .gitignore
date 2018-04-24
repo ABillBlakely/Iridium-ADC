@@ -1,9 +1,0 @@
-.gitignore
-
-project definition/examples/
-
-references/
-
-iridium/
-
-*.pyc

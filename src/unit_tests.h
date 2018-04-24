@@ -6,15 +6,13 @@ This is performed by alternating the pull up or pull down mode and taking a read
 #ifndef UNIT_TESTS_H
 #define UNIT_TESTS_H
 #include "mbed.h"
-#include "pinDefs.h"
-#include "mbed.h"
-
+#include "pins.h"
 
 void allTests();
 
-void controlBusTest();
+// void controlBusTest();
 
-void dataBusTest();
+// void dataBusTest();
 
 void twosComplementTest();
 

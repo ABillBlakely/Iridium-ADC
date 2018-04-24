@@ -1,13 +1,7 @@
 #include "main.h"
 
-
-
-
-
 int main()
 {
-    allTests();
-    // setupADC() // Establish modes and
+    // allTests();
     setup_ADC();
-    wait_ms(500);
 }
