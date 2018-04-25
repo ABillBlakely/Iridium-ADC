@@ -204,7 +204,7 @@ uint32_t read_data_word()
 
 void collect_samples()
 {
-    static uint32_t sample_array[NUMBER_OF_SAMPLES];
+    volatile static uint32_t sample_array[NUMBER_OF_SAMPLES];
     static uint32_t sample_index = 0;
     uint32_t tx_index;
 
@@ -231,7 +231,7 @@ void collect_samples()
         }
         printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sample_timer.read(), NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sample_timer.read());
         printf("END Data Transfer\n\n");
-        wait_ms(500);
+        wait_ms(1000);
         printf("\014");
         sample_index = 0;
     }

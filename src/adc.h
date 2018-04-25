@@ -12,7 +12,7 @@
 #define LOW 0
 
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 65536
+#define NUMBER_OF_SAMPLES 16384
 
 //
 // public functions:
