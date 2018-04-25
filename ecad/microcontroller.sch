@@ -475,11 +475,11 @@ Text Label 6150 3400 0    60   ~ 0
 PC11
 Text Label 6150 3500 0    60   ~ 0
 PC12
-Text Label 6150 2650 0    60   ~ 0
+Text Label 6950 2650 0    60   ~ 0
 PC13
-Text Label 6150 2550 0    60   ~ 0
+Text Label 6950 2550 0    60   ~ 0
 PC14
-Text Label 6150 2450 0    60   ~ 0
+Text Label 6950 2450 0    60   ~ 0
 PC15
 Text Label 6150 3200 0    60   ~ 0
 PA13
@@ -543,6 +543,50 @@ NoConn ~ 9050 2150
 NoConn ~ 9050 2450
 NoConn ~ 8250 2350
 NoConn ~ 8250 2950
+NoConn ~ 10250 4400
+NoConn ~ 10250 4500
+NoConn ~ 10250 4600
+NoConn ~ 10250 4700
+NoConn ~ 10250 4800
+NoConn ~ 10250 4900
+NoConn ~ 10250 5000
+NoConn ~ 10250 5100
+NoConn ~ 10250 5200
+NoConn ~ 10250 5300
+NoConn ~ 10250 5400
+NoConn ~ 10250 5500
+NoConn ~ 9800 1650
+$Comp
+L Conn_02x19_Odd_Even J4
+U 1 1 5ACD5E6B
+P 8600 2250
+F 0 "J4" H 8650 3250 50  0000 C CNN
+F 1 "Nucleo_F446_LHS" H 8650 1250 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 8600 2250 50  0001 C CNN
+F 3 "" H 8600 2250 50  0001 C CNN
+	1    8600 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Conn_02x19_Odd_Even J5
+U 1 1 5ACD5EA9
+P 10150 2250
+F 0 "J5" H 10200 3250 50  0000 C CNN
+F 1 "Nucleo_F446_RHS" H 10200 1250 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 10150 2250 50  0001 C CNN
+F 3 "" H 10150 2250 50  0001 C CNN
+	1    10150 2250
+	1    0    0    -1  
+$EndComp
+Text Notes 4000 2500 0    60   ~ 0
+PC13 is not reading correctly, \nPC4 possible alternate
+Text Notes 4000 2250 0    60   ~ 0
+May be issues with all of PC13, \nPC14 and PC15 due to battery \nmanagement system.
+NoConn ~ 6700 2650
+Text Label 6950 3000 0    60   ~ 0
+PC7
+Text Notes 6500 2250 0    60   ~ 0
+Cut and relocate these traces
 Wire Wire Line
 	8250 1350 8400 1350
 Wire Wire Line
@@ -727,12 +771,6 @@ Wire Wire Line
 	5650 2250 6150 2250
 Wire Wire Line
 	5650 2350 6150 2350
-Wire Wire Line
-	5650 2450 6150 2450
-Wire Wire Line
-	5650 2550 6150 2550
-Wire Wire Line
-	5650 2650 6150 2650
 Wire Bus Line
 	5550 1150 5550 2650
 Wire Bus Line
@@ -814,45 +852,44 @@ Wire Wire Line
 	10250 4500 10050 4500
 Wire Notes Line
 	9750 5550 9750 4250
-NoConn ~ 10250 4400
-NoConn ~ 10250 4500
-NoConn ~ 10250 4600
-NoConn ~ 10250 4700
-NoConn ~ 10250 4800
-NoConn ~ 10250 4900
-NoConn ~ 10250 5000
-NoConn ~ 10250 5100
-NoConn ~ 10250 5200
-NoConn ~ 10250 5300
-NoConn ~ 10250 5400
-NoConn ~ 10250 5500
-NoConn ~ 9800 1650
 Wire Wire Line
 	5650 2750 6150 2750
-$Comp
-L Conn_02x19_Odd_Even J4
-U 1 1 5ACD5E6B
-P 8600 2250
-F 0 "J4" H 8650 3250 50  0000 C CNN
-F 1 "Nucleo_F446_LHS" H 8650 1250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 8600 2250 50  0001 C CNN
-F 3 "" H 8600 2250 50  0001 C CNN
-	1    8600 2250
-	1    0    0    -1  
-$EndComp
-$Comp
-L Conn_02x19_Odd_Even J5
-U 1 1 5ACD5EA9
-P 10150 2250
-F 0 "J5" H 10200 3250 50  0000 C CNN
-F 1 "Nucleo_F446_RHS" H 10200 1250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 10150 2250 50  0001 C CNN
-F 3 "" H 10150 2250 50  0001 C CNN
-	1    10150 2250
-	1    0    0    -1  
-$EndComp
-Text Notes 6500 2750 0    60   ~ 0
-PC13 is not reading correctly, \nPC4 possible alternate
-Text Notes 6450 2500 0    60   ~ 0
-May be issues with all of PC13, \nPC14 and PC15 due to battery \nmanagement system.
+Wire Wire Line
+	6950 2650 6700 2650
+Wire Wire Line
+	5650 2650 6400 2650
+Wire Wire Line
+	6400 2650 6400 3000
+Wire Wire Line
+	6400 3000 6950 3000
+NoConn ~ 6700 2550
+NoConn ~ 6700 2450
+Wire Wire Line
+	6700 2450 6950 2450
+Wire Wire Line
+	6700 2550 6950 2550
+Wire Wire Line
+	5650 2450 6500 2450
+Wire Wire Line
+	5650 2550 6450 2550
+Wire Wire Line
+	6450 2550 6450 2900
+Wire Wire Line
+	6450 2900 6950 2900
+Wire Wire Line
+	6500 2450 6500 2800
+Wire Wire Line
+	6500 2800 6950 2800
+Text Label 6950 2800 0    60   ~ 0
+PA6
+Text Label 6950 2900 0    60   ~ 0
+PA7
+Wire Notes Line
+	6550 2300 6550 3150
+Wire Notes Line
+	6550 3150 7800 3150
+Wire Notes Line
+	7800 3150 7800 2300
+Wire Notes Line
+	7800 2300 6550 2300
 $EndSCHEMATC
