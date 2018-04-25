@@ -4,16 +4,14 @@
 
 #include <stdint.h>
 #include "mbed.h"
+
 //                  LSB0    1     2     3      4      5     6     7      8     9    10    11    12     13    14    MSB
-// #define DATAPINS PC_8, PC_6, PC_5, PA_12, PA_11, PA_9, PA_8, PA_10, PC_1, PA_4, PA_1, PA_0, PC_15, PC_4, PC_14, PC_9
-#define PORT_A_MASK 0x3E13
-#define PORT_C_MASK 0xC371
+// #define DATAPINS PC_8, PC_6, PC_5, PA_12, PA_11, PA_9, PA_8, PA_10, PC_1, PA_4, PA_1, PA_0, PA_6, PA_7, PC_7, PA_15
+#define PORT_A_MASK (                 1<<12 |1<<11 |1<<9 |1<<8 |1<<10       |1<<4 |1<<1 |1<<0 |1<<6 |1<<7       |1<<15 )
+#define PORT_C_MASK (1<<8|1<<6 |1<<5                                  |1<<1                               |1<<7        )
 
 #define HIGH 1
 #define LOW 0
-
-// 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 100
 
 class DataBusClass
 {
