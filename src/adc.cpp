@@ -224,13 +224,13 @@ void collect_samples()
         sample_timer.stop();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
-        printf("Begin Data Transfer\n");
+        // printf("Begin Data Transfer\n");
         for(tx_index = 0; tx_index < NUMBER_OF_SAMPLES; tx_index++)
         {
             // printf("%04x \n", sample_array[tx_index]);
         }
         printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sample_timer.read(), NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sample_timer.read());
-        printf("END Data Transfer\n\n");
+        // printf("END Data Transfer\n\n");
         wait_ms(1000);
         printf("\014");
         sample_index = 0;
