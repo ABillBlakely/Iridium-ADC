@@ -243,6 +243,8 @@ void collect_samples()
         // printf("END Data Transfer\n\n");
         wait_ms(1000);
         clear_terminal();
+        sample_index = -1;
+        page_index = 0;
     }
 }
 
@@ -255,6 +257,4 @@ void clear_terminal()
 {
     // \014 is form feed, effectively clears the terminal.
     printf("\014");
-    sample_index = -1;
-    page_index = 0;
 }
