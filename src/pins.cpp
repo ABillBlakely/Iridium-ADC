@@ -41,29 +41,17 @@ uint16_t DataBusClass::read()
 {
     uint16_t received = 0x0000;
 
-    port_a = dataBusA.read();
-    port_c = dataBusC.read();
 
     // port,   bit select, shift by (pin num - bit pos)
-    // printf("Port_A: %04x\n", port_a);
-    // printf("Port_C: %04x\n", port_c);
-    received |= (port_c & (1 <<  8)) >> (8 - 0);       // pc08 to bit 0
-    received |= (port_c & (1 <<  6)) >> (6 - 1);       // pc06 to bit 1
-    received |= (port_c & (1 <<  5)) >> (5 - 2);       // pc05 to bit 2
-    received |= (port_a & (1 << 12)) >> (12 - 3);      // pa12 to bit 3
-    received |= (port_a & (1 << 11)) >> (11 - 4);      // pa11 to bit 4
-    received |= (port_a & (1 <<  9)) >> (9 - 5);       // pa09 to bit 5
-    received |= (port_a & (1 <<  8)) >> (8 - 6);       // pa08 to bit 6
-    received |= (port_a & (1 << 10)) >> (10 - 7);      // pa10 to bit 7
-    received |= (port_c & (1 <<  1)) << (-(1 - 8));    // pc01 to bit 8
-    received |= (port_a & (1 <<  4)) << (-(4 - 9));    // pa04 to bit 9
-    received |= (port_a & (1 <<  1)) << (-(1 - 10));   // pa01 to bit 10
-    received |= (port_a & (1 <<  0)) << (-(0 - 11));   // pa00 to bit 11
-    received |= (port_a & (1 <<  6)) << (-(6 - 12));   // pa06 to bit 12
-    received |= (port_a & (1 <<  7)) << (-(7 - 13));   // pa07 to bit 13
-    received |= (port_c & (1 <<  7)) << (-(7 - 14));   // pc07 to bit 14
-    received |= (port_a & (1 << 15)) << (-(15 - 15));  // pa15 to bit 15
-
+    // efficiently pack the bits into a 16 bit container.
+    // bit order is even more messed up than before of course,
+    // but that detanglement can be handled on the pc side.
+    received = dataBusA.read();
+    port_c = dataBusC.read();
+    // Fill in space between port a values with the port c values.
+    received |= (port_c & (1 <<  1)) << 1;      // pc01     to bit  2
+    received |= (port_c & (1 <<  8)) >> 5;      // pc08     to bit 3
+    received |= (port_c & ((1 <<  6)|(1 << 7))) << 7;      // pc06 to bit 13 // pc07 to bit 14
     return received;
 }
 

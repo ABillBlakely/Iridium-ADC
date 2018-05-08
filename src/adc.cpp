@@ -204,40 +204,57 @@ uint32_t read_data_word()
 
 void collect_samples()
 {
-    static uint32_t sample_array[NUMBER_OF_SAMPLES];
-    static uint32_t sample_index = 0;
+    volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
+    static int32_t sample_index = -1;
+    static uint32_t page_index = 0;
     uint32_t tx_index;
 
-    if (0 == sample_index)
+    if (-1 == sample_index)
     {
         sample_timer.reset();
         sample_timer.start();
     }
-    if (sample_index < NUMBER_OF_SAMPLES)
+
+    if (sample_index < SAMPLES_PER_PAGE)
     {
         // this should all happen in under 250 ns.
         sample_array[sample_index] = read_data_word();
         sample_index++;
+    }
+    else if (page_index < NUMBER_OF_PAGES)
+    {
+        // write sample array onto rom.
+
+        page_index++;
+        sample_index = 0;
+        sample_array[0] = read_data_word();
     }
     else
     {
         sample_timer.stop();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
-        printf("Begin Data Transfer\n");
-        for(tx_index = 0; tx_index < NUMBER_OF_SAMPLES; tx_index++)
-        {
-            // printf("%04x \n", sample_array[tx_index]);
-        }
+        // printf("Begin Data Transfer\n");
+        // for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
+        // {
+        //     printf("%04x \n", sample_array[tx_index]);
+        // }
         printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sample_timer.read(), NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sample_timer.read());
-        printf("END Data Transfer\n\n");
-        wait_ms(500);
-        printf("\014");
-        sample_index = 0;
+        // printf("END Data Transfer\n\n");
+        wait_ms(1000);
+        clear_terminal();
     }
 }
 
 void receive_data()
 {
     notDataReady.fall(&collect_samples);
+}
+
+void clear_terminal()
+{
+    // \014 is form feed, effectively clears the terminal.
+    printf("\014");
+    sample_index = -1;
+    page_index = 0;
 }
