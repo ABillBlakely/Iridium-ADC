@@ -51,7 +51,7 @@ uint16_t DataBusClass::read()
     // Fill in space between port a values with the port c values.
     received |= (port_c & (1 <<  1)) << 1;      // pc01     to bit  2
     received |= (port_c & (1 <<  8)) >> 5;      // pc08     to bit 3
-    received |= (port_c & (1 <<  6)|(1 << 7)) << 7;      // pc06 to bit 13 // pc07 to bit 14
+    received |= (port_c & ((1 <<  6)|(1 << 7))) << 7;      // pc06 to bit 13 // pc07 to bit 14
     return received;
 }
 

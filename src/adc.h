@@ -12,7 +12,9 @@
 #define LOW 0
 
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 16384
+#define NUMBER_OF_SAMPLES 65536
+#define NUMBER_OF_PAGES 8
+#define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
 
 //
 // public functions:
@@ -46,5 +48,7 @@ void get_MSB();
 uint32_t read_data_word();
 
 void collect_samples();
+
+void clear_terminal();
 
 #endif
