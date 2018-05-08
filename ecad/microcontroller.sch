@@ -584,7 +584,7 @@ Text Notes 4000 2250 0    60   ~ 0
 May be issues with all of PC13, \nPC14 and PC15 due to battery \nmanagement system.
 NoConn ~ 6700 2650
 Text Label 6950 3000 0    60   ~ 0
-PC7
+PA5
 Text Notes 6500 2250 0    60   ~ 0
 Cut and relocate these traces
 Wire Wire Line

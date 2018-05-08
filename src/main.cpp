@@ -6,6 +6,6 @@ int main()
     {
         setup_ADC();
         wait_ms(2000);
-        clear_terminal();
+        collect_samples();
     }
 }
