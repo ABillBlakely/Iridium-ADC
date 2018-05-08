@@ -99,19 +99,18 @@ uint16_t read_status_reg(bool print_to_console)
     {
         // Pretty print the received status register to stdout.
         printf("Status Register\n");
-        printf("| Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | Byp Filt 3 | Byp Filt 1 | Dec 2 | Dec 1 | Dec 0 |\n");
-        printf("|    %02d     |   %03d   |    %d    |     %d     |       %d       |     %d          |      %d     |     %d      |   %d   |   %d   |   %d   |\n\n",
-                (status_reg & 0xC000) >> 14,
-                (status_reg & 0x3800) >> 11,
-                (status_reg & 0x0200) >> 9,
-                (status_reg & 0x0100) >> 8,
-                (status_reg & 0x0080) >> 7,
-                (status_reg & 0x0040) >> 6,
-                (status_reg & 0x0020) >> 5,
-               !(status_reg & 0x0010) >> 4,
-               !(status_reg & 0x0008) >> 3,
-                (status_reg & 0x0004) >> 2,
-                (status_reg & 0x0003));
+        printf("| Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | Byp Filt 3 | Byp Filt 1 | Dec Rate |\n");
+        printf("|    %02d     |   %03d   |    %d    |     %d     |       %d       |     %d          |      %d     |     %d      |    %d     |\n\n",
+                (status_reg & 0xC000) >> 14, //Part No.
+                (status_reg & 0x3800) >> 11, // Die No.
+                (status_reg & 0x0200) >> 9,  // Low Pwr
+                (status_reg & 0x0100) >> 8,  // Overrange
+                (status_reg & 0x0080) >> 7,  // Download OK
+                (status_reg & 0x0040) >> 6,  // User Filt OK
+                (status_reg & 0x0020) >> 5,  // User Filt EN
+               !(status_reg & 0x0010) >> 4,  // Byp Filt 3
+               !(status_reg & 0x0008) >> 3,  // Byp Filt 1
+                (status_reg & 0x0007));      // Dec 2:0
     }
 
     return status_reg;
