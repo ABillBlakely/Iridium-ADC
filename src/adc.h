@@ -11,6 +11,9 @@
 #define HIGH 1
 #define LOW 0
 
+
+#define DECIMATION_RATE 0b011
+
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
 #define NUMBER_OF_SAMPLES 65536
 #define NUMBER_OF_PAGES 8
@@ -47,7 +50,7 @@ void get_MSB();
 
 uint32_t read_data_word();
 
-void collect_samples();
+int collect_samples();
 
 void clear_terminal();
 

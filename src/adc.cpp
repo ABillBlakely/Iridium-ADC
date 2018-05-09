@@ -2,16 +2,14 @@
 
 Timer sample_timer;
 volatile int busy_wait_variable = 0;
+volatile uint16_t control_reg_1_state = 0x0000;
+volatile uint16_t control_reg_2_state = 0x0000;
 
 void setup_ADC()
 {
-    // configure pins for write operations.
-    // dataBus is bi directional.
-    dataBus.output();
-    dataBus.write(LOW);
 
     // notDataReady is an input:
-    notDataReady.mode(PullDown);
+    // notDataReady.mode(PullDown);
 
     // Remaining pins are always outputs.
     notSync = HIGH;
@@ -25,29 +23,36 @@ void setup_ADC()
     notReset = HIGH;
     wait_4_MCLK_cycles();
 
-    // Select control register 2:
+    // configure pins for write operations.
+    // dataBus is bi directional.
+    dataBus.output();
+    dataBus.write(0xFFFF);
+
+    // // Select control register 2:
     dataBus.write(0x0002);
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
     wait_4_MCLK_cycles();
 
-    // BIT | NAME  | DESCRIPTION
-    // ----|------ |-------------
-    //  5  | ~CDIV | Clock Divider Bit. This sets the divide ratio of the MCLK signal to produce the internal ICLK. Setting CDIV = 0 divides the MCLK by 2. If CDIV = 1, the ICLK frequency is equal to the MCLK.
-    //  3  | PD    | Power Down. Setting this bit powers down the AD7760, reducing the power consumption to 6.35 mW.
-    //  2  | LPWR  | Low Power. If this bit is set, the AD7760 is operating in a low power mode. The power consumption is reduced for a 6 dB reduction in noise performance.
-    //  1  | 1     | Write 1 to this bit.
-    //  0  | D1PD  | Differential Amplifier Power Down. Setting this bit powers down the on-chip differential amplifier.
+    // // BIT | NAME  | DESCRIPTION
+    // // ----|------ |-------------
+    // //  5  | ~CDIV | Clock Divider Bit. This sets the divide ratio of the MCLK signal to produce the internal ICLK. Setting CDIV = 0 divides the MCLK by 2. If CDIV = 1, the ICLK frequency is equal to the MCLK.
+    // //  3  | PD    | Power Down. Setting this bit powers down the AD7760, reducing the power consumption to 6.35 mW.
+    // //  2  | LPWR  | Low Power. If this bit is set, the AD7760 is operating in a low power mode. The power consumption is reduced for a 6 dB reduction in noise performance.
+    // //  1  | 1     | Write 1 to this bit.
+    // //  0  | D1PD  | Differential Amplifier Power Down. Setting this bit powers down the on-chip differential amplifier.
 
-    // Set lowpower mode for improved Distortion characteristics.
-    dataBus.write((0x0000 | 1 << 2 | 1 << 1));
+    // // Set lowpower mode for improved noise performance.
+    control_reg_2_state = (0x0000 | 1 << 2 | 1 << 1);
+    dataBus.write(control_reg_2_state);
+    // dataBus.write((0x0000 | 1 << 3 | 1 << 1));
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
 
-    // Control Register 2:
-    dataBus.write(0x0002);
+    // Control Register 1:
+    dataBus.write(0x0001);
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
@@ -67,9 +72,10 @@ void setup_ADC()
     // | 2 to 0 | DEC[2:0]  | Decimation Rate. These bits set the decimation rate of Filter 2. All 0s implies that the filter is bypassed. A value of 1 corresponds to 2× decimation, a value of 2 corresponds to 4× decimation, and so on, up to the maximum value of 5, corresponding to 32× decimation.
     //
     // Set for 2.5MHZ output data rate (enable Filt 1 & 3, No Decimation).
-    // In testing a lower rate may be required, and 0b010 should be included
-    // to enable 4x decimation, lowering data rate to 625 kHz.
-    dataBus.write((0x0000 | 1<<4 | 1<<3));
+    // In testing a lower rate may be required, and 0b11 == 3 should be included
+    // to enable 8x decimation, lowering data rate to 312.5 kHz.
+    control_reg_1_state = (0x0000 | 1<<4 | 1<<3 | DECIMATION_RATE);
+    dataBus.write(control_reg_1_state);
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
@@ -80,12 +86,11 @@ void setup_ADC()
 
     // These might be redundant, but this will
     // guarantee a defined state for all pins.
-    dataBus.input();
-    dataBus.mode(PullDown);
-    notRead = HIGH;
-    notChipSelect = HIGH;
-    notSync = HIGH;
-    notReset = HIGH;
+    // dataBus.input();
+    // notRead = HIGH;
+    // notChipSelect = HIGH;
+    // notSync = HIGH;
+    // notReset = HIGH;
 
 }
 
@@ -93,14 +98,15 @@ uint16_t read_status_reg(bool print_to_console)
 {
     uint16_t status_reg = 0;
 
+    // TODO: define register offset macros.
     status_reg = read_adc_reg(11);
 
     if (print_to_console)
     {
         // Pretty print the received status register to stdout.
         printf("Status Register\n");
-        printf("| Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | Byp Filt 3 | Byp Filt 1 | Dec Rate |\n");
-        printf("|    %02d     |   %03d   |    %d    |     %d     |       %d       |     %d          |      %d     |     %d      |    %d     |\n\n",
+        printf(" Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | User Filt EN | Byp Filt 3 | Byp Filt 1 | Dec Rate \n");
+        printf("     %d     |    %d    |    %d    |     %d     |       %d       |       %d        |      %d       |      %d     |     %d      |    %d\n\n",
                 (status_reg & 0xC000) >> 14, //Part No.
                 (status_reg & 0x3800) >> 11, // Die No.
                 (status_reg & 0x0200) >> 9,  // Low Pwr
@@ -110,7 +116,7 @@ uint16_t read_status_reg(bool print_to_console)
                 (status_reg & 0x0020) >> 5,  // User Filt EN
                !(status_reg & 0x0010) >> 4,  // Byp Filt 3
                !(status_reg & 0x0008) >> 3,  // Byp Filt 1
-                (status_reg & 0x0007));      // Dec 2:0
+                1 << (status_reg & 0x0007)); // Dec 2:0, Use left shift to do exponentiation.
     }
 
     return status_reg;
@@ -121,12 +127,12 @@ uint16_t read_adc_reg(uint8_t offset)
     uint16_t adc_reg;
 
     // Set signals up for writing to adc.
-    dataBus.output();
     notRead = HIGH;
     notChipSelect = HIGH;
+    dataBus.output();
 
-    // write to address 2.
-    dataBus.write(0x0002);
+    // write to Control Register 1.
+    dataBus.write(0x0001);
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
@@ -147,8 +153,9 @@ uint16_t read_adc_reg(uint8_t offset)
     //
     // Set for 1MHZ output data rate and to read the status register.
 
-    // Set read status bit.
-    dataBus.write(0x0000 | 1 << offset);
+    // Set the particular read status bit. Should be 11, 12, 13, or 14.
+    dataBus.write(control_reg_2_state | 1 << offset);
+
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
@@ -156,14 +163,16 @@ uint16_t read_adc_reg(uint8_t offset)
     // Reset dataBus to read data, this takes long enough
     // that a explicit pause isn't necessary.
     dataBus.input();
-    dataBus.mode(PullDown);
-
     // The dataBus should now have the status on it.
     notRead = LOW;
     notChipSelect = LOW;
+    // Grab the raw input
     adc_reg = dataBus.read();
     notChipSelect = HIGH;
     notRead = HIGH;
+
+    // put the bit from the raw input into the correct order.
+    adc_reg = dataBus.input_detangle(adc_reg);
 
     return adc_reg;
 }
@@ -201,12 +210,12 @@ uint32_t read_data_word()
     // return LSB_16;
 }
 
-void collect_samples()
+int collect_samples()
 {
     volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
     static int32_t sample_index = -1;
     static uint32_t page_index = 0;
-    uint32_t tx_index;
+    // uint32_t tx_index;
 
     if (-1 == sample_index)
     {
@@ -244,12 +253,14 @@ void collect_samples()
         clear_terminal();
         sample_index = -1;
         page_index = 0;
+        return 0;
     }
+    return 1;
 }
 
 void receive_data()
 {
-    notDataReady.fall(&collect_samples);
+    // notDataReady.fall(&collect_samples);
 }
 
 void clear_terminal()

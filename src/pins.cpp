@@ -39,20 +39,50 @@ void DataBusClass::mode(PinMode mode)
 
 uint16_t DataBusClass::read()
 {
-    uint16_t received = 0x0000;
-
-    // port,   bit select, shift by (pin num - bit pos)
     // efficiently pack the bits into a 16 bit container.
     // bit order is even more messed up than before of course,
     // but that detanglement can be handled on the pc side.
+    uint16_t received = 0x0000;
+
+    // leave port a value where they are.
     received = dataBusA.read();
+
+    // Fill in space between port a values (pa02, pa03, pa 13, and pa14 are not used) with the port c values.
     port_c = dataBusC.read();
-    // Fill in space between port a values with the port c values.
     received |= (port_c & (1 << 1)) << 1;      // pc01     to bit  2
     received |= (port_c & (1 << 8)) >> 5;      // pc08     to bit 3
     received |= (port_c & ((1 << 5)|(1 << 6))) << 8;      // pc05 to bit 13 and  pc06 to bit 14
     return received;
 }
+
+uint16_t DataBusClass::input_detangle(uint16_t raw_input)
+{
+    uint16_t decoded_word = 0x0000;
+
+    decoded_word |= (raw_input & (1 << 0))  << (-(0 - 11));   // pa00 to bit 11
+    decoded_word |= (raw_input & (1 << 1))  << (-(1 - 10));   // pa01 to bit 10
+
+    decoded_word |= (raw_input & (1 << 2))  << (-(2 - 8));    // pc01 to bit 8
+    decoded_word |= (raw_input & (1 << 3))  >> (3 - 0);       // pc08 to bit 0
+
+    decoded_word |= (raw_input & (1 << 4))  << (-(4 - 9));    // pa04 to bit 9
+    decoded_word |= (raw_input & (1 << 5))  << (-(5 - 14));   // pa05 to bit 14
+    decoded_word |= (raw_input & (1 << 6))  << (-(6 - 12));   // pa06 to bit 12
+    decoded_word |= (raw_input & (1 << 7))  << (-(7 - 13));   // pa07 to bit 13
+    decoded_word |= (raw_input & (1 << 8))  >> (8 - 6);       // pa08 to bit 6
+    decoded_word |= (raw_input & (1 << 9))  >> (9 - 5);       // pa09 to bit 5
+    decoded_word |= (raw_input & (1 << 10)) >> (10 - 7);      // pa10 to bit 7
+    decoded_word |= (raw_input & (1 << 11)) >> (11 - 4);      // pa11 to bit 4
+    decoded_word |= (raw_input & (1 << 12)) >> (12 - 3);      // pa12 to bit 3
+
+    decoded_word |= (raw_input & (1 << 13)) >> (13 - 2);      // pc05 to bit 2
+    decoded_word |= (raw_input & (1 << 14)) >> (14 - 1);      // pc06 to bit 1
+
+    decoded_word |= (raw_input & (1 << 15)) >> (15 - 15);     // pa15 to bit 15
+
+    return decoded_word;
+}
+
 
 void DataBusClass::write(uint16_t word)
 {
