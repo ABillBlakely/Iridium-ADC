@@ -9,14 +9,26 @@ This is performed by alternating the pull up or pull down mode and taking a read
 
 void allTests()
 {
-    for (int idx=0; idx < 1; idx++)
-    {
-        // controlBusTest();
-        // dataBusTest();
-        twosComplementTest();
-    }
+
 }
 
+void UnitTests::dataBus_pin_write()
+{
+    dataBus.output();
+    dataBus.write(0x0000);
+
+    // Signal Start by turning led off
+
+    for(int kk = 0; kk < 16; kk++)
+    {
+        dataBus.write(1 << kk);
+        // if (!(dataBus.read() & (1 << kk)))
+        // {
+        //     printf("DataBus Test FAILE on pin DB%d\n", kk);
+        //     break;
+        // }
+    }
+}
 
 // void controlBusTest()
 // {
@@ -70,7 +82,7 @@ void allTests()
 //     printf("dataBus test end.\n\n");
 // }
 
-void twosComplementTest()
+void UnitTests::twos_complement()
 {
     int8_t signed_int = 0b11111101;
     printf("\ntwosComplementTest begin\n");

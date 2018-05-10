@@ -1,7 +1,6 @@
 
 #include "pins.h"
 
-// BusInOut dataBus(DATAPINS);
 DataBusClass dataBus;
 
 InterruptIn notDataReady(PC_12);
@@ -10,8 +9,12 @@ DigitalOut notRead(PA_13);
 DigitalOut notChipSelect(PA_14);
 DigitalOut notReset(PC_11);
 
+// DigitalOut led(LED1);
+
 PortInOut dataBusA(PortA, PORT_A_MASK);
 PortInOut dataBusC(PortC, PORT_C_MASK);
+
+// DigitalOut LED()
 
 DataBusClass::DataBusClass()
 {

@@ -36,4 +36,6 @@ extern DigitalOut notRead;
 extern DigitalOut notChipSelect;
 extern DigitalOut notReset;
 
+// extern DigitalOut led;
+
 #endif

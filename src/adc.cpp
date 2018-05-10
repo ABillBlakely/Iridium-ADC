@@ -5,6 +5,8 @@ volatile int busy_wait_variable = 0;
 volatile uint16_t control_reg_1_state = 0x0000;
 volatile uint16_t control_reg_2_state = 0x0000;
 
+volatile int inter_flag = 0;
+
 void setup_ADC()
 {
 
@@ -26,7 +28,6 @@ void setup_ADC()
     // configure pins for write operations.
     // dataBus is bi directional.
     dataBus.output();
-    dataBus.write(0xFFFF);
 
     // // Select control register 2:
     dataBus.write(0x0002);
@@ -154,7 +155,7 @@ uint16_t read_adc_reg(uint8_t offset)
     // Set for 1MHZ output data rate and to read the status register.
 
     // Set the particular read status bit. Should be 11, 12, 13, or 14.
-    dataBus.write(control_reg_2_state | 1 << offset);
+    dataBus.write(control_reg_1_state | 1 << offset);
 
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
@@ -175,6 +176,35 @@ uint16_t read_adc_reg(uint8_t offset)
     adc_reg = dataBus.input_detangle(adc_reg);
 
     return adc_reg;
+}
+
+void power_down()
+{
+    write_control_register(0x0002, (control_reg_2_state | 1 << 3));
+}
+
+void power_up()
+{
+    write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
+}
+
+void write_control_register(uint16_t control_register, uint16_t value)
+{
+    dataBus.output();
+
+    dataBus.write(control_register);
+    notChipSelect = LOW;
+    wait_4_MCLK_cycles();
+    notChipSelect = HIGH;
+    wait_4_MCLK_cycles();
+
+    dataBus.write(value);
+    notChipSelect = LOW;
+    wait_4_MCLK_cycles();
+    notChipSelect = HIGH;
+    wait_4_MCLK_cycles();
+
+    dataBus.input();
 }
 
 void wait_4_MCLK_cycles()
@@ -210,12 +240,11 @@ uint32_t read_data_word()
     // return LSB_16;
 }
 
-int collect_samples()
+void collect_samples()
 {
     volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
     static int32_t sample_index = -1;
-    static uint32_t page_index = 0;
-    // uint32_t tx_index;
+    uint32_t tx_index;
 
     if (-1 == sample_index)
     {
@@ -223,44 +252,46 @@ int collect_samples()
         sample_timer.start();
     }
 
-    if (sample_index < SAMPLES_PER_PAGE)
+    if (sample_index < (SAMPLES_PER_PAGE))
     {
         // this should all happen in under 250 ns.
         sample_array[sample_index] = read_data_word();
         sample_index++;
     }
-    else if (page_index < NUMBER_OF_PAGES)
-    {
-        // write sample array onto rom.
-
-        page_index++;
-        sample_index = 0;
-        sample_array[0] = read_data_word();
-    }
     else
     {
         sample_timer.stop();
+        notDataReady.disable_irq();
+        power_down();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
-        // printf("Begin Data Transfer\n");
-        // for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
-        // {
-        //     printf("%04x \n", sample_array[tx_index]);
-        // }
+        clear_terminal();
+        printf("Begin Data Transfer\n");
+        for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
+        {
+            printf("%08lx\n", sample_array[tx_index]);
+        }
         printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sample_timer.read(), NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sample_timer.read());
         // printf("END Data Transfer\n\n");
-        wait_ms(1000);
-        clear_terminal();
+        // clear_terminal();
+        wait_ms(750);
+
         sample_index = -1;
-        page_index = 0;
-        return 0;
+        power_up();
+        wait_ms(250);
+        notDataReady.enable_irq();
     }
-    return 1;
 }
 
 void receive_data()
 {
-    // notDataReady.fall(&collect_samples);
+    // falling edge would be preferred but for some reason only works in rising edge.
+    notDataReady.rise(&collect_samples);
+}
+
+void interrupt_test()
+{
+    inter_flag = 1;
 }
 
 void clear_terminal()

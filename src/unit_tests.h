@@ -10,10 +10,16 @@ This is performed by alternating the pull up or pull down mode and taking a read
 
 void allTests();
 
-// void controlBusTest();
+class UnitTests
+{
+private:
 
-// void dataBusTest();
+public:
+    void dataBus_pin_write();
+    void twos_complement();
+};
 
-void twosComplementTest();
+
+
 
 #endif

@@ -15,9 +15,11 @@
 #define DECIMATION_RATE 0b011
 
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 65536
-#define NUMBER_OF_PAGES 8
+#define NUMBER_OF_SAMPLES 20
+#define NUMBER_OF_PAGES 1
 #define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
+
+volatile extern int inter_flag;
 
 //
 // public functions:
@@ -31,6 +33,12 @@ void setup_ADC();
 uint16_t read_status_reg(bool print_to_console);
 
 void receive_data();
+
+void power_down();
+
+void power_up();
+
+void write_control_register(uint16_t control_register, uint16_t value);
 
 //
 // private:
@@ -50,8 +58,9 @@ void get_MSB();
 
 uint32_t read_data_word();
 
-int collect_samples();
+void collect_samples();
 
 void clear_terminal();
 
+void interrupt_test();
 #endif
