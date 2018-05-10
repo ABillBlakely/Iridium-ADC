@@ -1,19 +1,18 @@
 #include "adc.h"
 
+
 Timer sample_timer;
-volatile int busy_wait_variable = 0;
-volatile uint16_t control_reg_1_state = 0x0000;
-volatile uint16_t control_reg_2_state = 0x0000;
 
-volatile int inter_flag = 0;
+uint16_t ADC_Class::control_reg_1_state = 0x0000;
+uint16_t ADC_Class::control_reg_2_state = 0x0000;
 
-void setup_ADC()
+ADC_Class::ADC_Class()
+{
+}
+
+void ADC_Class::setup_ADC()
 {
 
-    // notDataReady is an input:
-    // notDataReady.mode(PullDown);
-
-    // Remaining pins are always outputs.
     notSync = HIGH;
     notReset = HIGH;
     notChipSelect = HIGH;
@@ -87,15 +86,15 @@ void setup_ADC()
 
     // These might be redundant, but this will
     // guarantee a defined state for all pins.
-    // dataBus.input();
-    // notRead = HIGH;
-    // notChipSelect = HIGH;
-    // notSync = HIGH;
-    // notReset = HIGH;
+    dataBus.input();
+    notRead = HIGH;
+    notChipSelect = HIGH;
+    notSync = HIGH;
+    notReset = HIGH;
 
 }
 
-uint16_t read_status_reg(bool print_to_console)
+uint16_t ADC_Class::read_status_reg(bool print_to_console)
 {
     uint16_t status_reg = 0;
 
@@ -123,7 +122,25 @@ uint16_t read_status_reg(bool print_to_console)
     return status_reg;
 }
 
-uint16_t read_adc_reg(uint8_t offset)
+void ADC_Class::receive_data()
+{
+    // falling edge would be preferred but for some reason only works in rising edge.
+    notDataReady.rise(ADC_Class::collect_samples);
+}
+
+void ADC_Class::power_down()
+{
+    write_control_register(0x0002, (control_reg_2_state | 1 << 3));
+}
+
+void ADC_Class::power_up()
+{
+    write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
+}
+
+
+
+uint16_t ADC_Class::read_adc_reg(uint8_t offset)
 {
     uint16_t adc_reg;
 
@@ -178,17 +195,7 @@ uint16_t read_adc_reg(uint8_t offset)
     return adc_reg;
 }
 
-void power_down()
-{
-    write_control_register(0x0002, (control_reg_2_state | 1 << 3));
-}
-
-void power_up()
-{
-    write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
-}
-
-void write_control_register(uint16_t control_register, uint16_t value)
+void ADC_Class::write_control_register(uint16_t control_register, uint16_t value)
 {
     dataBus.output();
 
@@ -207,16 +214,17 @@ void write_control_register(uint16_t control_register, uint16_t value)
     dataBus.input();
 }
 
-void wait_4_MCLK_cycles()
+void ADC_Class::wait_4_MCLK_cycles()
 {
     // Calling this function results in a delay of about 100 ns
     // or around 4 cycles of the ADC MCLK at 40 MHz.
     // Without this a high-low-high cycle take about 30 ns ~= 1 MCLK cycle.
+    uint16_t static busy_wait_variable;
     busy_wait_variable = 0;
     busy_wait_variable ++;
 }
 
-uint32_t read_data_word()
+uint32_t ADC_Class::read_data_word()
 {
     uint16_t MSB_16;
     uint16_t LSB_16;
@@ -240,7 +248,7 @@ uint32_t read_data_word()
     // return LSB_16;
 }
 
-void collect_samples()
+void ADC_Class::collect_samples()
 {
     volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
     static int32_t sample_index = -1;
@@ -255,14 +263,14 @@ void collect_samples()
     if (sample_index < (SAMPLES_PER_PAGE))
     {
         // this should all happen in under 250 ns.
-        sample_array[sample_index] = read_data_word();
+        sample_array[sample_index] = ADC_Class::read_data_word();
         sample_index++;
     }
     else
     {
         sample_timer.stop();
         notDataReady.disable_irq();
-        power_down();
+        ADC_Class::power_down();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
         clear_terminal();
@@ -277,24 +285,13 @@ void collect_samples()
         wait_ms(750);
 
         sample_index = -1;
-        power_up();
+        ADC_Class::power_up();
         wait_ms(250);
         notDataReady.enable_irq();
     }
 }
 
-void receive_data()
-{
-    // falling edge would be preferred but for some reason only works in rising edge.
-    notDataReady.rise(&collect_samples);
-}
-
-void interrupt_test()
-{
-    inter_flag = 1;
-}
-
-void clear_terminal()
+void ADC_Class::clear_terminal()
 {
     // \014 is form feed, effectively clears the terminal.
     printf("\014");

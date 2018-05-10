@@ -19,48 +19,28 @@
 #define NUMBER_OF_PAGES 1
 #define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
 
-volatile extern int inter_flag;
+extern Timer sample_timer;
 
-//
-// public functions:
-//
-// setup_ADC() configures the ADC by writing to control register 2,
-// and output data rate by writing to register 1. It also sets
-// up the pin modes correctly for the other functions.
-// setup_ADC() must always be called before any other functions.
-void setup_ADC();
+class ADC_Class
+{
+public:
+    ADC_Class();
+    void static setup_ADC();
+    uint16_t static read_status_reg(bool print_to_console);
+    void static receive_data();
+    void static power_down();
+    void static power_up();
+    void static clear_terminal();
+private:
+    uint16_t static control_reg_1_state;
+    uint16_t static control_reg_2_state;
 
-uint16_t read_status_reg(bool print_to_console);
+    uint16_t static read_adc_reg(uint8_t offset);
+    void static write_control_register(uint16_t control_register, uint16_t value);
+    void static wait_4_MCLK_cycles();
+    uint32_t static read_data_word();
+    void static collect_samples();
 
-void receive_data();
+};
 
-void power_down();
-
-void power_up();
-
-void write_control_register(uint16_t control_register, uint16_t value);
-
-//
-// private:
-//
-// offset should be either
-//     11: status register
-//     12: Offset register
-//     13: Gain register
-//     14: Overrange register
-uint16_t read_adc_reg(uint8_t offset);
-
-void wait_4_MCLK_cycles();
-
-void get_LSB();
-
-void get_MSB();
-
-uint32_t read_data_word();
-
-void collect_samples();
-
-void clear_terminal();
-
-void interrupt_test();
 #endif

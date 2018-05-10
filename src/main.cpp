@@ -2,13 +2,16 @@
 
 int main()
 {
-    clear_terminal();
+    ADC_Class adc;
+    UnitTests tests;
+
+    adc.clear_terminal();
     printf("20 samples\n");
 
-    UnitTests tests;
-    setup_ADC();
 
-    receive_data();
+    adc.setup_ADC();
+
+    adc.receive_data();
 
     while(1)
     {
