@@ -24,7 +24,7 @@ public:
     void output();
     void mode(PinMode mode);
     uint16_t read();
-    uint16_t input_detangle(uint16_t raw_input);
+    uint16_t detangle(uint16_t raw_input);
     void write(uint16_t word);
 };
 

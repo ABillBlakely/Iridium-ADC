@@ -58,7 +58,7 @@ uint16_t DataBusClass::read()
     return received;
 }
 
-uint16_t DataBusClass::input_detangle(uint16_t raw_input)
+uint16_t DataBusClass::detangle(uint16_t raw_input)
 {
     uint16_t decoded_word = 0x0000;
 

@@ -1,16 +1,13 @@
 #include "adc.h"
 
-
 Timer sample_timer;
 
 uint16_t ADC_Class::control_reg_1_state = 0x0000;
 uint16_t ADC_Class::control_reg_2_state = 0x0000;
 
-ADC_Class::ADC_Class()
-{
-}
+ADC_Class::ADC_Class(){}
 
-void ADC_Class::setup_ADC()
+void ADC_Class::setup()
 {
 
     notSync = HIGH;
@@ -92,6 +89,10 @@ void ADC_Class::setup_ADC()
     notSync = HIGH;
     notReset = HIGH;
 
+    // configure data ready interrupt but do not start yet.
+    // falling edge would be preferred but for some reason only works in rising edge.
+    notDataReady.disable_irq();
+    notDataReady.rise(ADC_Class::collect_samples);
 }
 
 uint16_t ADC_Class::read_status_reg(bool print_to_console)
@@ -122,10 +123,20 @@ uint16_t ADC_Class::read_status_reg(bool print_to_console)
     return status_reg;
 }
 
-void ADC_Class::receive_data()
+void ADC_Class::start_sampling()
 {
-    // falling edge would be preferred but for some reason only works in rising edge.
-    notDataReady.rise(ADC_Class::collect_samples);
+    ADC_Class::power_up();
+    // worst case filter latency is about 350 us.
+    wait_ms(250);
+    notDataReady.enable_irq();
+}
+
+void ADC_Class::stop_sampling()
+{
+        notDataReady.disable_irq();
+        // Save power, and power down when not being used.
+        ADC_Class::power_down();
+
 }
 
 void ADC_Class::power_down()
@@ -190,7 +201,7 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     notRead = HIGH;
 
     // put the bit from the raw input into the correct order.
-    adc_reg = dataBus.input_detangle(adc_reg);
+    adc_reg = dataBus.detangle(adc_reg);
 
     return adc_reg;
 }
@@ -244,6 +255,7 @@ uint32_t ADC_Class::read_data_word()
     // NOTE: I think these need to be unsigned for this concat to work,
     // but the 32 bit word result is actually a 24 bit signed integer
     // followed by 8 status bits.
+    // return ((dataBus.detangle(MSB_16) << 16) | dataBus.detangle(LSB_16));
     return ((MSB_16 << 16) | LSB_16);
     // return LSB_16;
 }
@@ -273,15 +285,11 @@ void ADC_Class::collect_samples()
         ADC_Class::power_down();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
-        clear_terminal();
-        printf("Begin Data Transfer\n");
         for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
         {
             printf("%08lx\n", sample_array[tx_index]);
         }
         printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sample_timer.read(), NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sample_timer.read());
-        // printf("END Data Transfer\n\n");
-        // clear_terminal();
         wait_ms(750);
 
         sample_index = -1;
