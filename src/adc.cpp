@@ -4,6 +4,7 @@ Timer sample_timer;
 
 uint16_t ADC_Class::control_reg_1_state = 0x0000;
 uint16_t ADC_Class::control_reg_2_state = 0x0000;
+volatile uint16_t busy_wait_variable;
 
 ADC_Class::ADC_Class(){}
 
@@ -43,7 +44,6 @@ void ADC_Class::setup()
     // // Set lowpower mode for improved noise performance.
     control_reg_2_state = (0x0000 | 1 << 2 | 1 << 1);
     dataBus.write(control_reg_2_state);
-    // dataBus.write((0x0000 | 1 << 3 | 1 << 1));
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
@@ -78,8 +78,9 @@ void ADC_Class::setup()
     notChipSelect = HIGH;
     wait_4_MCLK_cycles();
 
+
     // read and print the status register
-    read_status_reg(true);
+    read_status_register(true);
 
     // These might be redundant, but this will
     // guarantee a defined state for all pins.
@@ -89,25 +90,24 @@ void ADC_Class::setup()
     notSync = HIGH;
     notReset = HIGH;
 
-    // configure data ready interrupt but do not start yet.
-    // falling edge would be preferred but for some reason only works in rising edge.
-    notDataReady.disable_irq();
-    notDataReady.rise(ADC_Class::collect_samples);
+    ADC_Class::power_down();
 }
 
-uint16_t ADC_Class::read_status_reg(bool print_to_console)
+uint16_t ADC_Class::read_status_register(bool print_to_console)
 {
     uint16_t status_reg = 0;
 
     // TODO: define register offset macros.
-    status_reg = read_adc_reg(11);
 
+    ADC_Class::power_up();
+    status_reg = read_adc_reg(11);
+    ADC_Class::power_down();
     if (print_to_console)
     {
         // Pretty print the received status register to stdout.
         printf("Status Register\n");
-        printf(" Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | User Filt EN | Byp Filt 3 | Byp Filt 1 | Dec Rate \n");
-        printf("     %d     |    %d    |    %d    |     %d     |       %d       |       %d        |      %d       |      %d     |     %d      |    %d\n\n",
+        printf("| Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | User Filt EN | Byp Filt 3 | Byp Filt 1 | Dec Rate |\n");
+        printf("|     %d     |    %d    |    %d    |     %d     |       %d       |       %d        |      %d       |      %d     |     %d      |    %2d    |\n\n",
                 (status_reg & 0xC000) >> 14, //Part No.
                 (status_reg & 0x3800) >> 11, // Die No.
                 (status_reg & 0x0200) >> 9,  // Low Pwr
@@ -127,7 +127,8 @@ void ADC_Class::start_sampling()
 {
     ADC_Class::power_up();
     // worst case filter latency is about 350 us.
-    wait_ms(250);
+    wait_us(350);
+    notDataReady.rise(ADC_Class::collect_samples);
     notDataReady.enable_irq();
 }
 
@@ -230,7 +231,6 @@ void ADC_Class::wait_4_MCLK_cycles()
     // Calling this function results in a delay of about 100 ns
     // or around 4 cycles of the ADC MCLK at 40 MHz.
     // Without this a high-low-high cycle take about 30 ns ~= 1 MCLK cycle.
-    uint16_t static busy_wait_variable;
     busy_wait_variable = 0;
     busy_wait_variable ++;
 }
@@ -265,37 +265,47 @@ void ADC_Class::collect_samples()
     volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
     static int32_t sample_index = -1;
     uint32_t tx_index;
+    float sampling_time;
 
     if (-1 == sample_index)
     {
+        sample_index++;
         sample_timer.reset();
         sample_timer.start();
     }
 
-    if (sample_index < (SAMPLES_PER_PAGE))
+    if (sample_index < SAMPLES_PER_PAGE)
     {
         // this should all happen in under 250 ns.
         sample_array[sample_index] = ADC_Class::read_data_word();
+        // printf("%08lx\n", ADC_Class::read_data_word());
         sample_index++;
     }
-    else
+
+    if (sample_index >= SAMPLES_PER_PAGE)
     {
         sample_timer.stop();
         notDataReady.disable_irq();
         ADC_Class::power_down();
+        sampling_time = sample_timer.read();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
+        sample_timer.reset();
+        sample_timer.start();
         for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
         {
             printf("%08lx\n", sample_array[tx_index]);
         }
-        printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sample_timer.read(), NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sample_timer.read());
+        sample_timer.stop();
+        printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sampling_time, NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sampling_time);
+        printf("Data transfer took: %f seconds", sample_timer.read());
         wait_ms(750);
+        ADC_Class::clear_terminal();
 
         sample_index = -1;
         ADC_Class::power_up();
-        wait_ms(250);
         notDataReady.enable_irq();
+        // wait_ms(250);
     }
 }
 

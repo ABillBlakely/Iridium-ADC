@@ -12,7 +12,7 @@
 #define LOW 0
 
 
-#define DECIMATION_RATE 0b100
+#define DECIMATION_RATE 0b011
 // Decimation rate table:
 // | Binary | Rate |   BW   | Output Data Rate |
 // |--------|------|--------|------------------|
@@ -24,7 +24,7 @@
 // | 0b101  | 32x  | 31.25k |    78.125 k      |
 
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 10
+#define NUMBER_OF_SAMPLES 1000
 #define NUMBER_OF_PAGES 1
 #define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
 
@@ -35,7 +35,7 @@ class ADC_Class
 public:
     ADC_Class();
     void static setup();
-    uint16_t static read_status_reg(bool print_to_console);
+    uint16_t static read_status_register(bool print_to_console);
     void static start_sampling();
     void static stop_sampling();
     void static power_down();

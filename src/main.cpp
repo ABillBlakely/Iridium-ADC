@@ -5,31 +5,40 @@ char serial_rx_char;
 
 int main()
 {
-    ADC_Class adc;
-    UnitTests tests;
+    usb_serial.baud(115200);
 
-    printf("Dec %d\n", 1<<DECIMATION_RATE);
+    ADC_Class adc;
+    // UnitTests tests;
+    adc.clear_terminal();
+    printf("%d samples, %dx decimation\n", NUMBER_OF_SAMPLES, 1<<DECIMATION_RATE);
     adc.setup();
+
 
     while(1)
     {
-        switch (usb_serial.putc(usb_serial.getc()))
+        switch (usb_serial.getc())
         {
             case 'R':
             case 'r':
             {
-                // Receive samples
-                printf("\n");
-                adc.start_sampling();
+                // Check status register
+                adc.clear_terminal();
+                printf("%d samples, %dx decimation\n", NUMBER_OF_SAMPLES, 1<<DECIMATION_RATE);
+                adc.read_status_register(true);
                 break;
             }
             case 'S':
             case 's':
             {
-                // Setup
+                // Receive samples
                 adc.clear_terminal();
-                adc.setup();
+                adc.start_sampling();
                 break;
+            }
+            case 'T':
+            case 't':
+            {
+                // Stop sampling
             }
             case 'C':
             case 'c':
