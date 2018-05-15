@@ -127,13 +127,16 @@ void ADC_Class::start_sampling()
 {
     ADC_Class::power_up();
     // worst case filter latency is about 350 us.
-    wait_us(350);
+    wait_ms(1);
+    notRead = LOW;
     notDataReady.rise(ADC_Class::collect_samples);
     notDataReady.enable_irq();
+
 }
 
 void ADC_Class::stop_sampling()
 {
+        notRead = HIGH;
         notDataReady.disable_irq();
         // Save power, and power down when not being used.
         ADC_Class::power_down();
@@ -244,9 +247,9 @@ uint32_t ADC_Class::read_data_word()
     notChipSelect = LOW;
     MSB_16 = dataBus.read();
     notChipSelect = HIGH;
-    // notRead = HIGH;
+    notRead = HIGH;
 
-    // notRead = LOW;
+    notRead = LOW;
     notChipSelect = LOW;
     LSB_16 = dataBus.read();
     notChipSelect = HIGH;
@@ -263,16 +266,16 @@ uint32_t ADC_Class::read_data_word()
 void ADC_Class::collect_samples()
 {
     volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
-    static int32_t sample_index = -1;
+    static int32_t sample_index = 0;
     uint32_t tx_index;
     float sampling_time;
 
-    if (-1 == sample_index)
-    {
-        sample_index++;
-        sample_timer.reset();
-        sample_timer.start();
-    }
+    // if (-1 == sample_index)
+    // {
+        // sample_index++;
+        // sample_timer.reset();
+        // sample_timer.start();
+    // }
 
     if (sample_index < SAMPLES_PER_PAGE)
     {
@@ -284,33 +287,33 @@ void ADC_Class::collect_samples()
 
     if (sample_index >= SAMPLES_PER_PAGE)
     {
-        sample_timer.stop();
-        notDataReady.disable_irq();
-        ADC_Class::power_down();
+        // sample_timer.stop();
+        ADC_Class::stop_sampling();
         sampling_time = sample_timer.read();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
-        sample_timer.reset();
-        sample_timer.start();
+        // sample_timer.reset();
+        // sample_timer.start();
+        printf("start\n");
         for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
         {
             printf("%08lx\n", sample_array[tx_index]);
         }
-        sample_timer.stop();
-        printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sampling_time, NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sampling_time);
-        printf("Data transfer took: %f seconds", sample_timer.read());
-        wait_ms(750);
-        ADC_Class::clear_terminal();
+        printf("stop\n");
+        // sample_timer.stop();
 
-        sample_index = -1;
-        ADC_Class::power_up();
-        notDataReady.enable_irq();
-        // wait_ms(250);
+        // printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sampling_time, NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sampling_time);
+        // printf("Data transfer took: %f seconds\n", sample_timer.read());
+        // wait_ms(750);
+        // ADC_Class::clear_terminal();
+
+        sample_index = 0;
+        ADC_Class::start_sampling();
     }
 }
 
 void ADC_Class::clear_terminal()
 {
     // \014 is form feed, effectively clears the terminal.
-    printf("\014");
+    // printf("\014\n");
 }

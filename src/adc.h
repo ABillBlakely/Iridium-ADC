@@ -12,19 +12,20 @@
 #define LOW 0
 
 
-#define DECIMATION_RATE 0b011
+#define DECIMATION_RATE 0x3
 // Decimation rate table:
 // | Binary | Rate |   BW   | Output Data Rate |
 // |--------|------|--------|------------------|
-// | 0b000  |  1x  |   1M   |       2.5 M      |
-// | 0b001  |  2x  |  500k  |      1.25 M      |
-// | 0b010  |  4x  |  250k  |       625 k      |
-// | 0b011  |  8x  |  125k  |     312.5 k      |
-// | 0b100  | 16x  | 62.5k  |    156.25 k      |
-// | 0b101  | 32x  | 31.25k |    78.125 k      |
+// | 0b000  |  1x  |   1M   |       2.5 MSPS   |
+// | 0b001  |  2x  |  500k  |      1.25 MSPS   |
+// | 0b010  |  4x  |  250k  |       625 kSPS   |
+// | 0b011  |  8x  |  125k  |     312.5 kSPS   |
+// | 0b100  | 16x  | 62.5k  |    156.25 kSPS   |
+// | 0b101  | 32x  | 31.25k |    78.125 kSPS   |
 
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 1000
+#define NUMBER_OF_SAMPLES 1024
+// #define NUMBER_OF_SAMPLES 10
 #define NUMBER_OF_PAGES 1
 #define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
 

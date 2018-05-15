@@ -45,7 +45,7 @@ uint16_t DataBusClass::read()
     // efficiently pack the bits into a 16 bit container.
     // bit order is even more messed up than before of course,
     // but that detanglement can be handled on the pc side.
-    uint16_t received = 0x0000;
+    static uint16_t received;
 
     // leave port a value where they are.
     received = dataBusA.read();

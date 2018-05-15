@@ -9,7 +9,7 @@ int main()
 
     ADC_Class adc;
     // UnitTests tests;
-    adc.clear_terminal();
+    // adc.clear_terminal();
     printf("%d samples, %dx decimation\n", NUMBER_OF_SAMPLES, 1<<DECIMATION_RATE);
     adc.setup();
 
