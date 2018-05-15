@@ -210,6 +210,8 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     return adc_reg;
 }
 
+// void ADC_Class::change_decimation_rate(uint16_t multiplier)
+
 void ADC_Class::write_control_register(uint16_t control_register, uint16_t value)
 {
     dataBus.output();

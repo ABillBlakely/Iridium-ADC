@@ -10,7 +10,6 @@ int main()
     ADC_Class adc;
     // UnitTests tests;
     // adc.clear_terminal();
-    printf("%d samples, %dx decimation\n", NUMBER_OF_SAMPLES, 1<<DECIMATION_RATE);
     adc.setup();
 
 
@@ -23,7 +22,7 @@ int main()
             {
                 // Check status register
                 adc.clear_terminal();
-                printf("%d samples, %dx decimation\n", NUMBER_OF_SAMPLES, 1<<DECIMATION_RATE);
+                // printf("%d samples, %dx decimation\n", NUMBER_OF_SAMPLES, 1<<DECIMATION_RATE);
                 adc.read_status_register(true);
                 break;
             }

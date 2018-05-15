@@ -8,6 +8,4 @@
 
 int main();
 
-void ISRtest();
-
 #endif

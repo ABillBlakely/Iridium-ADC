@@ -28,6 +28,16 @@ class SerialComms():
     ser.timeout = 0.005
     ser.port = 'COM5'
 
+    number_of_samples = 1024
+    sample_rate = 312500
+    decimation_to_sample_rate_map = {'1' :2500000,
+                                         '2' :1250000,
+                                         '4' : 625000,
+                                         '8' : 312500,
+                                         '16': 156250,
+                                         '32':  78125,
+                                         }
+
     acq_running = False
     decode_running = False
     accumulated_status = '0b00000000'
@@ -42,25 +52,23 @@ class SerialComms():
 
     def status(self):
         '''Get the status register
-        Calling this will also pick out the decimation rate.'''
+        Calling this will also pick out the decimation rate and update the
+        sample rate.'''
 
         # Consume anything in the input buffer.
         self.sio.read()
 
         # Write control signal
         self.write('R')
-        status_table = [self.sio.readline().strip() for kk in range(5)]
+
+        status_table = [self.sio.readline().strip() for kk in range(3)]
         self.decimation_rate = status_table[-1][-10:].strip('| ')
+        self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
         return status_table
 
     def start_sampling(self):
         '''Get the adc to start sampling.'''
         self.write('S')
-        # sleep(0.1)
-        # self.acquisition_proc = Process(target=ser_test.acquisition_loop, args=(ser_test,))
-        # self.decode_proc = Process(target=ser_test.decode_loop, args=(ser_test,))
-        # self.acquisition_proc.start()
-        # self.decode_proc.start()
 
     def write(self, signal):
         '''Send a control signal'''
@@ -133,9 +141,9 @@ class SerialComms():
                 self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement
-                    untangled_buffer.append((int(untangled_string[0:-8], BIN) - (1<<24)) * 0.5 * 4.096 / 2**23)
+                    untangled_buffer.append((int(untangled_string[0:-8], BIN) - (1<<24)) * 4.096 / 2**23)
                 else:
-                    untangled_buffer.append((int(untangled_string[1:-8], BIN)) * 0.5 * 4.096 / 2**23)
+                    untangled_buffer.append((int(untangled_string[1:-8], BIN)) * 4.096 / 2**23)
 
             self.decoded_data_queue.append(untangled_buffer)
             self.decode_running = False

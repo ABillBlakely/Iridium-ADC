@@ -12,7 +12,7 @@
 #define LOW 0
 
 
-#define DECIMATION_RATE 0x3
+#define DECIMATION_RATE 0x5
 // Decimation rate table:
 // | Binary | Rate |   BW   | Output Data Rate |
 // |--------|------|--------|------------------|
