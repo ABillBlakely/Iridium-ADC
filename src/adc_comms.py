@@ -21,34 +21,37 @@ data_buffer = []
 
 class SerialComms():
     ser = serial.Serial()
-    ser.baudrate = 115200
+    ser.baudrate = 2000000
     ser.bytesize = serial.EIGHTBITS
     ser.parity = serial.PARITY_NONE
     ser.stopbits = serial.STOPBITS_ONE
-    ser.timeout = 0.005
-    ser.port = 'COM5'
+    ser.timeout = 0.1
+    ser.port = 'COM1'
 
     number_of_samples = 1024
     sample_rate = 312500
     decimation_to_sample_rate_map = {'1' :2500000,
-                                         '2' :1250000,
-                                         '4' : 625000,
-                                         '8' : 312500,
-                                         '16': 156250,
-                                         '32':  78125,
-                                         }
+                                     '2' :1250000,
+                                     '4' : 625000,
+                                     '8' : 312500,
+                                     '16': 156250,
+                                     '32':  78125,
+                                     '': 0,
+                                     }
 
     acq_running = False
     decode_running = False
+    stop_loops = False
     accumulated_status = '0b00000000'
-    decimation_rate = 0
+    decimation_rate = '32'
 
     def __init__(self):
         self.input_data_queue = deque(maxlen=1)
         self.decoded_data_queue = deque(maxlen=1)
         self.ser.open()
-        self.sio = io.TextIOWrapper(io.BufferedRWPair(self.ser, self.ser), encoding='ascii')
+        self.sio = io.TextIOWrapper(io.BufferedRWPair(self.ser, self.ser), encoding='utf-8')
         self.reset()
+        self.setup()
 
     def status(self):
         '''Get the status register
@@ -57,13 +60,13 @@ class SerialComms():
 
         # Consume anything in the input buffer.
         self.sio.read()
-
         # Write control signal
         self.write('R')
 
         status_table = [self.sio.readline().strip() for kk in range(3)]
+        print(status_table)
         self.decimation_rate = status_table[-1][-10:].strip('| ')
-        self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
+        # self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
         return status_table
 
     def start_sampling(self):
@@ -86,12 +89,17 @@ class SerialComms():
 
     def reset(self):
         self.ser.send_break()
-        # sleep(0.1)
+        sleep(0.1)
+
+    def setup(self):
+        self.write('P')
 
     def acquisition_loop(self):
+        if self.stop_loops:
+            return
         if self.acq_running:
             return
-
+        self.start_sampling()
         self.acq_running = True
 
         data_buffer = []
@@ -102,6 +110,8 @@ class SerialComms():
             if 'start' in cur_line:
                 cur_line = self.readline()
                 while ('stop' not in cur_line):
+                    if self.stop_loops:
+                        return
                     try:
                         # print(cur_line)
                         data_buffer.append(int(cur_line, HEX));
@@ -118,6 +128,8 @@ class SerialComms():
         return
 
     def decode_loop(self):
+        if self.stop_loops:
+            return
         if self.decode_running:
             return
         self.decode_running = True
@@ -152,26 +164,42 @@ class SerialComms():
             self.decode_running = False
             pass
 
+    def change_decimation_rate(self, rate):
+        self.stop_loops = True
+        sleep(0.1)
+        self.reset()
+        self.setup()
+        self.write('D'+ rate)
+        self.stop_loops = False
+
 if __name__ == '__main__':
     from time import sleep
 
     ser_test = SerialComms()
 
     ser_test.reset()
-
+    ser_test.setup()
     print('\n'.join(ser_test.status()))
     print(ser_test.decimation_rate)
-    # sleep(0.5)
 
     ser_test.start_sampling()
 
-    for kk in range(200):
-        try:
-            ser_test.acquisition_loop()
-            ser_test.decode_loop()
-            print(ser_test.decoded_data_queue.pop()[:5])
-        except IndexError:
-            print("data queue empty")
+    ser_test.acquisition_loop()
+    # ser_test.write('t')
+    ser_test.start_sampling()
+    ser_test.acquisition_loop()
+    # ser_test.write('t')
+    ser_test.start_sampling()
+    ser_test.acquisition_loop()
+    # ser_test.write('t')
+
+    # for kk in range(200):
+    #     try:
+    #         ser_test.acquisition_loop()
+    #         ser_test.decode_loop()
+    #         print(ser_test.decoded_data_queue.pop()[:5])
+    #     except IndexError:
+    #         print("data queue empty")
 
     # ser_test.reset()
     # print('\n'.join(ser_test.status()))

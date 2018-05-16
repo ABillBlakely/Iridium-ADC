@@ -1,16 +1,16 @@
 #include "adc.h"
 
-Timer sample_timer;
-
 uint16_t ADC_Class::control_reg_1_state = 0x0000;
 uint16_t ADC_Class::control_reg_2_state = 0x0000;
 volatile uint16_t busy_wait_variable;
 
-ADC_Class::ADC_Class(){}
+ADC_Class adc;
+volatile uint32_t sample_array[SAMPLES_PER_PAGE];
+volatile int data_ready = 0;
 
-void ADC_Class::setup()
+ADC_Class::ADC_Class()
 {
-
+    dataBus.input();
     notSync = HIGH;
     notReset = HIGH;
     notChipSelect = HIGH;
@@ -21,18 +21,17 @@ void ADC_Class::setup()
     wait_4_MCLK_cycles();
     notReset = HIGH;
     wait_4_MCLK_cycles();
+    power_down();
+}
+
+void ADC_Class::setup()
+{
 
     // configure pins for write operations.
     // dataBus is bi directional.
     dataBus.output();
 
-    // // Select control register 2:
-    dataBus.write(0x0002);
-    notChipSelect = LOW;
-    wait_4_MCLK_cycles();
-    notChipSelect = HIGH;
-    wait_4_MCLK_cycles();
-
+    // Control Register 2
     // // BIT | NAME  | DESCRIPTION
     // // ----|------ |-------------
     // //  5  | ~CDIV | Clock Divider Bit. This sets the divide ratio of the MCLK signal to produce the internal ICLK. Setting CDIV = 0 divides the MCLK by 2. If CDIV = 1, the ICLK frequency is equal to the MCLK.
@@ -43,18 +42,9 @@ void ADC_Class::setup()
 
     // // Set lowpower mode for improved noise performance.
     control_reg_2_state = (0x0000 | 1 << 2 | 1 << 1);
-    dataBus.write(control_reg_2_state);
-    notChipSelect = LOW;
-    wait_4_MCLK_cycles();
-    notChipSelect = HIGH;
+    write_control_register(0x0002, control_reg_2_state);
 
-    // Control Register 1:
-    dataBus.write(0x0001);
-    notChipSelect = LOW;
-    wait_4_MCLK_cycles();
-    notChipSelect = HIGH;
-    wait_4_MCLK_cycles();
-
+   // Control Register 1:
     // | BIT    | NAME      | DESCRIPTION
     // | 15     | DL_FILT   | Download Filter. Before downloading a user-defined filter, this bit must be set. The filter length bits must also be set at this time. The write operations that follow are interpreted as the user coefficients for the FIR filter until all the coefficients and the checksum have been written.
     // | 14     | RD_OVR    | 2 Read Overrange. If this bit has been set, the next read operation outputs the contents of the overrange threshold register instead of a conversion result.
@@ -71,16 +61,8 @@ void ADC_Class::setup()
     // Set for 2.5MHZ output data rate (enable Filt 1 & 3, No Decimation).
     // In testing a lower rate may be required, and 0b11 == 3 should be included
     // to enable 8x decimation, lowering data rate to 312.5 kHz.
-    control_reg_1_state = (0x0000 | 1<<4 | 1<<3 | DECIMATION_RATE);
-    dataBus.write(control_reg_1_state);
-    notChipSelect = LOW;
-    wait_4_MCLK_cycles();
-    notChipSelect = HIGH;
-    wait_4_MCLK_cycles();
-
-
-    // read and print the status register
-    read_status_register(true);
+    control_reg_1_state = (0x0000 | 1<<4 | 1<<3 | DEFAULT_DECIMATION_RATE);
+    write_control_register(0x0001, control_reg_1_state);
 
     // These might be redundant, but this will
     // guarantee a defined state for all pins.
@@ -90,7 +72,7 @@ void ADC_Class::setup()
     notSync = HIGH;
     notReset = HIGH;
 
-    ADC_Class::power_down();
+    power_down();
 }
 
 uint16_t ADC_Class::read_status_register(bool print_to_console)
@@ -99,15 +81,15 @@ uint16_t ADC_Class::read_status_register(bool print_to_console)
 
     // TODO: define register offset macros.
 
-    ADC_Class::power_up();
+    power_up();
     status_reg = read_adc_reg(11);
-    ADC_Class::power_down();
+    power_down();
     if (print_to_console)
     {
         // Pretty print the received status register to stdout.
         printf("Status Register\n");
         printf("| Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | User Filt EN | Byp Filt 3 | Byp Filt 1 | Dec Rate |\n");
-        printf("|     %d     |    %d    |    %d    |     %d     |       %d       |       %d        |      %d       |      %d     |     %d      |    %2d    |\n\n",
+        printf("|     %d     |    %d    |    %d    |     %d     |       %d       |       %d        |      %d       |      %d     |     %d      |    %2d    |\n",
                 (status_reg & 0xC000) >> 14, //Part No.
                 (status_reg & 0x3800) >> 11, // Die No.
                 (status_reg & 0x0200) >> 9,  // Low Pwr
@@ -125,22 +107,18 @@ uint16_t ADC_Class::read_status_register(bool print_to_console)
 
 void ADC_Class::start_sampling()
 {
-    ADC_Class::power_up();
+    power_up();
     // worst case filter latency is about 350 us.
     wait_ms(1);
-    notRead = LOW;
-    notDataReady.rise(ADC_Class::collect_samples);
+    notDataReady.rise(&collect_samples);
     notDataReady.enable_irq();
-
 }
 
 void ADC_Class::stop_sampling()
 {
-        notRead = HIGH;
         notDataReady.disable_irq();
         // Save power, and power down when not being used.
-        ADC_Class::power_down();
-
+        power_down();
 }
 
 void ADC_Class::power_down()
@@ -153,7 +131,13 @@ void ADC_Class::power_up()
     write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
 }
 
-
+void ADC_Class::change_decimation_rate(int multiplier)
+{
+    power_up();
+    control_reg_1_state = ((control_reg_1_state & 0xFFF8) | multiplier);
+    write_control_register(0x0001, control_reg_1_state);
+    power_down();
+}
 
 uint16_t ADC_Class::read_adc_reg(uint8_t offset)
 {
@@ -210,8 +194,6 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     return adc_reg;
 }
 
-// void ADC_Class::change_decimation_rate(uint16_t multiplier)
-
 void ADC_Class::write_control_register(uint16_t control_register, uint16_t value)
 {
     dataBus.output();
@@ -267,10 +249,7 @@ uint32_t ADC_Class::read_data_word()
 
 void ADC_Class::collect_samples()
 {
-    volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
     static int32_t sample_index = 0;
-    uint32_t tx_index;
-    float sampling_time;
 
     // if (-1 == sample_index)
     // {
@@ -289,33 +268,8 @@ void ADC_Class::collect_samples()
 
     if (sample_index >= SAMPLES_PER_PAGE)
     {
-        // sample_timer.stop();
-        ADC_Class::stop_sampling();
-        sampling_time = sample_timer.read();
-        // Need to trigger the data transfer
-        // and reset the sample_index variable.
-        // sample_timer.reset();
-        // sample_timer.start();
-        printf("start\n");
-        for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
-        {
-            printf("%08lx\n", sample_array[tx_index]);
-        }
-        printf("stop\n");
-        // sample_timer.stop();
-
-        // printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sampling_time, NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sampling_time);
-        // printf("Data transfer took: %f seconds\n", sample_timer.read());
-        // wait_ms(750);
-        // ADC_Class::clear_terminal();
-
+        stop_sampling();
         sample_index = 0;
-        ADC_Class::start_sampling();
+        data_ready = 1;
     }
-}
-
-void ADC_Class::clear_terminal()
-{
-    // \014 is form feed, effectively clears the terminal.
-    // printf("\014\n");
 }

@@ -15,6 +15,8 @@ import numpy as np
 
 adc = SerialComms()
 
+adc.reset()
+adc.setup()
 # Get and format the status register for markdown display.
 status_reg_f = "\n\t" + "\n\t".join(adc.status())
 
@@ -27,7 +29,7 @@ sample_index = [0]
 freq_mag = [1e-12]
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 50
+update_period_ms = 500
 
 window_map = {'rect': 1,
               'blackman': np.blackman(adc.number_of_samples),
@@ -38,32 +40,46 @@ app.layout = html.Div(id = 'Body',
     children=
         [
             html.H1("Iridium ADC", id='title'),
-            dcc.Markdown(status_reg_f, id='text-box'),
+            dcc.Markdown(id='status-register', children=status_reg_f),
             html.Div(id='accumulated-status'),
             html.Button('Toggle Graph Update', id='graph-update-button'),
+            html.Label('Decimation Rate Selection:'),
+            dcc.RadioItems(id='decimation-rate',
+                           options=[
+                                {'label':'1', 'value': '0'},
+                                {'label':'2', 'value': '1'},
+                                {'label':'4', 'value': '2'},
+                                {'label':'8', 'value': '3'},
+                                {'label':'16', 'value': '4'},
+                                {'label':'32', 'value': '5'},
+                                ],
+                           value='5',
+                          ),
             dcc.Graph(id='time-domain-graph'),
             dcc.Graph(id='freq-domain-graph'),
-            html.Div([
+            html.Div([html.Label('FFT length (zero padding)'),
                       dcc.RadioItems(id='fft-length',
-                                   options=[
-                                      {'label': '1024', 'value': 1024},
-                                      {'label': '4096', 'value': 4096},
-                                      {'label': '8192', 'value': 8192},
-                                      {'label': '16384', 'value': 16384},
-                                      {'label': '32768', 'value': 32768},
-                                      {'label': '65536', 'value': 65536},
-                                      {'label': '131072', 'value': 131072},
-                                      ],
-                                   value=1024,
-                                  ),
+                                     options=[
+                                         {'label': '1024', 'value': 1024},
+                                         {'label': '4096', 'value': 4096},
+                                         {'label': '8192', 'value': 8192},
+                                         {'label': '16384', 'value': 16384},
+                                         {'label': '32768', 'value': 32768},
+                                         {'label': '65536', 'value': 65536},
+                                         {'label': '131072', 'value': 131072},
+                                         ],
+                                     value=1024,
+                                    ),
+                      html.Label('Window Function'),
                       dcc.RadioItems(id='window-functions',
-                                   options=[
-                                      {'label':'Rect', 'value':'rect'},
-                                      {'label':'Blackman', 'value':'blackman'},
-                                      {'label':'Kaiser 7', 'value':'kaiser7'},
-                                      ],
-                                    value='kaiser7'),
-                      ],
+                                     options=[
+                                         {'label':'Rect', 'value':'rect'},
+                                         {'label':'Blackman', 'value':'blackman'},
+                                         {'label':'Kaiser 7', 'value':'kaiser7'},
+                                         ],
+                                     value='kaiser7'
+                                    ),
+                     ],
                      id='fft-options-div',
                      style={'columnCount':2},),
             dcc.Interval(id='update-timer', interval=update_period_ms, n_intervals=0),
@@ -72,6 +88,14 @@ app.layout = html.Div(id = 'Body',
                      style={'display': 'none'}
                      ),
         ])
+
+@app.callback(
+    dd.Output('status-register', 'children'),
+    [dd.Input('decimation-rate', 'value')])
+def change_decimation_rate(rate):
+    adc.change_decimation_rate(rate)
+    return "\n\t" + "\n\t".join(adc.status())
+
 
 @app.callback(
     dd.Output('accumulated-status', 'children'),
