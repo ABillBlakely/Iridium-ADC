@@ -1,10 +1,10 @@
 #include "adc.h"
 
-Timer sample_timer;
 
 uint16_t ADC_Class::control_reg_1_state = 0x0000;
 uint16_t ADC_Class::control_reg_2_state = 0x0000;
 volatile uint16_t busy_wait_variable;
+Serial usb_serial(USBTX, USBRX);
 
 ADC_Class::ADC_Class(){}
 
@@ -269,8 +269,8 @@ void ADC_Class::collect_samples()
 {
     volatile static uint32_t sample_array[SAMPLES_PER_PAGE];
     static int32_t sample_index = 0;
-    uint32_t tx_index;
-    float sampling_time;
+    static int32_t tx_index;
+    // float sampling_time;
 
     // if (-1 == sample_index)
     // {
@@ -291,17 +291,48 @@ void ADC_Class::collect_samples()
     {
         // sample_timer.stop();
         ADC_Class::stop_sampling();
-        sampling_time = sample_timer.read();
+        // sampling_time = sample_timer.read();
         // Need to trigger the data transfer
         // and reset the sample_index variable.
         // sample_timer.reset();
         // sample_timer.start();
+
         printf("start\n");
-        for(tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
+        for(tx_index = 0; tx_index > SAMPLES_PER_PAGE; tx_index++)
         {
-            printf("%08lx\n", sample_array[tx_index]);
+            switch (usb_serial.getc())
+            {
+                case 'B':
+                case 'b':
+                {
+                    tx_index--;
+                    // fallthrough to case N
+                }
+                case 'N':
+                case 'n':
+                {
+                    if (tx_index < 0)
+                    {
+                        printf("start\n");
+                    }
+                    else if (tx_index == SAMPLES_PER_PAGE)
+                    {
+
+                        printf("stop\n");
+                    }
+                    else
+                    {
+                        printf("%08lx\n", sample_array[tx_index]);
+                    }
+                    break;
+                }
+                default:
+                {
+                }
+
+            }
+
         }
-        printf("stop\n");
         // sample_timer.stop();
 
         // printf("Sampling took: \n\t%f seconds \n\t%d samples \n\t%f SPS.\n", sampling_time, NUMBER_OF_SAMPLES, NUMBER_OF_SAMPLES/sampling_time);

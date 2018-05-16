@@ -21,7 +21,7 @@ data_buffer = []
 
 class SerialComms():
     ser = serial.Serial()
-    ser.baudrate = 115200
+    ser.baudrate = 2000000
     ser.bytesize = serial.EIGHTBITS
     ser.parity = serial.PARITY_NONE
     ser.stopbits = serial.STOPBITS_ONE
@@ -79,7 +79,7 @@ class SerialComms():
         '''Read a line from the buffer. This differs from
         read_sample because it does not attemp to converto to an int.'''
         # return self.ser.readline().decode('ascii').strip('\n')
-        return self.sio.readline()
+        return self.sio.readline().strip()
     def read_sample(self):
         '''read a sample'''
         return int(readline(), HEX)
@@ -96,23 +96,35 @@ class SerialComms():
 
         data_buffer = []
         '''Loop that waits for start, collects all the samples and stores result.'''
-        for nn in range(5000):
-            # find the start of the data
+        for nn in range(self.number_of_samples):
+            # request start:
+            self.write('B')
             cur_line = self.readline()
-            if 'start' in cur_line:
-                cur_line = self.readline()
-                while ('stop' not in cur_line):
-                    try:
-                        # print(cur_line)
+            print(cur_line)
+            if cur_line == 'start':
+                # This is Good.
+                self.write('N')
+                for xx in range(100000):
+                    if cur_line == 'stop':
+                        print(cur_line)
+                        self.input_data_queue.append(data_buffer)
+                        print(data_buffer[:5])
+                        self.acq_running = False
+                        return
+                    elif cur_line != '' and cur_line != 'start':
+                        print(cur_line)
                         data_buffer.append(int(cur_line, HEX));
-                    except ValueError:
-                        print('ACQ ERROR: raw line == "{}"'.format(cur_line))
-                    cur_line = self.readline()
+                        self.write('N')
+                        cur_line = self.readline()
+                    else:
+                        cur_line = self.readline()
 
-                # print(cur_line)
-                self.input_data_queue.append(data_buffer)
-                self.acq_running = False
-                return
+                        # if (len(cur_line) == 8 or len(cur_line) == 4):
+                        # else:
+                            # Request retransmission
+                            # self.write('B')
+                            # cur_line = self.readline()
+
         print('ERROR: start not found')
         self.acq_running = False
         return
@@ -165,11 +177,11 @@ if __name__ == '__main__':
 
     ser_test.start_sampling()
 
-    for kk in range(200):
+    for kk in range(20):
         try:
             ser_test.acquisition_loop()
-            ser_test.decode_loop()
-            print(ser_test.decoded_data_queue.pop()[:5])
+            # ser_test.decode_loop()
+            # print(ser_test.decoded_data_queue.pop()[:5])
         except IndexError:
             print("data queue empty")
 

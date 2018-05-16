@@ -27,7 +27,7 @@ sample_index = [0]
 freq_mag = [1e-12]
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 50
+update_period_ms = 500
 
 window_map = {'rect': 1,
               'blackman': np.blackman(adc.number_of_samples),
@@ -155,7 +155,8 @@ def freq_domain_update(n_intervals, fft_length, window):
                       'name': 'freq domain'}],
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Sample Index',
-                                 # 'range': [0, 2*13]
+                                 'type': 'log',
+                                 'range': np.log10([10, adc.sample_rate/2])
                                  },
                        'yaxis': {'title': 'Magnitude [dB]',
                                  'range': [-150, 10]

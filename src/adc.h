@@ -12,7 +12,7 @@
 #define LOW 0
 
 
-#define DECIMATION_RATE 0x5
+#define DECIMATION_RATE 0x3
 // Decimation rate table:
 // | Binary | Rate |   BW   | Output Data Rate |
 // |--------|------|--------|------------------|
@@ -30,6 +30,7 @@
 #define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
 
 extern Timer sample_timer;
+extern Serial usb_serial;
 
 class ADC_Class
 {

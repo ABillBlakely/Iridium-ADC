@@ -1,11 +1,10 @@
 #include "main.h"
 
-Serial usb_serial(USBTX, USBRX);
 char serial_rx_char;
 
 int main()
 {
-    usb_serial.baud(115200);
+    usb_serial.baud(2000000);
 
     ADC_Class adc;
     // UnitTests tests;
