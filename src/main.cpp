@@ -2,7 +2,7 @@
 
 int main()
 {
-    usb_serial.baud(115200);
+    usb_serial.baud(2000000);
     usb_serial.attach(&control_signals);
 
     while(1)

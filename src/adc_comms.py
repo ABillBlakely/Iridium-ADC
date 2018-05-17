@@ -21,7 +21,7 @@ data_buffer = []
 
 class SerialComms():
     ser = serial.Serial()
-    ser.baudrate = 115200
+    ser.baudrate = 2000000
     ser.bytesize = serial.EIGHTBITS
     ser.parity = serial.PARITY_NONE
     ser.stopbits = serial.STOPBITS_ONE
@@ -64,7 +64,6 @@ class SerialComms():
         self.write('R')
 
         status_table = [self.sio.readline().strip() for kk in range(3)]
-        print(status_table)
         self.decimation_rate = status_table[-1][-10:].strip('| ')
         # self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
         return status_table
@@ -108,7 +107,6 @@ class SerialComms():
             # find the start of the data
             cur_line = self.readline()
             if 'start' in cur_line:
-                print(cur_line)
                 cur_line = self.readline()
                 while ('stop' not in cur_line):
                     if self.stop_loops:
@@ -118,7 +116,6 @@ class SerialComms():
                     except ValueError:
                         print('ACQ ERROR: raw line == "{}"'.format(cur_line))
                     cur_line = self.readline()
-                print(cur_line)
                 self.input_data_queue.append(data_buffer)
                 self.acq_running = False
                 return
@@ -187,9 +184,7 @@ if __name__ == '__main__':
     for xx in range(10):
         ser_test.acquisition_loop()
         ser_test.decode_loop()
-        # for datum in ser_test.decoded_data_queue.popleft():
-            # print(datum)
-
+        print(len(ser_test.decoded_data_queue.popleft()))
     # for kk in range(200):
     #     try:
     #         ser_test.acquisition_loop()

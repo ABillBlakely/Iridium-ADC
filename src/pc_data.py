@@ -1,3 +1,4 @@
+import logging
 import serial
 import io
 import dash
@@ -118,7 +119,7 @@ def toggle_graph_update(n_clicks):
 @app.callback(
     dd.Output('graph-update-button', 'children'),
     [dd.Input('graph-update-button', 'n_clicks')])
-def toggle_graph_update(n_clicks):
+def update_graph_button(n_clicks):
     if (n_clicks is None) or (n_clicks % 2 == 0):
         return 'Graph updates are ON'
     else:
@@ -127,7 +128,7 @@ def toggle_graph_update(n_clicks):
 @app.callback(
     dd.Output('title', 'children'),
     [dd.Input('update-timer', 'n_intervals')])
-def time_domain_update(n_intervals):
+def acquire_data(n_intervals):
     adc.acquisition_loop()
     adc.decode_loop()
     return 'Iridium ADC'
@@ -191,4 +192,6 @@ def freq_domain_update(n_intervals, fft_length, window):
            }
 
 if __name__ == '__main__':
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
     app.run_server(debug=False)
