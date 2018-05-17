@@ -109,16 +109,16 @@ void ADC_Class::start_sampling()
 {
     power_up();
     // worst case filter latency is about 350 us.
-    wait_ms(1);
+    wait_ms(50);
     notDataReady.rise(&collect_samples);
     notDataReady.enable_irq();
 }
 
 void ADC_Class::stop_sampling()
 {
-        notDataReady.disable_irq();
-        // Save power, and power down when not being used.
-        power_down();
+    notDataReady.disable_irq();
+    // Save power, and power down when not being used.
+    power_down();
 }
 
 void ADC_Class::power_down()
@@ -149,11 +149,6 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     dataBus.output();
 
     // write to Control Register 1.
-    dataBus.write(0x0001);
-    notChipSelect = LOW;
-    wait_4_MCLK_cycles();
-    notChipSelect = HIGH;
-    wait_4_MCLK_cycles();
 
     // | BIT    | NAME      | DESCRIPTION
     // | 15     | DL_FILT   | Download Filter. Before downloading a user-defined filter, this bit must be set. The filter length bits must also be set at this time. The write operations that follow are interpreted as the user coefficients for the FIR filter until all the coefficients and the checksum have been written.
@@ -171,7 +166,7 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     // Set for 1MHZ output data rate and to read the status register.
 
     // Set the particular read status bit. Should be 11, 12, 13, or 14.
-    dataBus.write(control_reg_1_state | 1 << offset);
+    write_control_register(0x0001, control_reg_1_state | 1 << offset);
 
     notChipSelect = LOW;
     wait_4_MCLK_cycles();

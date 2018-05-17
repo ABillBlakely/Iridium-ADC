@@ -35,7 +35,7 @@ void control_signals()
         {
             // Stop sampling
             abort_transfer = 1;
-            // adc.stop_sampling();
+            adc.stop_sampling();
             break;
         }
         case 'D':

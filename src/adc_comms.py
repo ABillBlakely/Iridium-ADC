@@ -21,15 +21,15 @@ data_buffer = []
 
 class SerialComms():
     ser = serial.Serial()
-    ser.baudrate = 2000000
+    ser.baudrate = 115200
     ser.bytesize = serial.EIGHTBITS
     ser.parity = serial.PARITY_NONE
     ser.stopbits = serial.STOPBITS_ONE
-    ser.timeout = 0.1
-    ser.port = 'COM1'
+    ser.timeout = 0.5
+    ser.port = 'COM5'
 
     number_of_samples = 1024
-    sample_rate = 312500
+    sample_rate = 78125
     decimation_to_sample_rate_map = {'1' :2500000,
                                      '2' :1250000,
                                      '4' : 625000,
@@ -81,26 +81,26 @@ class SerialComms():
     def readline(self):
         '''Read a line from the buffer. This differs from
         read_sample because it does not attemp to converto to an int.'''
-        # return self.ser.readline().decode('ascii').strip('\n')
-        return self.sio.readline()
+        return self.sio.readline().strip()
+
     def read_sample(self):
         '''read a sample'''
         return int(readline(), HEX)
 
     def reset(self):
-        self.ser.send_break()
+        self.ser.send_break(0.5)
         sleep(0.1)
 
     def setup(self):
         self.write('P')
 
     def acquisition_loop(self):
-        if self.stop_loops:
+        if self.stop_loops or self.acq_running:
             return
-        if self.acq_running:
-            return
-        self.start_sampling()
+
         self.acq_running = True
+
+        self.start_sampling()
 
         data_buffer = []
         '''Loop that waits for start, collects all the samples and stores result.'''
@@ -108,18 +108,17 @@ class SerialComms():
             # find the start of the data
             cur_line = self.readline()
             if 'start' in cur_line:
+                print(cur_line)
                 cur_line = self.readline()
                 while ('stop' not in cur_line):
                     if self.stop_loops:
                         return
                     try:
-                        # print(cur_line)
                         data_buffer.append(int(cur_line, HEX));
                     except ValueError:
                         print('ACQ ERROR: raw line == "{}"'.format(cur_line))
                     cur_line = self.readline()
-
-                # print(cur_line)
+                print(cur_line)
                 self.input_data_queue.append(data_buffer)
                 self.acq_running = False
                 return
@@ -144,6 +143,7 @@ class SerialComms():
                 #         Bit: | 15 | 14 | 13 | 12 | 11 | 10 |  9 |  8 |  7 |  6 |  5 |  4 |  3 |  2 |  1 |  0 |
                 # Pos in Word: | 15 |  5 |  7 |  6 |  0 |  1 |  4 |  2 | 10 |  8 |  9 | 11 | 12 | 13 | 14 |  3 |
                 #  Pos in Str: |  0 | 10 |  8 |  9 | 15 | 14 | 11 | 13 |  5 |  7 |  6 |  4 |  3 |  2 |  1 | 12 |
+
                 # Reorder Bits:        8       7       6       5       4       3      2      1      0
                 untangled_string = (  T[0]  + T[10] + T[8]  + T[9]  + T[15] + T[14] + T[11] + T[13]
                                     + T[5]  + T[7]  + T[6]  + T[4]  + T[3]  + T[2]  + T[1]  + T[12]
@@ -153,10 +153,10 @@ class SerialComms():
                 self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement
-                    untangled_buffer.append((int(untangled_string[0:-8], BIN) - (1<<24)) * 4.096 / 2**23)
+                    untangled_buffer.append((int(untangled_string[0:-8], BIN) - (1<<24)) / 2**23)
                 else:
-                    untangled_buffer.append((int(untangled_string[1:-8], BIN)) * 4.096 / 2**23)
-
+                    untangled_buffer.append((int(untangled_string[1:-8], BIN)) / 2**23)
+                # print(f'{untangled_buffer[-1]}')
             self.decoded_data_queue.append(untangled_buffer)
             self.decode_running = False
         except IndexError:
@@ -166,10 +166,10 @@ class SerialComms():
 
     def change_decimation_rate(self, rate):
         self.stop_loops = True
-        sleep(0.1)
+        sleep(0.5)
         self.reset()
         self.setup()
-        self.write('D'+ rate)
+        self.write('D' + rate)
         self.stop_loops = False
 
 if __name__ == '__main__':
@@ -184,14 +184,11 @@ if __name__ == '__main__':
 
     ser_test.start_sampling()
 
-    ser_test.acquisition_loop()
-    # ser_test.write('t')
-    ser_test.start_sampling()
-    ser_test.acquisition_loop()
-    # ser_test.write('t')
-    ser_test.start_sampling()
-    ser_test.acquisition_loop()
-    # ser_test.write('t')
+    for xx in range(10):
+        ser_test.acquisition_loop()
+        ser_test.decode_loop()
+        # for datum in ser_test.decoded_data_queue.popleft():
+            # print(datum)
 
     # for kk in range(200):
     #     try:

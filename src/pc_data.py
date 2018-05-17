@@ -29,7 +29,7 @@ sample_index = [0]
 freq_mag = [1e-12]
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 500
+update_period_ms = 250
 
 window_map = {'rect': 1,
               'blackman': np.blackman(adc.number_of_samples),
@@ -93,8 +93,9 @@ app.layout = html.Div(id = 'Body',
     dd.Output('status-register', 'children'),
     [dd.Input('decimation-rate', 'value')])
 def change_decimation_rate(rate):
-    adc.change_decimation_rate(rate)
-    return "\n\t" + "\n\t".join(adc.status())
+    pass
+    # adc.change_decimation_rate(rate)
+    # return "\n\t" + "\n\t".join(adc.status())
 
 
 @app.callback(
@@ -111,8 +112,8 @@ def toggle_graph_update(n_clicks):
         return update_period_ms
     else:
         # Setting disable is not working so instead just set a rediculously long
-        # interval. In this case about 11 days.
-        return 10e8
+        # interval. In this case about 317 years.
+        return 10e12
 
 @app.callback(
     dd.Output('graph-update-button', 'children'),
@@ -128,6 +129,7 @@ def toggle_graph_update(n_clicks):
     [dd.Input('update-timer', 'n_intervals')])
 def time_domain_update(n_intervals):
     adc.acquisition_loop()
+    adc.decode_loop()
     return 'Iridium ADC'
 
 @app.callback(
@@ -137,10 +139,11 @@ def time_domain_update(n_intervals):
     global magnitude
     global sample_index
     try:
-        adc.decode_loop()
         magnitude = adc.decoded_data_queue[0]
         # print('magnitude: {}'.format(magnitude))
-        sample_index = [nn for nn in range(len(magnitude))]
+        sample_index = np.linspace(0, adc.number_of_samples,
+                num=adc.number_of_samples,
+                endpoint=False)
     except IndexError:
         raise de.PreventUpdate
 
@@ -152,7 +155,7 @@ def time_domain_update(n_intervals):
                                  'range': [0, 1024]
                                  },
                        'yaxis': {'title': 'Magnitude',
-                                 'range': [-0.5 * 4.096, 0.5 * 4.096]
+                                 # 'range': [-0.5 * 4.096, 0.5 * 4.096]
                                  }
                       }
            }
