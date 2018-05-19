@@ -1,3 +1,4 @@
+import logging
 import serial
 import io
 from time import sleep
@@ -6,6 +7,9 @@ from multiprocessing import Process, Queue, Pipe
 
 # deques are used for thread safe sharing of data
 from collections import deque
+
+# Use logger for, um, logging...
+logging.basicConfig(level=logging.DEBUG)
 
 # Couple of helpful macros used in conversion of strings to ints.
 HEX = 16
@@ -117,16 +121,19 @@ class SerialComms():
                                 data_buffer.append(int(cur_line, HEX))
                                 signal = 'N'
                             except ValueError:
+                                logging.error(f'Non Hex message received: {cur_line}')
                                 # signal not received correctly. retransmit the
                                 # same signal
                                 signal = 'B'
                         else:
+                            logging.error(f'Error code "{cur_line}" received')
                             # Received the error code 'deadbeef', we will
                             # retransmit the existing signal
                             pass
                     else:
                         # Error in received message, request sender go Back and
                         # retry.
+                        logging.error(f'Bad message received:{cur_line}')
                         signal ='B'
                     #  Write the signal
                     self.write(signal)
@@ -134,8 +141,9 @@ class SerialComms():
 
                 self.input_data_queue.append(data_buffer)
                 self.acq_running = False
-                 return
-        print('ERROR: start not found')
+                return
+
+        logging.error('"start" was never found.')
         self.acq_running = False
         return
 
@@ -164,7 +172,7 @@ class SerialComms():
                                     + T[16] + T[17] + T[24] + T[25] + T[31] + T[30] + T[27] + T[29]
                                     + T[21] + T[23] + T[22] + T[20] + T[19] + T[26] + T[18] + T[28] )
                 if untangled_string[-8:] != '10010000':
-                     print(untangled_string)
+                     logging.debug(f'Untangled String: {untangled_string}')
                 self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement
@@ -188,8 +196,7 @@ class SerialComms():
         self.stop_loops = False
 
 if __name__ == '__main__':
-    from time import sleep
-
+    import timeit
     ser_test = SerialComms()
 
     ser_test.reset()
@@ -199,10 +206,12 @@ if __name__ == '__main__':
 
     ser_test.start_sampling()
 
-    for xx in range(10):
-        ser_test.acquisition_loop()
-        ser_test.decode_loop()
-        print(len(ser_test.decoded_data_queue.popleft()))
+    logging.info('Acquisition Loop time: {}'.format(
+        timeit.timeit(ser_test.acquisition_loop(), number=10)))
+    logging.info('Decode Loop time: {}'.format(
+        timeit.timeit(ser_test.decode_loop(), number=10)))
+    logging.info(f'length of decoded buffers:\n\t{[len(x) for x in ser_test.decoded_data_queue]}')
+
     # for kk in range(200):
     #     try:
     #         ser_test.acquisition_loop()
