@@ -3,6 +3,7 @@
 #define COMMUNICATIONS_H
 
 #include <stdint.h>
+#include <string.h>
 #include "mbed.h"
 #include "pins.h"
 #include "adc.h"

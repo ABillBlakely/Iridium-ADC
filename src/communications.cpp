@@ -1,6 +1,7 @@
 #include "communications.h"
 
 Serial usb_serial(USBTX, USBRX);
+// usb_serial.set_flow_control(CTS, CTS);
 volatile int abort_transfer = 0;
 
 void control_signals()
@@ -60,18 +61,35 @@ void control_signals()
 
 void data_tx(volatile uint32_t data_packet[])
 {
+    uint32_t last_sent = 0xDEADBEEF;
+
     printf("start\n");
 
     for(int tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
     {
-        if (!abort_transfer)
+        switch (usb_serial.getc())
         {
-            printf("%08lx\n", data_packet[tx_index]);
+            case 'N':
+            case 'n':
+            {
+                last_sent = data_packet[tx_index];
+                break;
+            }
+            case 'B':
+            case 'b':
+            {
+                // resend  the last sent from before, decrement the counter send
+                tx_index--;
+                break;
+            }
+            default:
+            // Invalid control signal received
+            {
+                tx_index--;
+                last_sent = 0xDEADBEEF;
+            }
         }
-        else
-        {
-            break;
-        }
+        printf("%08lx\n", last_sent);
     }
 
     printf("stop\n");

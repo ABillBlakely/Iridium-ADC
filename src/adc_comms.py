@@ -28,7 +28,7 @@ class SerialComms():
     ser.timeout = 0.5
     ser.port = 'COM5'
 
-    number_of_samples = 1024
+    number_of_samples = 8192
     sample_rate = 78125
     decimation_to_sample_rate_map = {'1' :2500000,
                                      '2' :1250000,
@@ -65,7 +65,7 @@ class SerialComms():
 
         status_table = [self.sio.readline().strip() for kk in range(3)]
         self.decimation_rate = status_table[-1][-10:].strip('| ')
-        # self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
+        self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
         return status_table
 
     def start_sampling(self):
@@ -103,22 +103,38 @@ class SerialComms():
 
         data_buffer = []
         '''Loop that waits for start, collects all the samples and stores result.'''
-        for nn in range(5000):
+        for nn in range(self.number_of_samples*2):
             # find the start of the data
             cur_line = self.readline()
             if 'start' in cur_line:
                 cur_line = self.readline()
-                while ('stop' not in cur_line):
+                while (cur_line != 'stop'):
                     if self.stop_loops:
                         return
-                    try:
-                        data_buffer.append(int(cur_line, HEX));
-                    except ValueError:
-                        print('ACQ ERROR: raw line == "{}"'.format(cur_line))
+                    if len(cur_line) == 8:
+                        if cur_line != 'deadbeef':
+                            try:
+                                data_buffer.append(int(cur_line, HEX))
+                                signal = 'N'
+                            except ValueError:
+                                # signal not received correctly. retransmit the
+                                # same signal
+                                signal = 'B'
+                        else:
+                            # Received the error code 'deadbeef', we will
+                            # retransmit the existing signal
+                            pass
+                    else:
+                        # Error in received message, request sender go Back and
+                        # retry.
+                        signal ='B'
+                    #  Write the signal
+                    self.write(signal)
                     cur_line = self.readline()
+
                 self.input_data_queue.append(data_buffer)
                 self.acq_running = False
-                return
+                 return
         print('ERROR: start not found')
         self.acq_running = False
         return
@@ -133,20 +149,22 @@ class SerialComms():
         try:
             tangled_buffer = self.input_data_queue.pop()
             self.accumulated_status = '0b0'
+            # This loop could probably be sped up considerably using map():
             for tangled_sample in tangled_buffer:
                 # Convert to 32 bit binary LSB at index 0 for easiest match
                 # to the tangled bit order.
                 T = format(tangled_sample, '032b')
                 #         Bit: | 15 | 14 | 13 | 12 | 11 | 10 |  9 |  8 |  7 |  6 |  5 |  4 |  3 |  2 |  1 |  0 |
-                # Pos in Word: | 15 |  5 |  7 |  6 |  0 |  1 |  4 |  2 | 10 |  8 |  9 | 11 | 12 | 13 | 14 |  3 |
-                #  Pos in Str: |  0 | 10 |  8 |  9 | 15 | 14 | 11 | 13 |  5 |  7 |  6 |  4 |  3 |  2 |  1 | 12 |
+                # Pos in Word: | 15 | 14 |  7 |  6 |  0 |  1 |  4 |  2 | 10 |  8 |  9 | 11 | 12 |  5 | 13 |  3 |
+                #  Pos in Str: |  0 |  1 |  8 |  9 | 15 | 14 | 11 | 13 |  5 |  7 |  6 |  4 |  3 | 10 |  2 | 12 |
 
                 # Reorder Bits:        8       7       6       5       4       3      2      1      0
-                untangled_string = (  T[0]  + T[10] + T[8]  + T[9]  + T[15] + T[14] + T[11] + T[13]
-                                    + T[5]  + T[7]  + T[6]  + T[4]  + T[3]  + T[2]  + T[1]  + T[12]
-                                    + T[16] + T[26] + T[24] + T[25] + T[31] + T[30] + T[27] + T[29]
-                                    + T[21] + T[23] + T[22] + T[20] + T[19] + T[18] + T[17] + T[28] )
-
+                untangled_string = (  T[0]  + T[1]  + T[8]  + T[9]  + T[15] + T[14] + T[11] + T[13]
+                                    + T[5]  + T[7]  + T[6]  + T[4]  + T[3]  + T[10]  + T[2]  + T[12]
+                                    + T[16] + T[17] + T[24] + T[25] + T[31] + T[30] + T[27] + T[29]
+                                    + T[21] + T[23] + T[22] + T[20] + T[19] + T[26] + T[18] + T[28] )
+                if untangled_string[-8:] != '10010000':
+                     print(untangled_string)
                 self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement

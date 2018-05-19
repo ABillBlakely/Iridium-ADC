@@ -52,9 +52,10 @@ uint16_t DataBusClass::read()
 
     // Fill in space between port a values (pa02, pa03, pa 13, and pa14 are not used) with the port c values.
     port_c = dataBusC.read();
-    received |= (port_c & (1 << 1)) << 1;      // pc01     to bit  2
-    received |= (port_c & (1 << 8)) >> 5;      // pc08     to bit 3
-    received |= (port_c & ((1 << 5)|(1 << 6))) << 8;      // pc05 to bit 13 and  pc06 to bit 14
+    received |= (port_c & (1 << 1)) << 1;      // pc01 to bit 2
+    received |= (port_c & (1 << 8)) >> 5;      // pc08 to bit 3
+    received |= (port_c & (1 << 5)) >> 0;      // pc05 to bit 5
+    received |= ((port_c & ((1 << 6)|(1 << 7)))) << 7;      // pc06 to bit 13 and  pc07 to bit 14
     return received;
 }
 
@@ -65,11 +66,13 @@ uint16_t DataBusClass::detangle(uint16_t raw_input)
     decoded_word |= (raw_input & (1 << 0))  << (-(0 - 11));   // pa00 to bit 11
     decoded_word |= (raw_input & (1 << 1))  << (-(1 - 10));   // pa01 to bit 10
 
-    decoded_word |= (raw_input & (1 << 2))  << (-(2 - 8));    // pc01 to bit 8
-    decoded_word |= (raw_input & (1 << 3))  >> (3 - 0);       // pc08 to bit 0
+    decoded_word |= (raw_input & (1 << 2))  << (-(2 - 8));    // pc01 in pos 2 to bit 8
+    decoded_word |= (raw_input & (1 << 3))  >> (3 - 0);       // pc08 in pos 3 to bit 0
 
     decoded_word |= (raw_input & (1 << 4))  << (-(4 - 9));    // pa04 to bit 9
-    decoded_word |= (raw_input & (1 << 5))  << (-(5 - 14));   // pa05 to bit 14
+
+    decoded_word |= (raw_input & (1 << 5)) >> (5 - 2);        // pc05 in pos 5 to bit 2
+
     decoded_word |= (raw_input & (1 << 6))  << (-(6 - 12));   // pa06 to bit 12
     decoded_word |= (raw_input & (1 << 7))  << (-(7 - 13));   // pa07 to bit 13
     decoded_word |= (raw_input & (1 << 8))  >> (8 - 6);       // pa08 to bit 6
@@ -78,8 +81,8 @@ uint16_t DataBusClass::detangle(uint16_t raw_input)
     decoded_word |= (raw_input & (1 << 11)) >> (11 - 4);      // pa11 to bit 4
     decoded_word |= (raw_input & (1 << 12)) >> (12 - 3);      // pa12 to bit 3
 
-    decoded_word |= (raw_input & (1 << 13)) >> (13 - 2);      // pc05 to bit 2
-    decoded_word |= (raw_input & (1 << 14)) >> (14 - 1);      // pc06 to bit 1
+    decoded_word |= (raw_input & (1 << 13)) >> (13 - 12);     // pc06 in pos 13  to bit 1
+    decoded_word |= (raw_input & (1 << 14))  << (-(14 - 14)); // pc07 in pos 14 to bit 14
 
     decoded_word |= (raw_input & (1 << 15)) >> (15 - 15);     // pa15 to bit 15
 
@@ -107,7 +110,7 @@ void DataBusClass::write(uint16_t word)
     port_a |= (word & (1 << 11)) >> (-(0 - 11));  // pa00
     port_a |= (word & (1 << 12)) >> (-(6 - 12));  // pa06
     port_a |= (word & (1 << 13)) >> (-(7 - 13));  // pa07
-    port_a |= (word & (1 << 14)) >> (-(5 - 14));  // pa05
+    port_c |= (word & (1 << 14)) >> (-(7 - 14));  // pc07
     port_a |= (word & (1 << 15)) >> (-(15 - 15)); // pa15
 
     dataBusA.write(port_a);

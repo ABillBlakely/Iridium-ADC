@@ -108,8 +108,6 @@ uint16_t ADC_Class::read_status_register(bool print_to_console)
 void ADC_Class::start_sampling()
 {
     power_up();
-    // worst case filter latency is about 350 us.
-    wait_ms(50);
     notDataReady.rise(&collect_samples);
     notDataReady.enable_irq();
 }
@@ -129,6 +127,8 @@ void ADC_Class::power_down()
 void ADC_Class::power_up()
 {
     write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
+    // worst case filter latency is about 350 us.
+    wait_ms(10);
 }
 
 void ADC_Class::change_decimation_rate(int multiplier)
@@ -204,6 +204,9 @@ void ADC_Class::write_control_register(uint16_t control_register, uint16_t value
     wait_4_MCLK_cycles();
     notChipSelect = HIGH;
     wait_4_MCLK_cycles();
+
+    // Pull the lines down before switching to input
+    dataBus.write (0x0000);
 
     dataBus.input();
 }

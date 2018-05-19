@@ -30,7 +30,7 @@ sample_index = [0]
 freq_mag = [1e-12]
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 250
+update_period_ms = 100
 
 window_map = {'rect': 1,
               'blackman': np.blackman(adc.number_of_samples),
@@ -69,7 +69,7 @@ app.layout = html.Div(id = 'Body',
                                          {'label': '65536', 'value': 65536},
                                          {'label': '131072', 'value': 131072},
                                          ],
-                                     value=1024,
+                                     value=adc.number_of_samples,
                                     ),
                       html.Label('Window Function'),
                       dcc.RadioItems(id='window-functions',
@@ -94,7 +94,7 @@ app.layout = html.Div(id = 'Body',
     dd.Output('status-register', 'children'),
     [dd.Input('decimation-rate', 'value')])
 def change_decimation_rate(rate):
-    pass
+    raise de.PreventUpdate
     # adc.change_decimation_rate(rate)
     # return "\n\t" + "\n\t".join(adc.status())
 
@@ -142,7 +142,7 @@ def time_domain_update(n_intervals):
     try:
         magnitude = adc.decoded_data_queue[0]
         # print('magnitude: {}'.format(magnitude))
-        sample_index = np.linspace(0, adc.number_of_samples,
+        sample_index = 1 / adc.sample_rate * np.linspace(0, adc.number_of_samples,
                 num=adc.number_of_samples,
                 endpoint=False)
     except IndexError:
@@ -153,10 +153,10 @@ def time_domain_update(n_intervals):
                       'name': 'time domain'}],
             'layout': {'title': 'Magnitude vs. sample',
                        'xaxis': {'title': 'Sample Index',
-                                 'range': [0, 1024]
+                                 'range': [0, adc.number_of_samples/adc.sample_rate]
                                  },
                        'yaxis': {'title': 'Magnitude',
-                                 # 'range': [-0.5 * 4.096, 0.5 * 4.096]
+                                 'range': [-2, 2]
                                  }
                       }
            }
@@ -183,7 +183,8 @@ def freq_domain_update(n_intervals, fft_length, window):
                       'name': 'freq domain'}],
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Sample Index',
-                                 # 'range': [0, 2*13]
+                                 'type': 'log',
+                                 'range': np.log10([0.1, adc.sample_rate/2])
                                  },
                        'yaxis': {'title': 'Magnitude [dB]',
                                  'range': [-150, 10]
