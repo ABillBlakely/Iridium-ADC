@@ -111,7 +111,11 @@ class SerialComms():
             # find the start of the data
             cur_line = self.readline()
             if 'start' in cur_line:
+                logging.info(f'start line found: "{cur_line}"')
+                signal = 'N'
+                self.write(signal)
                 cur_line = self.readline()
+                logging.info(f'first received message: "{cur_line}"')
                 while (cur_line != 'stop'):
                     if self.stop_loops:
                         return
@@ -133,8 +137,9 @@ class SerialComms():
                     else:
                         # Error in received message, request sender go Back and
                         # retry.
-                        logging.error(f'Bad message received:{cur_line}')
+                        logging.error(f'Bad message received: "{cur_line}"')
                         signal ='B'
+                    logging.info(f'Current size of data buffer {len(data_buffer)}')
                     #  Write the signal
                     self.write(signal)
                     cur_line = self.readline()

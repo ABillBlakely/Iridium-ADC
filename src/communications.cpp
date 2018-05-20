@@ -63,8 +63,9 @@ void data_tx(volatile uint32_t data_packet[])
 {
     uint32_t last_sent = 0xDEADBEEF;
 
-    printf("start\n");
+    usb_serial.attach(0);
 
+    printf("start\n");
     for(int tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
     {
         switch (usb_serial.getc())
@@ -93,5 +94,8 @@ void data_tx(volatile uint32_t data_packet[])
     }
 
     printf("stop\n");
+
+    usb_serial.attach(&control_signals);
+
 
 }
