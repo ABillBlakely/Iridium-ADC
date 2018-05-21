@@ -30,7 +30,7 @@ public:
 
 extern DataBusClass dataBus;
 
-extern DigitalIn notDataReady;
+extern InterruptIn notDataReady;
 extern DigitalOut notSync;
 extern DigitalOut notRead;
 extern DigitalOut notChipSelect;

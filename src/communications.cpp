@@ -68,7 +68,7 @@ void data_tx(volatile uint32_t data_packet[])
     for(int tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
     {
         printf("%08lx\n", data_packet[tx_index]);
-        wait_us(10);
+        // wait_us(10);
     }
     usb_serial.attach(&control_signals);
     printf("stop\n");

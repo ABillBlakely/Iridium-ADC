@@ -3,7 +3,7 @@
 
 DataBusClass dataBus;
 
-DigitalIn notDataReady(PC_12);
+InterruptIn notDataReady(PC_12);
 DigitalOut notSync(PC_10);
 DigitalOut notRead(PA_13);
 DigitalOut notChipSelect(PA_14);

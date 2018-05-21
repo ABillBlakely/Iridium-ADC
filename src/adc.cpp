@@ -110,14 +110,14 @@ void ADC_Class::start_sampling()
 {
     power_up();
     wait_ms(1);
-    collect_samples();
-    // notDataReady.rise(&collect_samples);
-    // notDataReady.enable_irq();
+    // collect_samples();
+    notDataReady.rise(&collect_samples);
+    notDataReady.enable_irq();
 }
 
 void ADC_Class::stop_sampling()
 {
-    // notDataReady.disable_irq();
+    notDataReady.disable_irq();
     // Save power, and power down when not being used.
     power_down();
 }
@@ -249,21 +249,18 @@ uint32_t ADC_Class::read_data_word()
 void ADC_Class::collect_samples()
 {
     // called on interrupt from notDataReady pin
-    // static int32_t sample_index = 0;
+    static int32_t sample_index = 0;
 
-    for (uint32_t sample_index = 0; sample_index < SAMPLES_PER_PAGE; sample_index++)
+    if (sample_index < SAMPLES_PER_PAGE)
     {
-        // this should all happen in under 250 ns.
-        while(notDataReady.read() == 1)
-        {
-            // wait for notDataReady to be pulled low
-        }
+        // this should all happen in under 250 ns for maximum data rate.
         sample_array[sample_index] = ADC_Class::read_data_word();
-        // sample_index++;
+        sample_index++;
     }
+    else
     {
         stop_sampling();
-        // sample_index = 0;
+        sample_index = 0;
         data_ready = 1;
     }
 }

@@ -79,7 +79,7 @@ class SerialComms():
 
     def readline(self):
         '''Read a line from the buffer.'''
-        return self.ser.readline().decode('utf-8').strip()
+        return self.sio.readline().strip()
 
     def reset(self):
         self.ser.send_break(0.5)
@@ -112,7 +112,6 @@ class SerialComms():
                         # same signal
                     # logging.info(f'Current size of data buffer {len(data_buffer)}')
                     #  Write the signal
-                    sleep(1e-6)
                     cur_line = self.readline()
                     logging.debug(f'message received: "{cur_line}"')
 
@@ -175,9 +174,9 @@ if __name__ == '__main__':
     # ser_test.start_sampling()
 
     logging.info('Acquisition Loop time: {}'.format(
-        timeit.timeit(ser_test.acquisition_loop, number=2)))
+        timeit.timeit(ser_test.acquisition_loop, number=10)))
     logging.info('Decode Loop time: {}'.format(
-        timeit.timeit(ser_test.decode_loop, number=2)))
+        timeit.timeit(ser_test.decode_loop, number=10)))
     logging.info(f'length of decoded buffers:\n\t{[len(x) for x in list(ser_test.decoded_data_queue)]}')
 
     # for kk in range(200):
