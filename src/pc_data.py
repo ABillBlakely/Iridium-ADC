@@ -14,16 +14,14 @@ from multiprocessing import Process
 from threading import Thread
 import numpy as np
 
+loop_running = False
+
 adc = SerialComms()
 
 adc.reset()
 adc.setup()
 # Get and format the status register for markdown display.
 status_reg_f = "\n\t" + "\n\t".join(adc.status())
-
-# TODO: verify the status register before starting sampling.
-# put the adc into sampling mode.
-adc.start_sampling()
 
 magnitude = [0]
 sample_index = [0]
@@ -126,12 +124,18 @@ def update_graph_button(n_clicks):
         return 'Graph updates are OFF'
 
 @app.callback(
-    dd.Output('title', 'children'),
+    dd.Output('placeholder', 'children'),
     [dd.Input('update-timer', 'n_intervals')])
 def acquire_data(n_intervals):
+    global loop_running
+
+    if loop_running:
+        return ''
+    loop_running = True
     adc.acquisition_loop()
     adc.decode_loop()
-    return 'Iridium ADC'
+    loop_running = False
+    return ''
 
 @app.callback(
     dd.Output('time-domain-graph', 'figure'),
@@ -146,7 +150,7 @@ def time_domain_update(n_intervals):
                 num=adc.number_of_samples,
                 endpoint=False)
     except IndexError:
-        raise de.PreventUpdate
+        pass
 
     return {'data': [{'x': sample_index, 'y': magnitude,
                       # 'type': 'line',
@@ -154,10 +158,10 @@ def time_domain_update(n_intervals):
             'layout': {'title': 'Magnitude vs. sample',
                        'xaxis': {'title': 'Sample Index',
                                  'range': [0, adc.number_of_samples/adc.sample_rate]
-                                 },
+                                },
                        'yaxis': {'title': 'Magnitude',
-                                 'range': [-2, 2]
-                                 }
+                                 'range': [-1, 1]
+                                }
                       }
            }
 
@@ -167,16 +171,16 @@ def time_domain_update(n_intervals):
               dd.State('window-functions', 'value')])
 def freq_domain_update(n_intervals, fft_length, window):
     global freq_axis
+    global freq_mag
     try:
        freq_mag = adc.decoded_data_queue[0] * window_map[window]
     except IndexError:
-        raise de.PreventUpdate
+        pass
     except ValueError:
         raise
-        # raise de.PreventUpdate
     freq_axis = np.fft.rfftfreq(n=fft_length, d=1/adc.sample_rate)
     freq_mag = 20 * np.log10(np.abs(
-        np.fft.rfft(a=freq_mag, n=fft_length) * 2 / 1024))
+        np.fft.rfft(a=freq_mag, n=fft_length) * 2 / fft_length))
 
     return {'data': [{'x': freq_axis, 'y': freq_mag,
                       # 'type': 'line',
@@ -184,7 +188,7 @@ def freq_domain_update(n_intervals, fft_length, window):
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Sample Index',
                                  'type': 'log',
-                                 'range': np.log10([0.1, adc.sample_rate/2])
+                                 'range': np.log10([100, adc.sample_rate/2])
                                  },
                        'yaxis': {'title': 'Magnitude [dB]',
                                  'range': [-150, 10]
@@ -194,5 +198,5 @@ def freq_domain_update(n_intervals, fft_length, window):
 
 if __name__ == '__main__':
     log = logging.getLogger('werkzeug')
-    log.setLevel(logging.ERROR)
+    log.setLevel(logging.CRITICAL)
     app.run_server(debug=False)

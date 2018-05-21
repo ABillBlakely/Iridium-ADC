@@ -25,7 +25,7 @@
 // | 0b101  | 32x  | 31.25k |    78.125 kSPS   |
 
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 8192
+#define NUMBER_OF_SAMPLES 1024
 // #define NUMBER_OF_SAMPLES 10
 #define NUMBER_OF_PAGES 1
 #define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES

@@ -61,41 +61,15 @@ void control_signals()
 
 void data_tx(volatile uint32_t data_packet[])
 {
-    uint32_t last_sent = 0xDEADBEEF;
 
+    //
     usb_serial.attach(0);
-
     printf("start\n");
     for(int tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
     {
-        switch (usb_serial.getc())
-        {
-            case 'N':
-            case 'n':
-            {
-                last_sent = data_packet[tx_index];
-                break;
-            }
-            case 'B':
-            case 'b':
-            {
-                // resend  the last sent from before, decrement the counter send
-                tx_index--;
-                break;
-            }
-            default:
-            // Invalid control signal received
-            {
-                tx_index--;
-                last_sent = 0xDEADBEEF;
-            }
-        }
-        printf("%08lx\n", last_sent);
+        printf("%08lx\n", data_packet[tx_index]);
+        wait_us(10);
     }
-
-    printf("stop\n");
-
     usb_serial.attach(&control_signals);
-
-
+    printf("stop\n");
 }

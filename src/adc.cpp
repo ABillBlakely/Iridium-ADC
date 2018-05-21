@@ -2,9 +2,10 @@
 
 uint16_t ADC_Class::control_reg_1_state = 0x0000;
 uint16_t ADC_Class::control_reg_2_state = 0x0000;
-volatile uint16_t busy_wait_variable;
 
 ADC_Class adc;
+
+volatile uint32_t busy_wait_variable;
 volatile uint32_t sample_array[SAMPLES_PER_PAGE];
 volatile int data_ready = 0;
 
@@ -108,13 +109,15 @@ uint16_t ADC_Class::read_status_register(bool print_to_console)
 void ADC_Class::start_sampling()
 {
     power_up();
-    notDataReady.rise(&collect_samples);
-    notDataReady.enable_irq();
+    wait_ms(1);
+    collect_samples();
+    // notDataReady.rise(&collect_samples);
+    // notDataReady.enable_irq();
 }
 
 void ADC_Class::stop_sampling()
 {
-    notDataReady.disable_irq();
+    // notDataReady.disable_irq();
     // Save power, and power down when not being used.
     power_down();
 }
@@ -222,8 +225,8 @@ void ADC_Class::wait_4_MCLK_cycles()
 
 uint32_t ADC_Class::read_data_word()
 {
-    uint16_t MSB_16;
-    uint16_t LSB_16;
+    static uint16_t MSB_16;
+    static uint16_t LSB_16;
 
     notRead = LOW;
     notChipSelect = LOW;
@@ -231,43 +234,36 @@ uint32_t ADC_Class::read_data_word()
     notChipSelect = HIGH;
     notRead = HIGH;
 
+    wait_4_MCLK_cycles();
+
     notRead = LOW;
     notChipSelect = LOW;
     LSB_16 = dataBus.read();
     notChipSelect = HIGH;
     notRead = HIGH;
 
-    // NOTE: I think these need to be unsigned for this concat to work,
-    // but the 32 bit word result is actually a 24 bit signed integer
-    // followed by 8 status bits.
-    // return ((dataBus.detangle(MSB_16) << 16) | dataBus.detangle(LSB_16));
+    // concatenate and return the 32 bit data word.
     return ((MSB_16 << 16) | LSB_16);
-    // return LSB_16;
 }
 
 void ADC_Class::collect_samples()
 {
-    static int32_t sample_index = 0;
+    // called on interrupt from notDataReady pin
+    // static int32_t sample_index = 0;
 
-    // if (-1 == sample_index)
-    // {
-        // sample_index++;
-        // sample_timer.reset();
-        // sample_timer.start();
-    // }
-
-    if (sample_index < SAMPLES_PER_PAGE)
+    for (uint32_t sample_index = 0; sample_index < SAMPLES_PER_PAGE; sample_index++)
     {
         // this should all happen in under 250 ns.
+        while(notDataReady.read() == 1)
+        {
+            // wait for notDataReady to be pulled low
+        }
         sample_array[sample_index] = ADC_Class::read_data_word();
-        // printf("%08lx\n", ADC_Class::read_data_word());
-        sample_index++;
+        // sample_index++;
     }
-
-    if (sample_index >= SAMPLES_PER_PAGE)
     {
         stop_sampling();
-        sample_index = 0;
+        // sample_index = 0;
         data_ready = 1;
     }
 }
