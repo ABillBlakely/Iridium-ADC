@@ -11,8 +11,6 @@ int main()
 
         if(data_ready == 1)
         {
-            // detach the serial interrupt. This is reattached when the master sends the start sampling command.
-            // usb_serial.attach(0);
             // Send the data array.
             data_tx();
             // Reset the flag

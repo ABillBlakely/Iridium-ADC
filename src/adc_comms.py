@@ -15,11 +15,6 @@ logging.basicConfig(level=logging.INFO)
 HEX = 16
 BIN = 2
 
-# input_data_queue = deque(maxlen=3)
-# decoded_data_queue = deque(maxlen=3)
-stop_thread = 0
-# Ok Heres the idea: create thread that continually receives the data and stores each array in a buffer.
-
 data_buffer = []
 
 class SerialComms():
@@ -42,6 +37,7 @@ class SerialComms():
                                      '': 0,
                                      }
 
+    loop_running = False
     stop_loops = False
     accumulated_status = '0b00000000'
     decimation_rate = '32'
@@ -163,7 +159,9 @@ class SerialComms():
 if __name__ == '__main__':
     import timeit
     ser_test = SerialComms()
-
+    # Replace the deques with longer versions for test.
+    ser_test.input_data_queue = deque(maxlen=10)
+    ser_test.decoded_data_queue = deque(maxlen=10)
     ser_test.reset()
     ser_test.setup()
     print('\n'.join(ser_test.status()))

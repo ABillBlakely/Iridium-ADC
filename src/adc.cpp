@@ -129,7 +129,7 @@ void ADC_Class::power_up()
 {
     write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
     // worst case filter latency is about 350 us.
-    wait_ms(1);
+    wait_ms(2);
 }
 
 void ADC_Class::change_decimation_rate(int multiplier)

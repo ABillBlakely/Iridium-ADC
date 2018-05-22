@@ -14,8 +14,6 @@ from multiprocessing import Process
 from threading import Thread
 import numpy as np
 
-loop_running = False
-
 adc = SerialComms()
 
 adc.reset()
@@ -29,7 +27,7 @@ freq_mag = [1e-12]
 freq_mag_history = deque(maxlen=20)
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 500
+update_period_ms = 1000
 
 window_map = {'rect': 1,
               'blackman': np.blackman(adc.number_of_samples),
@@ -61,9 +59,7 @@ app.layout = html.Div(id = 'Body',
                           ),
             dcc.Graph(id='time-domain-graph'),
             dcc.Graph(id='freq-domain-graph'),
-            html.Button('Averaging',
-                        id='freq-average-button',
-                        n_clicks=0),
+            html.Button(id='freq-average-button', n_clicks=0),
             html.Div([html.Label('FFT length (zero padding)'),
                       dcc.RadioItems(id='fft-length',
                                      options=[
@@ -105,11 +101,6 @@ def change_decimation_rate(rate):
     # adc.change_decimation_rate(rate)
     # return "\n\t" + "\n\t".join(adc.status())
 
-@app.callback(
-    dd.Output('accumulated-status', 'children'),
-    [dd.Input('update-timer', 'n_intervals')])
-def update_running_status(n_intervals):
-    return('accumulated status: {}'.format(adc.accumulated_status))
 
 @app.callback(
     dd.Output('update-timer', 'interval'),
@@ -141,23 +132,22 @@ def freq_average_button(n_clicks):
         return 'Averaging ON'
 
 @app.callback(
-    dd.Output('placeholder', 'children'),
+    dd.Output('accumulated-status', 'children'),
     [dd.Input('update-timer', 'n_intervals')])
 def acquire_data(n_intervals):
-    global loop_running
-
-    if loop_running:
-        return ''
-    loop_running = True
+    if adc.loop_running:
+        return
+    adc.loop_running = True
     adc.acquisition_loop()
     adc.decode_loop()
-    loop_running = False
-    return ''
+    adc.loop_running = False
+    print(adc.accumulated_status)
+    return (f'accumulated status: {adc.accumulated_status}')
 
 @app.callback(
     dd.Output('time-domain-graph', 'figure'),
-    [dd.Input('update-timer', 'n_intervals')])
-def time_domain_update(n_intervals):
+    [dd.Input('accumulated-status', 'children')])
+def time_domain_update(n_clicks):
     global magnitude
     global sample_index
     try:
@@ -168,7 +158,9 @@ def time_domain_update(n_intervals):
                 num=adc.number_of_samples,
                 endpoint=False)
     except IndexError:
-        pass
+        return
+    except:
+        raise
 
     return {'data': [{'x': sample_index, 'y': magnitude,
                       # 'type': 'line',
@@ -184,20 +176,19 @@ def time_domain_update(n_intervals):
            }
 
 @app.callback(dd.Output('freq-domain-graph', 'figure'),
-             [dd.Input('update-timer', 'n_intervals')],
+             [dd.Input('accumulated-status', 'children')],
              [dd.State('fft-length', 'value'),
               dd.State('window-functions', 'value'),
               dd.State('freq-average-button','n_clicks')])
-def freq_domain_update(n_intervals, fft_length, window, average_clicks):
-    global freq_axis
-    global freq_mag
+def freq_domain_update(accumulated_status, fft_length, window, average_clicks):
+    global freq_axis, freq_mag
     try:
         magnitude = adc.decoded_data_queue[0]
         freq_mag = (magnitude - np.mean(magnitude)) * window_map[window]
     except IndexError:
         # Indicates no data in the queue, graph update happen more than data
         # acquisition so this is normal.
-        pass
+        return
     except ValueError:
         # The magnitude array is not the same length as the window. this is a
         # problem.
@@ -237,5 +228,5 @@ def freq_domain_update(n_intervals, fft_length, window, average_clicks):
 
 if __name__ == '__main__':
     log = logging.getLogger('werkzeug')
-    log.setLevel(logging.CRITICAL)
+    log.setLevel(logging.WARNING)
     app.run_server(debug=False)
