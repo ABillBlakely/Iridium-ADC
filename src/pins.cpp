@@ -45,7 +45,7 @@ uint16_t DataBusClass::read()
     // efficiently pack the bits into a 16 bit container.
     // bit order is even more messed up than before of course,
     // but that detanglement can be handled on the pc side.
-    static uint16_t received;
+    uint16_t received;
 
     // leave port a value where they are.
     received = dataBusA.read();
@@ -71,7 +71,7 @@ uint16_t DataBusClass::detangle(uint16_t raw_input)
 
     decoded_word |= (raw_input & (1 << 4))  << (-(4 - 9));    // pa04 to bit 9
 
-    decoded_word |= (raw_input & (1 << 5)) >> (5 - 2);        // pc05 in pos 5 to bit 2
+    decoded_word |= (raw_input & (1 << 5))  >> (5 - 2);        // pc05 in pos 5 to bit 2
 
     decoded_word |= (raw_input & (1 << 6))  << (-(6 - 12));   // pa06 to bit 12
     decoded_word |= (raw_input & (1 << 7))  << (-(7 - 13));   // pa07 to bit 13
@@ -82,13 +82,12 @@ uint16_t DataBusClass::detangle(uint16_t raw_input)
     decoded_word |= (raw_input & (1 << 12)) >> (12 - 3);      // pa12 to bit 3
 
     decoded_word |= (raw_input & (1 << 13)) >> (13 - 12);     // pc06 in pos 13  to bit 1
-    decoded_word |= (raw_input & (1 << 14))  << (-(14 - 14)); // pc07 in pos 14 to bit 14
+    decoded_word |= (raw_input & (1 << 14)) >> (14 - 14); // pc07 in pos 14 to bit 14
 
     decoded_word |= (raw_input & (1 << 15)) >> (15 - 15);     // pa15 to bit 15
 
     return decoded_word;
 }
-
 
 void DataBusClass::write(uint16_t word)
 {
@@ -99,18 +98,23 @@ void DataBusClass::write(uint16_t word)
     port_c |= (word & (1 << 0)) << (8 - 0);       // pc08
     port_c |= (word & (1 << 1)) << (6 - 1);       // pc06
     port_c |= (word & (1 << 2)) << (5 - 2);       // pc05
+
     port_a |= (word & (1 << 3)) << (12 - 3);      // pa12
     port_a |= (word & (1 << 4)) << (11 - 4);      // pa11
     port_a |= (word & (1 << 5)) << (9 - 5);       // pa09
     port_a |= (word & (1 << 6)) << (8 - 6);       // pa08
     port_a |= (word & (1 << 7)) << (10 - 7);      // pa10
+
     port_c |= (word & (1 << 8)) >> (-(1 - 8));    // pc01
+
     port_a |= (word & (1 << 9)) >> (-(4 - 9));    // pa04
     port_a |= (word & (1 << 10)) >> (-(1 - 10));  // pa01
     port_a |= (word & (1 << 11)) >> (-(0 - 11));  // pa00
     port_a |= (word & (1 << 12)) >> (-(6 - 12));  // pa06
     port_a |= (word & (1 << 13)) >> (-(7 - 13));  // pa07
+
     port_c |= (word & (1 << 14)) >> (-(7 - 14));  // pc07
+
     port_a |= (word & (1 << 15)) >> (-(15 - 15)); // pa15
 
     dataBusA.write(port_a);

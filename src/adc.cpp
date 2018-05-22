@@ -89,8 +89,8 @@ uint16_t ADC_Class::read_status_register(bool print_to_console)
     {
         // Pretty print the received status register to stdout.
         printf("Status Register\n");
-        printf("| Part No.  | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | User Filt EN | Byp Filt 3 | Byp Filt 1 | Dec Rate |\n");
-        printf("|     %d     |    %d    |    %d    |     %d     |       %d       |       %d        |      %d       |      %d     |     %d      |    %2d    |\n",
+        printf("| Part No. | Die No. | Low Pwr | Overrange | Download O.K. | User Filt O.K. | User Filt EN | Byp Filt 3 | Byp Filt 1 | Dec Rate |\n");
+        printf("|     %d    |    %d    |    %d    |     %d     |       %d       |       %d        |      %d       |      %d     |     %d      |    %2d    |\n",
                 (status_reg & 0xC000) >> 14, //Part No.
                 (status_reg & 0x3800) >> 11, // Die No.
                 (status_reg & 0x0200) >> 9,  // Low Pwr
@@ -109,8 +109,6 @@ uint16_t ADC_Class::read_status_register(bool print_to_console)
 void ADC_Class::start_sampling()
 {
     power_up();
-    wait_ms(1);
-    // collect_samples();
     notDataReady.rise(&collect_samples);
     notDataReady.enable_irq();
 }
@@ -124,14 +122,14 @@ void ADC_Class::stop_sampling()
 
 void ADC_Class::power_down()
 {
-    write_control_register(0x0002, (control_reg_2_state | 1 << 3));
+    write_control_register(0x0002, (control_reg_2_state | (1 << 3)));
 }
 
 void ADC_Class::power_up()
 {
     write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
     // worst case filter latency is about 350 us.
-    wait_ms(10);
+    wait_ms(1);
 }
 
 void ADC_Class::change_decimation_rate(int multiplier)
@@ -169,7 +167,7 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     // Set for 1MHZ output data rate and to read the status register.
 
     // Set the particular read status bit. Should be 11, 12, 13, or 14.
-    write_control_register(0x0001, control_reg_1_state | 1 << offset);
+    write_control_register(0x0001, (control_reg_1_state | (1 << offset)));
 
     notChipSelect = LOW;
     wait_4_MCLK_cycles();
@@ -181,6 +179,7 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     // The dataBus should now have the status on it.
     notRead = LOW;
     notChipSelect = LOW;
+    wait_4_MCLK_cycles();
     // Grab the raw input
     adc_reg = dataBus.read();
     notChipSelect = HIGH;

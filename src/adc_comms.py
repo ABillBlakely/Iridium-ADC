@@ -9,7 +9,7 @@ from multiprocessing import Process, Queue, Pipe
 from collections import deque
 
 # Use logger for, um, logging...
-logging.basicConfig(level=logging.ERROR)
+logging.basicConfig(level=logging.INFO)
 
 # Couple of helpful macros used in conversion of strings to ints.
 HEX = 16
@@ -24,14 +24,14 @@ data_buffer = []
 
 class SerialComms():
     ser = serial.Serial()
-    ser.baudrate = 2000000
+    ser.baudrate = 1500000
     ser.bytesize = serial.EIGHTBITS
     ser.parity = serial.PARITY_NONE
     ser.stopbits = serial.STOPBITS_ONE
     ser.timeout = 0.5
     ser.port = 'COM5'
 
-    number_of_samples = 1024
+    number_of_samples = 8192
     sample_rate = 78125
     decimation_to_sample_rate_map = {'1' :2500000,
                                      '2' :1250000,
@@ -64,8 +64,8 @@ class SerialComms():
         self.write('R')
 
         status_table = [self.readline() for kk in range(3)]
-        # self.decimation_rate = status_table[-1][-10:].strip('| ')
-        # self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
+        self.decimation_rate = status_table[-1][-10:].strip('| ')
+        self.sample_rate = self.decimation_to_sample_rate_map[self.decimation_rate]
         return status_table
 
     def start_sampling(self):
@@ -89,7 +89,6 @@ class SerialComms():
         self.write('P')
 
     def acquisition_loop(self):
-
         self.start_sampling()
 
         data_buffer = []
@@ -100,7 +99,7 @@ class SerialComms():
             if 'start' in cur_line:
                 logging.info(f'start line found: "{cur_line}"')
                 cur_line = self.readline()
-                logging.info(f'first received message: "{cur_line}"')
+                logging.debug(f'first received message: "{cur_line}"')
                 while ('stop' not in cur_line ):
                     if self.stop_loops:
                         return
@@ -117,7 +116,6 @@ class SerialComms():
 
                 self.input_data_queue.append(data_buffer)
                 return
-
         logging.error('"start" was never found.')
         return
 
@@ -145,9 +143,9 @@ class SerialComms():
                 self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement
-                    untangled_buffer.append((int(untangled_string[0:-8], BIN) - (1<<24)) / (2**23-1))
+                    untangled_buffer.append((int(untangled_string[0:24], BIN) - (1<<24)) / (2**23-1) * 12)
                 else:
-                    untangled_buffer.append((int(untangled_string[1:-8], BIN)) / (2**23 - 1))
+                    untangled_buffer.append((int(untangled_string[1:24], BIN)) / (2**23 - 1) * 12)
                 # print(f'{untangled_buffer[-1]}')
             self.decoded_data_queue.append(untangled_buffer)
 

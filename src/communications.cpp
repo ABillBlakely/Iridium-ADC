@@ -59,17 +59,18 @@ void control_signals()
     }
 }
 
-void data_tx(volatile uint32_t data_packet[])
+void data_tx()
 {
-
-    //
     usb_serial.attach(0);
+
     printf("start\n");
+
     for(int tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
     {
-        printf("%08lx\n", data_packet[tx_index]);
-        // wait_us(10);
+        printf("%08lx\n", sample_array[tx_index]);
+        // wait_us(1);
     }
-    usb_serial.attach(&control_signals);
     printf("stop\n");
+    usb_serial.attach(&control_signals);
+
 }

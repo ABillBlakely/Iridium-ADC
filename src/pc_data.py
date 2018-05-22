@@ -28,11 +28,12 @@ sample_index = [0]
 freq_mag = [1e-12]
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 100
+update_period_ms = 500
 
 window_map = {'rect': 1,
               'blackman': np.blackman(adc.number_of_samples),
-              'kaiser7': np.kaiser(adc.number_of_samples, 7*np.pi),}
+              'kaiser5': np.kaiser(adc.number_of_samples, 5 * np.pi),
+              'kaiser7': np.kaiser(adc.number_of_samples, 7 * np.pi),}
 
 
 app.layout = html.Div(id = 'Body',
@@ -42,6 +43,7 @@ app.layout = html.Div(id = 'Body',
             dcc.Markdown(id='status-register', children=status_reg_f),
             html.Div(id='accumulated-status'),
             html.Button('Toggle Graph Update', id='graph-update-button'),
+            html.Div(''),
             html.Label('Decimation Rate Selection:'),
             dcc.RadioItems(id='decimation-rate',
                            options=[
@@ -74,9 +76,10 @@ app.layout = html.Div(id = 'Body',
                                      options=[
                                          {'label':'Rect', 'value':'rect'},
                                          {'label':'Blackman', 'value':'blackman'},
+                                         {'label':'Kaiser 5', 'value':'kaiser5'},
                                          {'label':'Kaiser 7', 'value':'kaiser7'},
                                          ],
-                                     value='kaiser7'
+                                     value='kaiser5'
                                     ),
                      ],
                      id='fft-options-div',
@@ -145,6 +148,7 @@ def time_domain_update(n_intervals):
     global sample_index
     try:
         magnitude = adc.decoded_data_queue[0]
+        magnitude -= np.mean(magnitude)
         # print('magnitude: {}'.format(magnitude))
         sample_index = 1 / adc.sample_rate * np.linspace(0, adc.number_of_samples,
                 num=adc.number_of_samples,
@@ -160,7 +164,7 @@ def time_domain_update(n_intervals):
                                  'range': [0, adc.number_of_samples/adc.sample_rate]
                                 },
                        'yaxis': {'title': 'Magnitude',
-                                 'range': [-1, 1]
+                                 'range': [-2, 2]
                                 }
                       }
            }
@@ -173,14 +177,25 @@ def freq_domain_update(n_intervals, fft_length, window):
     global freq_axis
     global freq_mag
     try:
-       freq_mag = adc.decoded_data_queue[0] * window_map[window]
+        magnitude = adc.decoded_data_queue[0]
+        freq_mag = (magnitude - np.mean(magnitude)) * window_map[window]
     except IndexError:
+        # Indicates no data in the queue, graph update happen more than data
+        # acquisition so this is normal.
         pass
     except ValueError:
+        # The magnitude array is not the same length as the window. this is a
+        # problem.
         raise
-    freq_axis = np.fft.rfftfreq(n=fft_length, d=1/adc.sample_rate)
+    if fft_length != len(freq_axis):
+        # Compute a new frequency axis if it does not match the old axis.
+
+        # TODO: check sample rate as well, but this is currently not runtime
+        # configurable so does not need to be done yet.
+        freq_axis = np.fft.rfftfreq(n=fft_length, d=1/adc.sample_rate)
+    # Compute the frequency magnitude in dB
     freq_mag = 20 * np.log10(np.abs(
-        np.fft.rfft(a=freq_mag, n=fft_length) * 2 / fft_length))
+        np.fft.rfft(a=freq_mag, n=fft_length) * 2 / adc.number_of_samples))
 
     return {'data': [{'x': freq_axis, 'y': freq_mag,
                       # 'type': 'line',
