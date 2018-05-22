@@ -31,7 +31,7 @@ class SerialComms():
     ser.timeout = 0.5
     ser.port = 'COM5'
 
-    number_of_samples = 8192
+    number_of_samples = 16384
     sample_rate = 78125
     decimation_to_sample_rate_map = {'1' :2500000,
                                      '2' :1250000,
@@ -47,8 +47,8 @@ class SerialComms():
     decimation_rate = '32'
 
     def __init__(self):
-        self.input_data_queue = deque(maxlen=2)
-        self.decoded_data_queue = deque(maxlen=2)
+        self.input_data_queue = deque(maxlen=1)
+        self.decoded_data_queue = deque(maxlen=1)
         self.ser.open()
         self.sio = io.TextIOWrapper(io.BufferedRWPair(self.ser, self.ser), encoding='utf-8')
         self.reset()

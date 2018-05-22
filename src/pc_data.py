@@ -26,6 +26,7 @@ status_reg_f = "\n\t" + "\n\t".join(adc.status())
 magnitude = [0]
 sample_index = [0]
 freq_mag = [1e-12]
+freq_mag_history = deque(maxlen=20)
 freq_axis = [0]
 app = dash.Dash()
 update_period_ms = 500
@@ -42,7 +43,9 @@ app.layout = html.Div(id = 'Body',
             html.H1("Iridium ADC", id='title'),
             dcc.Markdown(id='status-register', children=status_reg_f),
             html.Div(id='accumulated-status'),
-            html.Button('Toggle Graph Update', id='graph-update-button'),
+            html.Button('Toggle Graph Update',
+                        id='graph-update-button',
+                        n_clicks=0),
             html.Div(''),
             html.Label('Decimation Rate Selection:'),
             dcc.RadioItems(id='decimation-rate',
@@ -58,6 +61,9 @@ app.layout = html.Div(id = 'Body',
                           ),
             dcc.Graph(id='time-domain-graph'),
             dcc.Graph(id='freq-domain-graph'),
+            html.Button('Averaging',
+                        id='freq-average-button',
+                        n_clicks=0),
             html.Div([html.Label('FFT length (zero padding)'),
                       dcc.RadioItems(id='fft-length',
                                      options=[
@@ -99,7 +105,6 @@ def change_decimation_rate(rate):
     # adc.change_decimation_rate(rate)
     # return "\n\t" + "\n\t".join(adc.status())
 
-
 @app.callback(
     dd.Output('accumulated-status', 'children'),
     [dd.Input('update-timer', 'n_intervals')])
@@ -125,6 +130,15 @@ def update_graph_button(n_clicks):
         return 'Graph updates are ON'
     else:
         return 'Graph updates are OFF'
+
+@app.callback(
+    dd.Output('freq-average-button', 'children'),
+    [dd.Input('freq-average-button', 'n_clicks')])
+def freq_average_button(n_clicks):
+    if (n_clicks is None) or (n_clicks % 2 == 0):
+        return 'Averaging OFF'
+    else:
+        return 'Averaging ON'
 
 @app.callback(
     dd.Output('placeholder', 'children'),
@@ -164,7 +178,7 @@ def time_domain_update(n_intervals):
                                  'range': [0, adc.number_of_samples/adc.sample_rate]
                                 },
                        'yaxis': {'title': 'Magnitude',
-                                 'range': [-2, 2]
+                                 # 'range': [-2, 2]
                                 }
                       }
            }
@@ -172,8 +186,9 @@ def time_domain_update(n_intervals):
 @app.callback(dd.Output('freq-domain-graph', 'figure'),
              [dd.Input('update-timer', 'n_intervals')],
              [dd.State('fft-length', 'value'),
-              dd.State('window-functions', 'value')])
-def freq_domain_update(n_intervals, fft_length, window):
+              dd.State('window-functions', 'value'),
+              dd.State('freq-average-button','n_clicks')])
+def freq_domain_update(n_intervals, fft_length, window, average_clicks):
     global freq_axis
     global freq_mag
     try:
@@ -193,17 +208,26 @@ def freq_domain_update(n_intervals, fft_length, window):
         # TODO: check sample rate as well, but this is currently not runtime
         # configurable so does not need to be done yet.
         freq_axis = np.fft.rfftfreq(n=fft_length, d=1/adc.sample_rate)
-    # Compute the frequency magnitude in dB
-    freq_mag = 20 * np.log10(np.abs(
-        np.fft.rfft(a=freq_mag, n=fft_length) * 2 / adc.number_of_samples))
+    # Compute the frequency magnitude
+    freq_mag = np.abs(np.fft.rfft(a=freq_mag, n=fft_length)
+        * 2 / adc.number_of_samples)
+    # Store every value and calcualte the average.
+    freq_mag_history.append(freq_mag)
+    freq_avg_mag = np.mean(freq_mag_history, axis=0)
 
-    return {'data': [{'x': freq_axis, 'y': freq_mag,
+    average_on = (average_clicks % 2 != 0)
+    if average_on:
+        freq_mag_dB = 20 * np.log10(freq_avg_mag)
+    else:
+        freq_mag_dB = 20 * np.log10(freq_mag)
+
+    return {'data': [{'x': freq_axis, 'y': freq_mag_dB,
                       # 'type': 'line',
                       'name': 'freq domain'}],
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Sample Index',
                                  'type': 'log',
-                                 'range': np.log10([100, adc.sample_rate/2])
+                                 'range': np.log10([10, adc.sample_rate/2])
                                  },
                        'yaxis': {'title': 'Magnitude [dB]',
                                  'range': [-150, 10]
