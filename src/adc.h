@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "mbed.h"
 #include "pins.h"
+#include "communications.h"
 
 #define MCLK_FREQ 40000000
 
@@ -12,7 +13,7 @@
 #define LOW 0
 
 
-#define DECIMATION_RATE 0x3
+#define DEFAULT_DECIMATION_RATE 0x5
 // Decimation rate table:
 // | Binary | Rate |   BW   | Output Data Rate |
 // |--------|------|--------|------------------|
@@ -29,9 +30,6 @@
 #define NUMBER_OF_PAGES 1
 #define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
 
-extern Timer sample_timer;
-extern Serial usb_serial;
-
 class ADC_Class
 {
 public:
@@ -43,6 +41,9 @@ public:
     void static power_down();
     void static power_up();
     void static clear_terminal();
+    void static change_decimation_rate(int multiplier);
+    void static collect_samples();
+
 private:
     uint16_t static control_reg_1_state;
     uint16_t static control_reg_2_state;
@@ -51,8 +52,10 @@ private:
     void static write_control_register(uint16_t control_register, uint16_t value);
     void static wait_4_MCLK_cycles();
     uint32_t static read_data_word();
-    void static collect_samples();
 
 };
 
+extern ADC_Class adc;
+extern volatile int data_ready;
+extern volatile uint32_t sample_array[];
 #endif

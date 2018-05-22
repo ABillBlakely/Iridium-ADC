@@ -1,54 +1,23 @@
 #include "main.h"
 
-char serial_rx_char;
-
 int main()
 {
     usb_serial.baud(2000000);
 
-    ADC_Class adc;
-    // UnitTests tests;
-    // adc.clear_terminal();
-    adc.setup();
-
-
+    // attach the serial interrupt. These signals are handled in communications.cpp by the control signals function.
+    usb_serial.attach(&control_signals);
     while(1)
     {
-        switch (usb_serial.getc())
+
+        if(data_ready == 1)
         {
-            case 'R':
-            case 'r':
-            {
-                // Check status register
-                adc.clear_terminal();
-                // printf("%d samples, %dx decimation\n", NUMBER_OF_SAMPLES, 1<<DECIMATION_RATE);
-                adc.read_status_register(true);
-                break;
-            }
-            case 'S':
-            case 's':
-            {
-                // Receive samples
-                adc.clear_terminal();
-                adc.start_sampling();
-                break;
-            }
-            case 'T':
-            case 't':
-            {
-                // Stop sampling
-            }
-            case 'C':
-            case 'c':
-            {
-                // Clear
-                adc.clear_terminal();
-                break;
-            }
-            default:
-            {}
+            // detach the serial interrupt. This is reattached when the master sends the start sampling command.
+            // usb_serial.attach(0);
+            // Send the data array.
+            data_tx(sample_array);
+            // Reset the flag
+            data_ready = 0;
         }
     }
-    printf("while loop ended somehow.\n");
-
+    printf("ERROR: main loop ended somehow.\n");
 }

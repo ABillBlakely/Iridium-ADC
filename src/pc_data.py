@@ -1,3 +1,4 @@
+import logging
 import serial
 import io
 import dash
@@ -13,21 +14,21 @@ from multiprocessing import Process
 from threading import Thread
 import numpy as np
 
+loop_running = False
+
 adc = SerialComms()
 
+adc.reset()
+adc.setup()
 # Get and format the status register for markdown display.
 status_reg_f = "\n\t" + "\n\t".join(adc.status())
-
-# TODO: verify the status register before starting sampling.
-# put the adc into sampling mode.
-adc.start_sampling()
 
 magnitude = [0]
 sample_index = [0]
 freq_mag = [1e-12]
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 500
+update_period_ms = 100
 
 window_map = {'rect': 1,
               'blackman': np.blackman(adc.number_of_samples),
@@ -38,32 +39,46 @@ app.layout = html.Div(id = 'Body',
     children=
         [
             html.H1("Iridium ADC", id='title'),
-            dcc.Markdown(status_reg_f, id='text-box'),
+            dcc.Markdown(id='status-register', children=status_reg_f),
             html.Div(id='accumulated-status'),
             html.Button('Toggle Graph Update', id='graph-update-button'),
+            html.Label('Decimation Rate Selection:'),
+            dcc.RadioItems(id='decimation-rate',
+                           options=[
+                                {'label':'1', 'value': '0'},
+                                {'label':'2', 'value': '1'},
+                                {'label':'4', 'value': '2'},
+                                {'label':'8', 'value': '3'},
+                                {'label':'16', 'value': '4'},
+                                {'label':'32', 'value': '5'},
+                                ],
+                           value='5',
+                          ),
             dcc.Graph(id='time-domain-graph'),
             dcc.Graph(id='freq-domain-graph'),
-            html.Div([
+            html.Div([html.Label('FFT length (zero padding)'),
                       dcc.RadioItems(id='fft-length',
-                                   options=[
-                                      {'label': '1024', 'value': 1024},
-                                      {'label': '4096', 'value': 4096},
-                                      {'label': '8192', 'value': 8192},
-                                      {'label': '16384', 'value': 16384},
-                                      {'label': '32768', 'value': 32768},
-                                      {'label': '65536', 'value': 65536},
-                                      {'label': '131072', 'value': 131072},
-                                      ],
-                                   value=1024,
-                                  ),
+                                     options=[
+                                         {'label': '1024', 'value': 1024},
+                                         {'label': '4096', 'value': 4096},
+                                         {'label': '8192', 'value': 8192},
+                                         {'label': '16384', 'value': 16384},
+                                         {'label': '32768', 'value': 32768},
+                                         {'label': '65536', 'value': 65536},
+                                         {'label': '131072', 'value': 131072},
+                                         ],
+                                     value=adc.number_of_samples,
+                                    ),
+                      html.Label('Window Function'),
                       dcc.RadioItems(id='window-functions',
-                                   options=[
-                                      {'label':'Rect', 'value':'rect'},
-                                      {'label':'Blackman', 'value':'blackman'},
-                                      {'label':'Kaiser 7', 'value':'kaiser7'},
-                                      ],
-                                    value='kaiser7'),
-                      ],
+                                     options=[
+                                         {'label':'Rect', 'value':'rect'},
+                                         {'label':'Blackman', 'value':'blackman'},
+                                         {'label':'Kaiser 7', 'value':'kaiser7'},
+                                         ],
+                                     value='kaiser7'
+                                    ),
+                     ],
                      id='fft-options-div',
                      style={'columnCount':2},),
             dcc.Interval(id='update-timer', interval=update_period_ms, n_intervals=0),
@@ -72,6 +87,15 @@ app.layout = html.Div(id = 'Body',
                      style={'display': 'none'}
                      ),
         ])
+
+@app.callback(
+    dd.Output('status-register', 'children'),
+    [dd.Input('decimation-rate', 'value')])
+def change_decimation_rate(rate):
+    raise de.PreventUpdate
+    # adc.change_decimation_rate(rate)
+    # return "\n\t" + "\n\t".join(adc.status())
+
 
 @app.callback(
     dd.Output('accumulated-status', 'children'),
@@ -87,24 +111,31 @@ def toggle_graph_update(n_clicks):
         return update_period_ms
     else:
         # Setting disable is not working so instead just set a rediculously long
-        # interval. In this case about 11 days.
-        return 10e8
+        # interval. In this case about 317 years.
+        return 10e12
 
 @app.callback(
     dd.Output('graph-update-button', 'children'),
     [dd.Input('graph-update-button', 'n_clicks')])
-def toggle_graph_update(n_clicks):
+def update_graph_button(n_clicks):
     if (n_clicks is None) or (n_clicks % 2 == 0):
         return 'Graph updates are ON'
     else:
         return 'Graph updates are OFF'
 
 @app.callback(
-    dd.Output('title', 'children'),
+    dd.Output('placeholder', 'children'),
     [dd.Input('update-timer', 'n_intervals')])
-def time_domain_update(n_intervals):
+def acquire_data(n_intervals):
+    global loop_running
+
+    if loop_running:
+        return ''
+    loop_running = True
     adc.acquisition_loop()
-    return 'Iridium ADC'
+    adc.decode_loop()
+    loop_running = False
+    return ''
 
 @app.callback(
     dd.Output('time-domain-graph', 'figure'),
@@ -113,23 +144,24 @@ def time_domain_update(n_intervals):
     global magnitude
     global sample_index
     try:
-        adc.decode_loop()
         magnitude = adc.decoded_data_queue[0]
         # print('magnitude: {}'.format(magnitude))
-        sample_index = [nn for nn in range(len(magnitude))]
+        sample_index = 1 / adc.sample_rate * np.linspace(0, adc.number_of_samples,
+                num=adc.number_of_samples,
+                endpoint=False)
     except IndexError:
-        raise de.PreventUpdate
+        pass
 
     return {'data': [{'x': sample_index, 'y': magnitude,
                       # 'type': 'line',
                       'name': 'time domain'}],
             'layout': {'title': 'Magnitude vs. sample',
                        'xaxis': {'title': 'Sample Index',
-                                 'range': [0, 1024]
-                                 },
+                                 'range': [0, adc.number_of_samples/adc.sample_rate]
+                                },
                        'yaxis': {'title': 'Magnitude',
-                                 'range': [-0.5 * 4.096, 0.5 * 4.096]
-                                 }
+                                 'range': [-1, 1]
+                                }
                       }
            }
 
@@ -139,16 +171,16 @@ def time_domain_update(n_intervals):
               dd.State('window-functions', 'value')])
 def freq_domain_update(n_intervals, fft_length, window):
     global freq_axis
+    global freq_mag
     try:
        freq_mag = adc.decoded_data_queue[0] * window_map[window]
     except IndexError:
-        raise de.PreventUpdate
+        pass
     except ValueError:
         raise
-        # raise de.PreventUpdate
     freq_axis = np.fft.rfftfreq(n=fft_length, d=1/adc.sample_rate)
     freq_mag = 20 * np.log10(np.abs(
-        np.fft.rfft(a=freq_mag, n=fft_length) * 2 / 1024))
+        np.fft.rfft(a=freq_mag, n=fft_length) * 2 / fft_length))
 
     return {'data': [{'x': freq_axis, 'y': freq_mag,
                       # 'type': 'line',
@@ -156,7 +188,7 @@ def freq_domain_update(n_intervals, fft_length, window):
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Sample Index',
                                  'type': 'log',
-                                 'range': np.log10([10, adc.sample_rate/2])
+                                 'range': np.log10([100, adc.sample_rate/2])
                                  },
                        'yaxis': {'title': 'Magnitude [dB]',
                                  'range': [-150, 10]
@@ -165,4 +197,6 @@ def freq_domain_update(n_intervals, fft_length, window):
            }
 
 if __name__ == '__main__':
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.CRITICAL)
     app.run_server(debug=False)

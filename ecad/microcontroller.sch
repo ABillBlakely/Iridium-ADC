@@ -583,8 +583,6 @@ PC13 is not reading correctly, \nPC4 possible alternate
 Text Notes 4000 2250 0    60   ~ 0
 May be issues with all of PC13, \nPC14 and PC15 due to battery \nmanagement system.
 NoConn ~ 6700 2650
-Text Label 6950 3000 0    60   ~ 0
-PA5
 Text Notes 6500 2250 0    60   ~ 0
 Cut and relocate these traces
 Wire Wire Line
@@ -892,4 +890,8 @@ Wire Notes Line
 	7800 3150 7800 2300
 Wire Notes Line
 	7800 2300 6550 2300
+Text Notes 6650 3550 0    60   ~ 0
+Orig PA5 was used here, \nbut it caused strange \nproblems so PA 11 is \nused instead.
+Text Label 6950 3000 0    60   ~ 0
+PC7
 $EndSCHEMATC
