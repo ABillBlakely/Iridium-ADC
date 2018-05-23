@@ -229,6 +229,7 @@ uint32_t ADC_Class::read_data_word()
 
     notRead = LOW;
     notChipSelect = LOW;
+    wait_4_MCLK_cycles();
     MSB_16 = dataBus.read();
     notChipSelect = HIGH;
     notRead = HIGH;
@@ -237,6 +238,7 @@ uint32_t ADC_Class::read_data_word()
 
     notRead = LOW;
     notChipSelect = LOW;
+    wait_4_MCLK_cycles();
     LSB_16 = dataBus.read();
     notChipSelect = HIGH;
     notRead = HIGH;

@@ -29,9 +29,9 @@ freq_mag = [1e-12]
 freq_mag_history = deque(maxlen=20)
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 500
+update_period_ms = 1800
 
-window_map = {'rect': 1,
+window_map = {'rect': [1] * adc.number_of_samples,
               'blackman': np.blackman(adc.number_of_samples),
               'kaiser5': np.kaiser(adc.number_of_samples, 5 * np.pi),
               'kaiser7': np.kaiser(adc.number_of_samples, 7 * np.pi),}
@@ -45,20 +45,22 @@ app.layout = html.Div(id = 'Body',
             html.Div(id='accumulated-status'),
             html.Button('Toggle Graph Update',
                         id='graph-update-button',
-                        n_clicks=0),
-            html.Div(''),
-            html.Label('Decimation Rate Selection:'),
-            dcc.RadioItems(id='decimation-rate',
-                           options=[
-                                {'label':'1', 'value': '0'},
-                                {'label':'2', 'value': '1'},
-                                {'label':'4', 'value': '2'},
-                                {'label':'8', 'value': '3'},
-                                {'label':'16', 'value': '4'},
-                                {'label':'32', 'value': '5'},
-                                ],
-                           value='5',
-                          ),
+                        n_clicks=0,
+                        accessKey='p'),
+            html.Div([
+                html.Label('Decimation Rate Selection:'),
+                dcc.RadioItems(id='decimation-rate',
+                               options=[
+                                    {'label':'1', 'value': '0'},
+                                    {'label':'2', 'value': '1'},
+                                    {'label':'4', 'value': '2'},
+                                    {'label':'8', 'value': '3'},
+                                    {'label':'16', 'value': '4'},
+                                    {'label':'32', 'value': '5'},
+                                    ],
+                               value='5',
+                              )],
+                style={'display': 'none'}),
             dcc.Graph(id='time-domain-graph'),
             dcc.Graph(id='freq-domain-graph'),
             html.Button('Averaging',
@@ -184,10 +186,10 @@ def time_domain_update(n_intervals):
            }
 
 @app.callback(dd.Output('freq-domain-graph', 'figure'),
-             [dd.Input('update-timer', 'n_intervals')],
-             [dd.State('fft-length', 'value'),
-              dd.State('window-functions', 'value'),
-              dd.State('freq-average-button','n_clicks')])
+             [dd.Input('update-timer', 'n_intervals'),
+              dd.Input('fft-length', 'value'),
+              dd.Input('window-functions', 'value')],
+             [dd.State('freq-average-button','n_clicks')])
 def freq_domain_update(n_intervals, fft_length, window, average_clicks):
     global freq_axis
     global freq_mag
@@ -201,7 +203,8 @@ def freq_domain_update(n_intervals, fft_length, window, average_clicks):
     except ValueError:
         # The magnitude array is not the same length as the window. this is a
         # problem.
-        raise
+        logging.error(f'Input buffer size {len(magnitude)} expected {adc.number_of_samples}')
+        raise de.PreventUpdate
     if fft_length != len(freq_axis):
         # Compute a new frequency axis if it does not match the old axis.
 
@@ -210,7 +213,8 @@ def freq_domain_update(n_intervals, fft_length, window, average_clicks):
         freq_axis = np.fft.rfftfreq(n=fft_length, d=1/adc.sample_rate)
     # Compute the frequency magnitude
     freq_mag = np.abs(np.fft.rfft(a=freq_mag, n=fft_length)
-        * 2 / adc.number_of_samples)
+        * 2 / adc.number_of_samples
+        / sum(window_map[window]) * len(window_map[window]))
     # Store every value and calcualte the average.
     freq_mag_history.append(freq_mag)
     freq_avg_mag = np.mean(freq_mag_history, axis=0)

@@ -31,7 +31,7 @@ class SerialComms():
     ser.timeout = 0.5
     ser.port = 'COM5'
 
-    number_of_samples = 16384
+    number_of_samples = 8192
     sample_rate = 78125
     decimation_to_sample_rate_map = {'1' :2500000,
                                      '2' :1250000,
@@ -162,7 +162,12 @@ class SerialComms():
 
 if __name__ == '__main__':
     import timeit
+    TEST_ITERATIONS = 10
+
     ser_test = SerialComms()
+
+    ser_test.input_data_queue = deque(maxlen=TEST_ITERATIONS)
+    ser_test.decoded_data_queue = deque(maxlen=TEST_ITERATIONS)
 
     ser_test.reset()
     ser_test.setup()
@@ -172,9 +177,9 @@ if __name__ == '__main__':
     # ser_test.start_sampling()
 
     logging.info('Acquisition Loop time: {}'.format(
-        timeit.timeit(ser_test.acquisition_loop, number=10)))
+        timeit.timeit(ser_test.acquisition_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
     logging.info('Decode Loop time: {}'.format(
-        timeit.timeit(ser_test.decode_loop, number=10)))
+        timeit.timeit(ser_test.decode_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
     logging.info(f'length of decoded buffers:\n\t{[len(x) for x in list(ser_test.decoded_data_queue)]}')
 
     # for kk in range(200):
