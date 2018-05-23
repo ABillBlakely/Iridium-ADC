@@ -61,6 +61,7 @@ void control_signals()
 
 void data_tx()
 {
+
     printf("start\n");
 
     for(int tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
