@@ -15,7 +15,7 @@ from time import sleep
 
 adc = SerialComms()
 
-adc.change_decimation_rate('4')
+adc.change_decimation_rate('3')
 
 adc.ser.reset_input_buffer()
 
@@ -245,7 +245,7 @@ def freq_domain_update(status, fft_length, window, average_clicks):
                                  'range': np.log10([10, adc.sample_rate/2])
                                  },
                        'yaxis': {'title': 'Magnitude [dB]',
-                                 'range': [-120, 10]
+                                 'range': [-150, 30]
                                  }
                       }
            }

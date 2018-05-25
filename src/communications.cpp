@@ -55,21 +55,12 @@ void control_signals()
             }
             break;
         }
-        case 'V':
-        case 'v':
-        {
-            // adc.power_up();
-            // adc.write_control_register(0x0003, 0x7FFF);
-            // adc.power_down();
-            adc.read_overrange_register(true);
-            break;
-        }
         case 'F':
         case 'f':
         {
-            // adc.power_up();
-            // adc.write_control_register(0x0005, 0x3333);
-            // adc.power_down();
+            adc.power_up();
+            adc.write_control_register(0x0003, 0x23F0);
+            adc.power_down();
             adc.read_offset_register(true);
             break;
         }
@@ -80,6 +71,15 @@ void control_signals()
             // adc.write_control_register(0x0004, 0x5FFF);
             // adc.power_down();
             adc.read_gain_register(true);
+            break;
+        }
+        case 'V':
+        case 'v':
+        {
+            // adc.power_up();
+            // adc.write_control_register(0x0005, 0x0000);
+            // adc.power_down();
+            adc.read_overrange_register(true);
             break;
         }
         default:

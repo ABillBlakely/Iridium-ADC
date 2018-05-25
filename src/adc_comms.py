@@ -9,11 +9,15 @@ from multiprocessing import Process, Queue, Pipe
 from collections import deque
 
 # Use logger for, um, logging...
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # Couple of helpful macros used in conversion of strings to ints.
 HEX = 16
 BIN = 2
+
+# SCALE_FACTOR is multiplied by the normalized signal magnitude, where the full
+# scale range is -1 to 1
+SCALE_FACTOR = 1 / 0.11957
 
 data_buffer = []
 
@@ -29,9 +33,9 @@ class SerialComms():
     number_of_samples = 16384
     sample_rate = 78125
     decimation_to_sample_rate_map = {'1' :2500000,
-                                     '2' :1250000,
+                                     '0' :1250000,
                                      '4' : 625000,
-                                     '8' : 312500,
+                                     '2' : 312500,
                                      '16': 156250,
                                      '32':  78125,
                                      '': 0,
@@ -155,9 +159,9 @@ class SerialComms():
                 self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement
-                    untangled_buffer.append((int(untangled_string[0:24], BIN) - (1<<24)) / (2**23-1) * 12)
+                    untangled_buffer.append((int(untangled_string[0:24], BIN) - (1<<24)) / (2**23-1) * SCALE_FACTOR)
                 else:
-                    untangled_buffer.append((int(untangled_string[1:24], BIN)) / (2**23 - 1) * 12)
+                    untangled_buffer.append((int(untangled_string[1:24], BIN)) / (2**23 - 1) * SCALE_FACTOR)
 
                 # print(f'{untangled_buffer[-1]}')
             self.decoded_data_queue.append(untangled_buffer)
