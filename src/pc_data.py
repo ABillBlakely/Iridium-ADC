@@ -15,7 +15,7 @@ from time import sleep
 
 adc = SerialComms()
 
-adc.change_decimation_rate('5')
+adc.change_decimation_rate('4')
 
 adc.ser.reset_input_buffer()
 
@@ -220,6 +220,7 @@ def freq_domain_update(status, fft_length, window, average_clicks):
         # TODO: check sample rate as well, but this is currently not runtime
         # configurable so does not need to be done yet.
         freq_axis = np.fft.rfftfreq(n=fft_length, d=1/adc.sample_rate)
+        freq_mag_history.clear()
     # Compute the frequency magnitude
     freq_mag = np.abs(np.fft.rfft(a=freq_mag, n=fft_length)
         * 2 / adc.number_of_samples

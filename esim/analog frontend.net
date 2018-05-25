@@ -37,14 +37,14 @@ R24 outN N020 18
 C11 N020 N017 120p
 V4 ocm 0 2.048
 XU4 N008 NC_01 vcc N005 N013 0 vcc N012 OPA1632
-XU5 N009 NC_02 vcc N007 N015 0 vcc N014 OPA1632
+XU5 N009 ocm vcc N007 N015 0 vcc N014 OPA1632
 V5 AVDD3 0 5
 C14 N022 N021 2.2µ
 C12 N011 N010 2.2µ
 V2 bias 0 6
 ;ac dec 100 1 300Meg
-.noise V(outP, outN) V1 dec 100 1 1Meg
-;.tran 0 4m 0 1u
+;noise V(outP, outN) V1 dec 100 1 1Meg
+.tran 0 4m 0 1u
 .options plotwinsize 0
 * 4 volt maximum
 * The THS 4520 represents \nthe ADC's built in diff amp
