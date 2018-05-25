@@ -10,14 +10,22 @@ from adc_comms import SerialComms
 
 # deques are used for thread safe sharing of data
 from collections import deque
-from multiprocessing import Process
-from threading import Thread
 import numpy as np
+from time import sleep
 
 adc = SerialComms()
 
-adc.reset()
-adc.setup()
+adc.change_decimation_rate('5')
+
+adc.ser.reset_input_buffer()
+
+adc.write('v')
+print(f'Overrange: 0x{adc.readline().upper()} default is 0xCCCC\n')
+adc.write('f')
+print(f'Offset: 0x{adc.readline().upper()} default is 0x0000\n')
+adc.write('g')
+print(f'Gain: 0x{adc.readline().upper()} default is 0xA000\n')
+
 # Get and format the status register for markdown display.
 status_reg_f = "\n\t" + "\n\t".join(adc.status())
 
@@ -27,7 +35,7 @@ freq_mag = [1e-12]
 freq_mag_history = deque(maxlen=20)
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 1800
+update_period_ms = 2000
 
 window_map = {'rect': [1] * adc.number_of_samples,
               'blackman': np.blackman(adc.number_of_samples),
@@ -58,7 +66,8 @@ app.layout = html.Div(id = 'Body',
                                     ],
                                value='5',
                               )],
-                style={'display': 'none'}),
+                style={'display': 'none'}
+                ),
             dcc.Graph(id='time-domain-graph'),
             dcc.Graph(id='freq-domain-graph'),
             html.Button(id='freq-average-button', n_clicks=0),
@@ -100,8 +109,14 @@ app.layout = html.Div(id = 'Body',
     [dd.Input('decimation-rate', 'value')])
 def change_decimation_rate(rate):
     raise de.PreventUpdate
-    # adc.change_decimation_rate(rate)
-    # return "\n\t" + "\n\t".join(adc.status())
+    adc.stop_loops = True
+    # Wait for loops to exit
+    sleep()
+    adc.change_decimation_rate(rate)
+    formatted_status = "\n\t" + "\n\t".join(adc.status())
+    adc.stop_loops = False
+    return formatted_status
+
 
 
 @app.callback(
@@ -111,7 +126,7 @@ def toggle_graph_update(n_clicks):
     if (n_clicks is None) or (n_clicks % 2 == 0):
         return update_period_ms
     else:
-        # Setting disable is not working so instead just set a rediculously long
+        # Setting disable is not working so instead just set a ridiculously long
         # interval. In this case about 317 years.
         return 10e12
 
@@ -137,13 +152,13 @@ def freq_average_button(n_clicks):
     dd.Output('accumulated-status', 'children'),
     [dd.Input('update-timer', 'n_intervals')])
 def acquire_data(n_intervals):
-    if adc.loop_running:
-        return
+    if adc.stop_loops or adc.loop_running:
+        raise de.PreventUpdate
     adc.loop_running = True
+    logging.info("Starting acq loop")
     adc.acquisition_loop()
     adc.decode_loop()
     adc.loop_running = False
-    print(adc.accumulated_status)
     return (f'accumulated status: {adc.accumulated_status}')
 
 @app.callback(
@@ -154,7 +169,7 @@ def time_domain_update(n_clicks):
     global sample_index
     try:
         magnitude = adc.decoded_data_queue[0]
-        magnitude -= np.mean(magnitude)
+        # magnitude -= np.mean(magnitude)
         # print('magnitude: {}'.format(magnitude))
         sample_index = 1 / adc.sample_rate * np.linspace(0, adc.number_of_samples,
                 num=adc.number_of_samples,
@@ -166,7 +181,9 @@ def time_domain_update(n_clicks):
 
     return {'data': [{'x': sample_index, 'y': magnitude,
                       # 'type': 'line',
-                      'name': 'time domain'}],
+                      'name': 'time domain',
+                      # 'mode': 'lines+markers',
+                    }],
             'layout': {'title': 'Magnitude vs. sample',
                        'xaxis': {'title': 'Sample Index',
                                  'range': [0, adc.number_of_samples/adc.sample_rate]
@@ -178,11 +195,11 @@ def time_domain_update(n_clicks):
            }
 
 @app.callback(dd.Output('freq-domain-graph', 'figure'),
-             [dd.Input('update-timer', 'n_intervals'),
+             [dd.Input('accumulated-status', 'children'),
               dd.Input('fft-length', 'value'),
               dd.Input('window-functions', 'value')],
              [dd.State('freq-average-button','n_clicks')])
-def freq_domain_update(n_intervals, fft_length, window, average_clicks):
+def freq_domain_update(status, fft_length, window, average_clicks):
     global freq_axis
     global freq_mag
     try:
@@ -219,14 +236,15 @@ def freq_domain_update(n_intervals, fft_length, window, average_clicks):
 
     return {'data': [{'x': freq_axis, 'y': freq_mag_dB,
                       # 'type': 'line',
-                      'name': 'freq domain'}],
+                      'name': 'freq domain',
+                      'mode': 'lines'}],
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Sample Index',
                                  'type': 'log',
                                  'range': np.log10([10, adc.sample_rate/2])
                                  },
                        'yaxis': {'title': 'Magnitude [dB]',
-                                 'range': [-150, 10]
+                                 'range': [-120, 10]
                                  }
                       }
            }

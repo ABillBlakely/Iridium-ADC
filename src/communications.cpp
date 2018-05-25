@@ -53,6 +53,34 @@ void control_signals()
                 case '5': //fall through to default
                 default : {adc.change_decimation_rate(5);}
             }
+            break;
+        }
+        case 'V':
+        case 'v':
+        {
+            // adc.power_up();
+            // adc.write_control_register(0x0003, 0x7FFF);
+            // adc.power_down();
+            adc.read_overrange_register(true);
+            break;
+        }
+        case 'F':
+        case 'f':
+        {
+            // adc.power_up();
+            // adc.write_control_register(0x0005, 0x3333);
+            // adc.power_down();
+            adc.read_offset_register(true);
+            break;
+        }
+        case 'G':
+        case 'g':
+        {
+            // adc.power_up();
+            // adc.write_control_register(0x0004, 0x5FFF);
+            // adc.power_down();
+            adc.read_gain_register(true);
+            break;
         }
         default:
         {}
@@ -64,7 +92,7 @@ void data_tx()
 
     printf("start\n");
 
-    for(int tx_index = 0; tx_index < SAMPLES_PER_PAGE; tx_index++)
+    for(int tx_index = 0; tx_index < NUMBER_OF_SAMPLES; tx_index++)
     {
         printf("%08lx\n", sample_array[tx_index]);
     }

@@ -54,8 +54,8 @@ uint16_t DataBusClass::read()
     port_c = dataBusC.read();
     received |= (port_c & (1 << 1)) << 1;      // pc01 to bit 2
     received |= (port_c & (1 << 8)) >> 5;      // pc08 to bit 3
-    received |= (port_c & (1 << 5)) >> 0;      // pc05 to bit 5
-    received |= ((port_c & ((1 << 6)|(1 << 7)))) << 7;      // pc06 to bit 13 and  pc07 to bit 14
+    received |= (port_c & (1 << 5));           // pc05 to bit 5
+    received |= (port_c & ((1 << 6) | (1 << 7))) << 7;      // pc06 to bit 13 and  pc07 to bit 14
     return received;
 }
 

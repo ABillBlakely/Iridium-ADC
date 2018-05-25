@@ -25,33 +25,32 @@
 // | 0b101  | 32x  | 31.25k |    78.125 kSPS   |
 
 // 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
-#define NUMBER_OF_SAMPLES 8192
-// #define NUMBER_OF_SAMPLES 10
-#define NUMBER_OF_PAGES 1
-#define SAMPLES_PER_PAGE NUMBER_OF_SAMPLES / NUMBER_OF_PAGES
+#define NUMBER_OF_SAMPLES 16384
 
 class ADC_Class
 {
 public:
     ADC_Class();
     void static setup();
-    uint16_t static read_status_register(bool print_to_console);
+    void static power_up();
+    void static power_down();
     void static start_sampling();
     void static stop_sampling();
-    void static power_down();
-    void static power_up();
-    void static clear_terminal();
     void static change_decimation_rate(int multiplier);
+    uint16_t static read_status_register(bool print_to_console);
+    uint16_t static read_offset_register(bool print_to_console);
+    uint16_t static read_gain_register(bool print_to_console);
+    uint16_t static read_overrange_register(bool print_to_console);
     void static collect_samples();
 
-private:
+// private:
     uint16_t static control_reg_1_state;
     uint16_t static control_reg_2_state;
 
     uint16_t static read_adc_reg(uint8_t offset);
+    uint32_t static read_data_word();
     void static write_control_register(uint16_t control_register, uint16_t value);
     void static wait_4_MCLK_cycles();
-    uint32_t static read_data_word();
 
 };
 

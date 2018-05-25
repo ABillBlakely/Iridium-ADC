@@ -9,7 +9,7 @@ from multiprocessing import Process, Queue, Pipe
 from collections import deque
 
 # Use logger for, um, logging...
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 # Couple of helpful macros used in conversion of strings to ints.
 HEX = 16
@@ -26,7 +26,7 @@ class SerialComms():
     ser.timeout = 0.5
     ser.port = 'COM5'
 
-    number_of_samples = 8192
+    number_of_samples = 16384
     sample_rate = 78125
     decimation_to_sample_rate_map = {'1' :2500000,
                                      '2' :1250000,
@@ -58,6 +58,7 @@ class SerialComms():
         self.sio.read()
         # Write control signal
         self.write('R')
+        logging.debug('Message sent: read status register')
 
         status_table = [self.readline() for kk in range(3)]
         self.decimation_rate = status_table[-1][-10:].strip('| ')
@@ -67,6 +68,7 @@ class SerialComms():
     def start_sampling(self):
         '''Get the adc to start sampling.'''
         self.write('S')
+        logging.debug('Message sent: Start sampling')
 
     def write(self, signal):
         '''Send a control signal'''
@@ -79,10 +81,14 @@ class SerialComms():
 
     def reset(self):
         self.ser.send_break(0.5)
+        logging.debug('Message sent: Break command ')
+
         sleep(0.1)
 
     def setup(self):
         self.write('P')
+        logging.debug('Message sent: Setup Signal')
+
 
     def acquisition_loop(self):
         self.start_sampling()
@@ -91,14 +97,20 @@ class SerialComms():
         '''Loop that waits for start, collects all the samples and stores result.'''
         for nn in range(self.number_of_samples*2):
             # find the start of the data
+            if self.stop_loops:
+                logging.info(f'Stop loop encountered')
+                self.stop_loops = False
+                return
             cur_line = self.readline()
             if 'start' in cur_line:
                 logging.info(f'start line found: "{cur_line}"')
                 cur_line = self.readline()
                 logging.debug(f'first received message: "{cur_line}"')
-                while ('stop' not in cur_line ):
+                while ('stop' not in cur_line):
                     if self.stop_loops:
-                        return
+                        logging.info(f'Stop loop encountered')
+                        self.stop_loops = False
+                        break
                     try:
                         data_buffer.append(int(cur_line, HEX))
                     except ValueError:
@@ -108,7 +120,9 @@ class SerialComms():
                     # logging.info(f'Current size of data buffer {len(data_buffer)}')
                     #  Write the signal
                     cur_line = self.readline()
-                    logging.debug(f'message received: "{cur_line}"')
+                    # logging.debug(f'message received: "{cur_line}"')
+
+                logging.info(f'End line found: "{cur_line}"')
 
                 self.input_data_queue.append(data_buffer)
                 return
@@ -135,25 +149,30 @@ class SerialComms():
                                     + T[16] + T[17] + T[24] + T[25] + T[31] + T[30] + T[27] + T[29]
                                     + T[21] + T[23] + T[22] + T[20] + T[19] + T[26] + T[18] + T[28] )
                 if untangled_string[-6:]  != '010000':
-                     logging.debug(f'Untangled String: {untangled_string}')
+                    pass
+                    logging.debug(f'Impossible status, Untangled String: {untangled_string}')
+                # logging.debug(f'Untangled String: {untangled_string}')
                 self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement
                     untangled_buffer.append((int(untangled_string[0:24], BIN) - (1<<24)) / (2**23-1) * 12)
                 else:
                     untangled_buffer.append((int(untangled_string[1:24], BIN)) / (2**23 - 1) * 12)
+
                 # print(f'{untangled_buffer[-1]}')
             self.decoded_data_queue.append(untangled_buffer)
 
         except IndexError:
             # indicates input_data_queue is empty
             pass
+
     def change_decimation_rate(self, rate):
         self.stop_loops = True
-        sleep(0.5)
         self.reset()
         self.setup()
-        self.write('D' + rate)
+        self.write('D')
+        self.write(rate)
+        logging.debug(f'Message sent: Decimation rate change "D{rate}"')
         self.stop_loops = False
 
 if __name__ == '__main__':
@@ -165,8 +184,8 @@ if __name__ == '__main__':
     ser_test.input_data_queue = deque(maxlen=TEST_ITERATIONS)
     ser_test.decoded_data_queue = deque(maxlen=TEST_ITERATIONS)
 
-    ser_test.reset()
-    ser_test.setup()
+    ser_test.change_decimation_rate('5')
+
     print('\n'.join(ser_test.status()))
     print(ser_test.decimation_rate)
 

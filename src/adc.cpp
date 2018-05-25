@@ -6,7 +6,7 @@ uint16_t ADC_Class::control_reg_2_state = 0x0000;
 ADC_Class adc;
 
 volatile uint32_t busy_wait_variable;
-volatile uint32_t sample_array[SAMPLES_PER_PAGE];
+volatile uint32_t sample_array[NUMBER_OF_SAMPLES];
 volatile int data_ready = 0;
 
 ADC_Class::ADC_Class()
@@ -76,11 +76,44 @@ void ADC_Class::setup()
     power_down();
 }
 
+void ADC_Class::power_up()
+{
+    write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
+    // worst case filter latency is about 350 us.
+    wait_ms(100);
+}
+
+void ADC_Class::power_down()
+{
+    write_control_register(0x0002, (control_reg_2_state | (1 << 3)));
+}
+
+void ADC_Class::start_sampling()
+{
+    power_up();
+    notDataReady.rise(&collect_samples);
+    notDataReady.enable_irq();
+}
+
+void ADC_Class::stop_sampling()
+{
+    notDataReady.disable_irq();
+    // Save power, and power down when not being used.
+    power_down();
+}
+
+
+void ADC_Class::change_decimation_rate(int multiplier)
+{
+    power_up();
+    control_reg_1_state = ((control_reg_1_state & 0xFFF8) | multiplier);
+    write_control_register(0x0001, control_reg_1_state);
+    power_down();
+}
+
 uint16_t ADC_Class::read_status_register(bool print_to_console)
 {
     uint16_t status_reg = 0;
-
-    // TODO: define register offset macros.
 
     power_up();
     status_reg = read_adc_reg(11);
@@ -106,38 +139,65 @@ uint16_t ADC_Class::read_status_register(bool print_to_console)
     return status_reg;
 }
 
-void ADC_Class::start_sampling()
+uint16_t ADC_Class::read_offset_register(bool print_to_console)
 {
+    uint16_t status_reg = 0;
+
     power_up();
-    notDataReady.rise(&collect_samples);
-    notDataReady.enable_irq();
-}
-
-void ADC_Class::stop_sampling()
-{
-    notDataReady.disable_irq();
-    // Save power, and power down when not being used.
+    status_reg = read_adc_reg(12);
     power_down();
+    if (print_to_console)
+    {
+        printf("%04x\n", status_reg);
+    }
+    return status_reg;
 }
 
-void ADC_Class::power_down()
+uint16_t ADC_Class::read_gain_register(bool print_to_console)
 {
-    write_control_register(0x0002, (control_reg_2_state | (1 << 3)));
-}
+    uint16_t status_reg = 0;
 
-void ADC_Class::power_up()
-{
-    write_control_register(0x0002, (control_reg_2_state & ~(1 << 3)));
-    // worst case filter latency is about 350 us.
-    wait_ms(2);
-}
-
-void ADC_Class::change_decimation_rate(int multiplier)
-{
     power_up();
-    control_reg_1_state = ((control_reg_1_state & 0xFFF8) | multiplier);
-    write_control_register(0x0001, control_reg_1_state);
+    status_reg = read_adc_reg(13);
     power_down();
+    if (print_to_console)
+    {
+        printf("%04x\n", status_reg);
+    }
+    return status_reg;
+}
+
+uint16_t ADC_Class::read_overrange_register(bool print_to_console)
+{
+    uint16_t status_reg = 0;
+
+    power_up();
+    status_reg = read_adc_reg(14);
+    power_down();
+    if (print_to_console)
+    {
+        printf("%04x\n", status_reg);
+    }
+    return status_reg;
+}
+
+void ADC_Class::collect_samples()
+{
+    // called on interrupt from notDataReady pin
+    static int32_t sample_index = 0;
+
+    if (sample_index < NUMBER_OF_SAMPLES)
+    {
+        // this should all happen in under 250 ns for maximum data rate.
+        sample_array[sample_index] = ADC_Class::read_data_word();
+        sample_index++;
+    }
+    else
+    {
+        stop_sampling();
+        sample_index = 0;
+        data_ready = 1;
+    }
 }
 
 uint16_t ADC_Class::read_adc_reg(uint8_t offset)
@@ -164,9 +224,7 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     // | 3      | ~BYP_F1   | Bypass Filter 1. If this bit is 0, Filter 1 is bypassed. This should only occur when the user requires unfiltered modulator data to be output.
     // | 2 to 0 | DEC[2:0]  | Decimation Rate. These bits set the decimation rate of Filter 2. All 0s implies that the filter is bypassed. A value of 1 corresponds to 2× decimation, a value of 2 corresponds to 4× decimation, and so on, up to the maximum value of 5, corresponding to 32× decimation.
     //
-    // Set for 1MHZ output data rate and to read the status register.
 
-    // Set the particular read status bit. Should be 11, 12, 13, or 14.
     write_control_register(0x0001, (control_reg_1_state | (1 << offset)));
 
     notChipSelect = LOW;
@@ -189,6 +247,31 @@ uint16_t ADC_Class::read_adc_reg(uint8_t offset)
     adc_reg = dataBus.detangle(adc_reg);
 
     return adc_reg;
+}
+
+uint32_t ADC_Class::read_data_word()
+{
+    static uint16_t MSB_16;
+    static uint16_t LSB_16;
+
+    notRead = LOW;
+    notChipSelect = LOW;
+    wait_4_MCLK_cycles();
+    MSB_16 = dataBus.read();
+    notChipSelect = HIGH;
+    notRead = HIGH;
+
+    wait_4_MCLK_cycles();
+
+    notRead = LOW;
+    notChipSelect = LOW;
+    wait_4_MCLK_cycles();
+    LSB_16 = dataBus.read();
+    notChipSelect = HIGH;
+    notRead = HIGH;
+
+    // concatenate and return the 32 bit data word.
+    return ((MSB_16 << 16) | LSB_16);
 }
 
 void ADC_Class::write_control_register(uint16_t control_register, uint16_t value)
@@ -220,48 +303,4 @@ void ADC_Class::wait_4_MCLK_cycles()
     // Without this a high-low-high cycle take about 30 ns ~= 1 MCLK cycle.
     busy_wait_variable = 0;
     busy_wait_variable ++;
-}
-
-uint32_t ADC_Class::read_data_word()
-{
-    static uint16_t MSB_16;
-    static uint16_t LSB_16;
-
-    notRead = LOW;
-    notChipSelect = LOW;
-    wait_4_MCLK_cycles();
-    MSB_16 = dataBus.read();
-    notChipSelect = HIGH;
-    notRead = HIGH;
-
-    wait_4_MCLK_cycles();
-
-    notRead = LOW;
-    notChipSelect = LOW;
-    wait_4_MCLK_cycles();
-    LSB_16 = dataBus.read();
-    notChipSelect = HIGH;
-    notRead = HIGH;
-
-    // concatenate and return the 32 bit data word.
-    return ((MSB_16 << 16) | LSB_16);
-}
-
-void ADC_Class::collect_samples()
-{
-    // called on interrupt from notDataReady pin
-    static int32_t sample_index = 0;
-
-    if (sample_index < SAMPLES_PER_PAGE)
-    {
-        // this should all happen in under 250 ns for maximum data rate.
-        sample_array[sample_index] = ADC_Class::read_data_word();
-        sample_index++;
-    }
-    else
-    {
-        stop_sampling();
-        sample_index = 0;
-        data_ready = 1;
-    }
 }
