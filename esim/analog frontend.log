@@ -1,0 +1,65 @@
+Circuit: * C:\Users\boxca\Google Drive\Projects\Iridium-ADC\esim\analog frontend.asc
+
+WARNING: Node N021 is floating.
+
+Instance "m:u5:53": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u5:52": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u5:51": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u5:50": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u5:45": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u5:44": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u4:53": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u4:52": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u4:51": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u4:50": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u4:45": Length shorter than recommended for a level 1 MOSFET.
+Instance "m:u4:44": Length shorter than recommended for a level 1 MOSFET.
+Early termination of direct N-R iteration.
+Direct Newton iteration failed to find .op point.  (Use ".option noopiter" to skip.)
+Starting Gmin stepping
+Gmin = 10
+Gmin = 1.07374
+Gmin = 0.115292
+Gmin = 0.0123794
+vernier = 0.5
+Gmin = 0.00207692
+vernier = 0.25
+vernier = 0.125
+vernier = 0.0625
+vernier = 0.03125
+Gmin = 0.00179021
+vernier = 0.015625
+vernier = 0.0078125
+vernier = 0.00390625
+vernier = 0.00195313
+Gmin = 0.00178759
+vernier = 0.000976563
+vernier = 0.000488281
+Gmin = 0
+Gmin stepping failed
+
+Starting source stepping with srcstepmethod=0
+Source Step = 3.0303%
+Source Step = 33.3333%
+Source Step = 63.6364%
+Source Step = 93.9394%
+Source stepping succeeded in finding the operating point.
+
+
+Date: Thu May 24 17:57:44 2018
+Total elapsed time: 1.053 seconds.
+
+tnom = 27
+temp = 27
+method = trap
+totiter = 1896
+traniter = 0
+tranpoints = 0
+accept = 0
+rejected = 0
+matrix size = 365
+fillins = 1295
+solver = Normal
+Matrix Compiler1:    5281 opcodes
+Matrix Compiler2: 52.64 KB object code size  13.4/12.6/[6.7]
+

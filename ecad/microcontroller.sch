@@ -890,8 +890,8 @@ Wire Notes Line
 	7800 3150 7800 2300
 Wire Notes Line
 	7800 2300 6550 2300
-Text Notes 6650 3550 0    60   ~ 0
-Orig PA5 was used here, \nbut it caused strange \nproblems so PA 11 is \nused instead.
+Text Notes 6550 3550 0    60   ~ 0
+Orig PA5 was used here, \nbut it is connected to the \ndev board LED. \nPC7 is used instead.
 Text Label 6950 3000 0    60   ~ 0
 PC7
 $EndSCHEMATC
