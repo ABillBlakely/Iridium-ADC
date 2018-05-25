@@ -15,7 +15,7 @@ from time import sleep
 
 adc = SerialComms()
 
-adc.change_decimation_rate('3')
+adc.change_decimation_rate('4')
 
 adc.ser.reset_input_buffer()
 
@@ -35,7 +35,7 @@ freq_mag = [1e-12]
 freq_mag_history = deque(maxlen=20)
 freq_axis = [0]
 app = dash.Dash()
-update_period_ms = 2000
+update_period_ms = 1000
 
 window_map = {'rect': [1] * adc.number_of_samples,
               'blackman': np.blackman(adc.number_of_samples),
@@ -49,8 +49,7 @@ app.layout = html.Div(id = 'Body',
             html.H1("Iridium ADC", id='title'),
             dcc.Markdown(id='status-register', children=status_reg_f),
             html.Div(id='accumulated-status'),
-            html.Button('Toggle Graph Update',
-                        id='graph-update-button',
+            html.Button(id='graph-update-button',
                         n_clicks=0,
                         accessKey='p'),
             html.Div([
@@ -68,6 +67,8 @@ app.layout = html.Div(id = 'Body',
                               )],
                 style={'display': 'none'}
                 ),
+            html.Button(id='show-windowed-button',
+                        n_clicks=0,),
             dcc.Graph(id='time-domain-graph'),
             dcc.Graph(id='freq-domain-graph'),
             html.Button(id='freq-average-button', n_clicks=0),
@@ -149,6 +150,15 @@ def freq_average_button(n_clicks):
         return 'Averaging ON'
 
 @app.callback(
+    dd.Output('show-windowed-button', 'children'),
+    [dd.Input('show-windowed-button', 'n_clicks')])
+def show_windowed_button(n_clicks):
+    if (n_clicks is None) or (n_clicks % 2 == 0):
+        return 'Time domain window OFF'
+    else:
+        return 'Time domain window ON'
+
+@app.callback(
     dd.Output('accumulated-status', 'children'),
     [dd.Input('update-timer', 'n_intervals')])
 def acquire_data(n_intervals):
@@ -163,8 +173,10 @@ def acquire_data(n_intervals):
 
 @app.callback(
     dd.Output('time-domain-graph', 'figure'),
-    [dd.Input('accumulated-status', 'children')])
-def time_domain_update(n_clicks):
+    [dd.Input('accumulated-status', 'children'),
+     dd.Input('show-windowed-button', 'n_clicks'),
+     dd.Input('window-functions', 'value')])
+def time_domain_update(status, show_windowed_clicks, window):
     global magnitude
     global sample_index
     try:
@@ -178,6 +190,12 @@ def time_domain_update(n_clicks):
         return
     except:
         raise
+
+    show_windowed = (show_windowed_clicks % 2 != 0)
+
+    if show_windowed:
+        magnitude = (magnitude - np.mean(magnitude)) * window_map[window]
+
 
     return {'data': [{'x': sample_index, 'y': magnitude,
                       # 'type': 'line',
