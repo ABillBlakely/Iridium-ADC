@@ -10,7 +10,6 @@
 #include "pins.h"
 
 extern Serial usb_serial;
-extern volatile int abort_transfer;
 
 void control_signals();
 

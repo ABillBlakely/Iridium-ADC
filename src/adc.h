@@ -24,8 +24,10 @@
 // | 0b100  | 16x  | 62.5k  |    156.25 kSPS   |
 // | 0b101  | 32x  | 31.25k |    78.125 kSPS   |
 
-// 256 [kB] * 1024 [B/kB] * 8 [b/B] / 32 [b/sample] = 65536 samples.
+// 16384 is the maximum power of two that can fit in memory. We are always sampling the highest number of samples, but
+// only transmit a subset because the transmission takes much much longer than the sampling.
 #define NUMBER_OF_SAMPLES 16384
+
 
 class ADC_Class
 {

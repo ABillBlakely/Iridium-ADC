@@ -1,8 +1,8 @@
 #include "communications.h"
 
 Serial usb_serial(USBTX, USBRX);
-// usb_serial.set_flow_control(CTS, CTS);
-volatile int abort_transfer = 0;
+
+volatile int number_of_samples_to_TX = 0;
 
 void control_signals()
 {
@@ -26,16 +26,12 @@ void control_signals()
         case 'S':
         case 's':
         {
-            // Receive samples
-            abort_transfer = 0;
             adc.start_sampling();
             break;
         }
         case 'T':
         case 't':
         {
-            // Stop sampling
-            abort_transfer = 1;
             adc.stop_sampling();
             break;
         }
@@ -55,6 +51,21 @@ void control_signals()
             }
             break;
         }
+        case 'L':
+        case 'l':
+        {
+
+            switch (usb_serial.getc())
+            {
+                case '3': {number_of_samples_to_TX = 16384; break;}
+                case '2': {number_of_samples_to_TX = 8192; break;}
+                case '1': {number_of_samples_to_TX = 4096; break;}
+                case '0': // fall through to default
+                default: {number_of_samples_to_TX = 1024; break;}
+            }
+            break;
+        }
+
         case 'F':
         case 'f':
         {
@@ -92,7 +103,7 @@ void data_tx()
 
     printf("start\n");
 
-    for(int tx_index = 0; tx_index < NUMBER_OF_SAMPLES; tx_index++)
+    for(int tx_index = 0; tx_index < number_of_samples_to_TX; tx_index++)
     {
         printf("%08lx\n", sample_array[tx_index]);
     }

@@ -2,6 +2,7 @@
 
 int main()
 {
+    // usb_serial.baud(115200);
     usb_serial.baud(1500000);
 
     // attach the serial interrupt. These signals are handled in communications.cpp by the control signals function.
