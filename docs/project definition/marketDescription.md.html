@@ -2,39 +2,34 @@
  
 <!-- a. detailed description of proposed product. -->
 The Iridium ADC is enabled by the development of several integrated circuits.
-Balanced inputs with selectable impedance allow for selection for lowest self noise or best transfer of signal from higher impedance sources.
-The low noise front end is enabled by the series of difference amplifiers produced by THAT corp. The THAT 1200 Balanced Line Receiver IC is able to condition the incoming with a minimum of added noise while providing up to 90dB of common mode noise rejection.
+Balanced inputs afford better environmental noise immunity, while the option for single ended input allows versatility of measurement setup.
+The low noise front end is enabled by the fully differential operational amplifiers produced by Texas Instruments. The OPA1632 fully differential amplifier boasts incredibly low distortion and noise specifications at 0.000022% and 1.7 nV/sqrt(Hz) respectively. It is performance like this that enable the use of 24 bit converters.
 
-This feeds into the impressive Texas Instruments ADS1675 delta-sigma ADC capable of 24 bit conversion with a bandwidth of 1.7 MHz. This chip allows for guaranteed monotonic conversion across all 24 bits, with the addition of excellent linearity of conversion that comes along with delta-sigma converters. A calibrated voltage reference ensures that converted data is based on a known standard. All of this is controlled by a microcontroller that converts the I<sup>2</sup>C data to USB Audio class PCM and powered by a low noise, linear power supply for clean, quiet, smooth power.
+This feeds into the impressive Analog Devices AD7760 delta-sigma ADC capable of 24 bit conversion with a maximum output data rate of 2.5 MSPS for a bandwidth of 1.25 kHz. This ADC features adjustable output data rates allowing a selection that suits the particular test. It also features non aliasing FIR low pass filter simplifying the front end analog design. We also get guaranteed monotonic conversion across all 24 bits, with the addition of excellent linearity of conversion that comes along with delta-sigma converters. A calibrated voltage reference ensures that converted data is based on a known standard. All of this is controlled by a microcontroller that converts the data to USB Audio class PCM and powered by a low noise, linear power supply for clean, quiet, smooth power.
 
 <!-- b. Limitations of present solutions -->
 
-Presently, the devices produced by Audio Precision are best in class devices. But only their most expensive model has a bandwidth exceeding 90 kHz, and their cheapest unit cost several thousand dollars. Many consumer audio interfaces offer 24 or even 32 bit converters, and can offer sample rates of up to 192 kHz while maintaining distortion figures down to just a few parts per million. This is similar to Audio Precision, and they do this for just a few hundred dollars. Their usefulness for is limited for because they do not offer a stable or known reference voltage. They must be calibrated with each use and the reference tends to drift heavily with temperature and age.
+Presently, the devices produced by Audio Precision are best-in-class devices. But only their most expensive model has a bandwidth exceeding 90 kHz, and their cheapest unit cost several thousand dollars. Many consumer audio interfaces offer 24 or even 32 bit converters, and can offer sample rates of up to 192 kHz while maintaining distortion figures down to just a few parts per million. This is similar to Audio Precision, and they do this for just a few hundred dollars. Their usefulness for is limited for because they do not offer a stable or known reference voltage. They must be calibrated with each use and the reference tends to drift heavily with temperature and age.
 
 <!-- c. Strengths that can be leveraged that competitors can not. -->
-
-As a small, potential driven company, The Iridium ADC can serve its small audio company customers by being on itself. The same drivers that have allowed the explosion of companies specializing in audio can allow us to serve their needs.
-
 <!-- d. areas of market that are not well served. -->
-
-The cost to performance ratio of this device make it able to target markets too small for larger devices to go after.
-
 <!-- e. window of opportunity. -->
-
+As a small, potential driven company, The Iridium ADC can serve its small audio company customers by being one itself. The same drivers that have allowed the explosion of companies specializing in audio can allow us to serve their needs.
+The cost to performance ratio of this device make it able to target markets too small for larger devices to go after.
 Audio measurement is currently underutilized in the hobby community. By encouraging and supporting the DIY community we can establish a name in the audio development community. This can lead to an opportunity in getting companies as customers when they are small but growing.
 
 <!-- f. effort to enter market -->
 
 Cost to enter market is small, but entrance is not easy. 
-We expect to sell very low volume in the first few years. 
+If produced, Expected sales would be very low volume in the first few years. 
 Expected sales are in the 100's of units per year. 
-This puts us well under the level where dedicated manufacturers are financially feasible. 
+This puts us well under the level where a dedicated manufacturer is financially feasible. 
 We expect to hand assemble these units in the first few years, so the major capital outlay is in the cost to keep stock on hand. 
-Using the estimated BOM Cost for 100 units, this requires a capital outlay of $12,300, plus additional costs for shipping, defects, advertising, and other costs. 
+Using the estimated BOM Cost for 100 units, this requires a capital outlay of around $15,000, plus additional costs for shipping, defects, advertising, and other costs. 
 There are limited marketing opportunities for these markets. 
 Advertisement can be performed in trade journals. 
 Dealing directly with specialty retailers is essential.
-Using a direct sales approach ensures that margins are kept high and are another way of reducing customer cost.
+Using a direct sales approach ensures that margins are kept high is another way of reducing customer cost.
 
 <!-- g. key partners -->
 <!-- h. key customers -->
