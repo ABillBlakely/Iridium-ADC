@@ -340,9 +340,9 @@ def freq_domain_update(status,
     if number_of_averages != len(freq_mag_history):
         freq_mag_history = deque(maxlen=number_of_averages)
 
-    # Compute the frequency magnitude
+    # Compute the frequency magnitude in dBRMS
     freq_mag = np.abs(np.fft.rfft(a=freq_mag, n=adc.number_of_samples)
-        * 2 / adc.number_of_samples
+        * np.sqrt(2) / adc.number_of_samples
         / sum(window_map[window]) * len(window_map[window]))
     # Store every value and calculate the average.
     freq_mag_history.append(freq_mag)
@@ -361,9 +361,10 @@ def freq_domain_update(status,
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Frequency [Hz]',
                                  'type': 'log',
-                                 'range': np.log10([10, adc.sample_rate/2])
+                                 # 'range': np.log10([10, adc.sample_rate/2])
+                                 'range': 'auto',
                                  },
-                       'yaxis': {'title': 'Magnitude [dB]',
+                       'yaxis': {'title': 'RMS Magnitude [dBV]',
                                  'range': [-150, 30]
                                  }
                       }
