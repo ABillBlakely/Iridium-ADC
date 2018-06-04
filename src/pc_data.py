@@ -35,7 +35,7 @@ sample_index = [0]
 freq_mag = [1e-24]
 freq_mag_history = deque(maxlen=1)
 freq_axis = [0]
-
+rms_mag = 0
 # Define the refresh interval, determined empirically. it would be better if
 # this could retrigger on the acquisition loop callback completion, but I can
 # only get this to function off a timer so here we are.
@@ -121,6 +121,7 @@ app.layout = html.Div(id='Body',
                     value=10,
                     pattern='[0-9]+',
                     min=2,
+                    max=1000
                 ),
 
                 html.P(''),
@@ -148,7 +149,8 @@ app.layout = html.Div(id='Body',
                     ]),
             ],
         ),
-        html.Div(style={'column':2},
+
+        html.Div(id='graph-div',
             children=
             [
                 # The time domain graph object.
@@ -158,6 +160,9 @@ app.layout = html.Div(id='Body',
                 dcc.Graph(id='freq-domain-graph'),
             ]
         ),
+
+        html.Div(id='statistics-display', children='Can you see me?'),
+
         # Interval object triggers the data acquisition
         dcc.Interval(id='update-timer',
             interval=4000,
@@ -181,21 +186,28 @@ app.layout = html.Div(id='Body',
 @app.callback(
     dd.Output('placeholder', 'children'),
     [dd.Input('sample-rate', 'value'),
-     dd.Input('number-of-samples', 'value')])
-def update_properties(sample_rate, number_of_samples):
+     dd.Input('number-of-samples', 'value'),
+     dd.Input('number-of-averages', 'value')])
+def update_properties(sample_rate, number_of_samples, number_of_averages):
     '''Send a control signal to the MCU to change the sample rate or number
     of samples'''
-    global window_map, freq_axis
+    global window_map, freq_axis, freq_mag_history
 
-    status_reg_f = '\n'.join(adc.modify_sample_properties(sample_rate, number_of_samples))
-    # rebuild the window map
-    window_map = {'rect': [1] * adc.number_of_samples,
-                  'blackman': np.blackman(adc.number_of_samples),
-                  'kaiser5': np.kaiser(adc.number_of_samples, 5 * np.pi),
-                  'kaiser7': np.kaiser(adc.number_of_samples, 7 * np.pi),}
-    # Get, format, and log the status register.
-    print(status_reg_f)
+    if int(sample_rate) != adc.sample_rate or int(number_of_samples) != adc.number_of_samples:
+        # Requires board reset so only do if necessary.
+        status_reg_f = '\n'.join(adc.modify_sample_properties(sample_rate, number_of_samples))
+        # rebuild the window map
+        window_map = {'rect': [1] * adc.number_of_samples,
+                      'blackman': np.blackman(adc.number_of_samples),
+                      'kaiser5': np.kaiser(adc.number_of_samples, 5 * np.pi),
+                      'kaiser7': np.kaiser(adc.number_of_samples, 7 * np.pi),}
+        # Get, format, and log the status register.
+        logging.info(status_reg_f)
 
+    # set the size of the history deque, and in the process clear it..
+    freq_mag_history = deque(maxlen=number_of_averages)
+
+    # Create a new frequency axis.
     freq_axis = np.fft.rfftfreq(n=adc.number_of_samples, d=1/adc.sample_rate)
 
     return ''
@@ -272,13 +284,14 @@ def acquire_data(n_intervals):
     dd.Output('time-domain-graph', 'figure'),
     [dd.Input('accumulated-status', 'children'),
      dd.Input('show-windowed-button', 'n_clicks'),
-     dd.Input('window-functions', 'value')])
-def time_domain_update(status, show_windowed_clicks, window):
+     dd.Input('window-functions', 'value')],
+    [dd.State('time-domain-graph', 'relayoutData')])
+def time_domain_update(status, show_windowed_clicks, window, relayoutData):
     '''Process the acquired data and display in time domain.'''
-    global magnitude
-    global sample_index
+    global sample_index, rms_mag
     try:
         magnitude = adc.decoded_data_queue[0]
+        rms_mag = np.sqrt(np.mean((magnitude - np.mean(magnitude))**2))
         # magnitude -= np.mean(magnitude)
         # print('magnitude: {}'.format(magnitude))
         sample_index = 1 / adc.sample_rate * np.linspace(0, adc.number_of_samples,
@@ -291,7 +304,13 @@ def time_domain_update(status, show_windowed_clicks, window):
     show_windowed = (show_windowed_clicks % 2 != 0)
 
     if show_windowed:
-        magnitude = (magnitude - np.mean(magnitude)) * window_map[window]
+        magnitude = magnitude * window_map[window]
+
+    # This is how to access the new axis limits if the user changes them. They
+    # start as None so some logic will be required. Will also need to figure out
+    # how resetting axis limits works with this.
+    # print(relayoutData)
+    # print(relayoutData['xaxis.range[0]'])
 
     return {'data': [{'x': sample_index, 'y': magnitude,
                       # 'type': 'line',
@@ -340,14 +359,15 @@ def freq_domain_update(status,
     if number_of_averages != len(freq_mag_history):
         freq_mag_history = deque(maxlen=number_of_averages)
 
-    # Compute the frequency magnitude
+    # Compute the frequency magnitude in dBRMS
     freq_mag = np.abs(np.fft.rfft(a=freq_mag, n=adc.number_of_samples)
-        * 2 / adc.number_of_samples
+        * np.sqrt(2) / adc.number_of_samples
         / sum(window_map[window]) * len(window_map[window]))
     # Store every value and calculate the average.
     freq_mag_history.append(freq_mag)
     freq_avg_mag = np.mean(freq_mag_history, axis=0)
 
+    # convert to decibels and decide if we are using the averaged values or not:
     average_on = (average_clicks % 2 != 0)
     if average_on:
         freq_mag_dB = 20 * np.log10(freq_avg_mag)
@@ -361,13 +381,22 @@ def freq_domain_update(status,
             'layout': {'title': 'FFT of input',
                        'xaxis': {'title': 'Frequency [Hz]',
                                  'type': 'log',
-                                 'range': np.log10([10, adc.sample_rate/2])
+                                 # 'range': np.log10([10, adc.sample_rate/2])
+                                 'range': 'auto',
                                  },
-                       'yaxis': {'title': 'Magnitude [dB]',
+                       'yaxis': {'title': 'RMS Magnitude [dBV]',
                                  'range': [-150, 30]
                                  }
                       }
            }
+
+
+@app.callback(
+    dd.Output('statistics-display', 'children'),
+    [dd.Input('accumulated-status', 'children')])
+def statistics_display(fft_plot):
+    global rms_mag
+    return(f'RMS Input: {rms_mag}')
 
 if __name__ == '__main__':
     dash_log = logging.getLogger('werkzeug')
