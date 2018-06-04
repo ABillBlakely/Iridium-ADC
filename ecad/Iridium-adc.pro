@@ -1,4 +1,4 @@
-update=4/4/2018 11:50:07 AM
+update=6/1/2018 3:27:13 AM
 version=1
 last_client=kicad
 [pcbnew]
@@ -25,16 +25,6 @@ version=1
 NetIExt=net
 [general]
 version=1
-[schematic_editor]
-version=1
-PageLayoutDescrFile=
-PlotDirectoryName=
-SubpartIdSeparator=0
-SubpartFirstId=65
-NetFmtName=
-SpiceForceRefPrefix=0
-SpiceUseNetNumbers=0
-LabSize=60
 [eeschema]
 version=1
 LibDir=../../kicad-libs-custom
@@ -214,3 +204,13 @@ LibName172=digikey-kicad-library/digikey-symbols/dk_Trimmer-Potentiometers
 LibName173=digikey-kicad-library/digikey-symbols/dk_TVS-Diodes
 LibName174=digikey-kicad-library/digikey-symbols/dk_TVS-Mixed-Technology
 LibName175=digikey-kicad-library/digikey-symbols/dk_USB-DVI-HDMI-Connectors
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60

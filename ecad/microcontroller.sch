@@ -177,721 +177,721 @@ LIBS:dk_USB-DVI-HDMI-Connectors
 LIBS:Iridium-adc-cache
 EELAYER 25 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr USLetter 11000 8500
 encoding utf-8
 Sheet 4 5
-Title ""
+Title "Iridium ADC"
 Date ""
 Rev ""
-Comp ""
+Comp "Billtech"
 Comment1 ""
 Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Label 9050 3050 0    60   ~ 0
+Text Label 6750 3900 0    60   ~ 0
 PC1
-Text Label 8250 3050 2    60   ~ 0
+Text Label 5950 3900 2    60   ~ 0
 PC2
-Text Label 8250 3150 2    60   ~ 0
+Text Label 5950 4000 2    60   ~ 0
 PC3
-Text Label 10600 2950 0    60   ~ 0
+Text Label 8300 3800 0    60   ~ 0
 PC4
-Text Label 10600 1550 0    60   ~ 0
+Text Label 8300 2400 0    60   ~ 0
 PC5
-Text Label 10600 1450 0    60   ~ 0
+Text Label 8300 2300 0    60   ~ 0
 PC6
-Text Label 9800 2250 2    60   ~ 0
+Text Label 7500 3100 2    60   ~ 0
 PC7
-Text Label 10600 1350 0    60   ~ 0
+Text Label 8300 2200 0    60   ~ 0
 PC8
-Text Label 9800 1350 2    60   ~ 0
+Text Label 7500 2200 2    60   ~ 0
 PC9
-Text Label 8250 1350 2    60   ~ 0
+Text Label 5950 2200 2    60   ~ 0
 PC10
-Text Label 9050 1350 0    60   ~ 0
+Text Label 6750 2200 0    60   ~ 0
 PC11
-Text Label 8250 1450 2    60   ~ 0
+Text Label 5950 2300 2    60   ~ 0
 PC12
-Text Label 8250 2450 2    60   ~ 0
+Text Label 5950 3300 2    60   ~ 0
 PC13
-Text Label 8250 2550 2    60   ~ 0
+Text Label 5950 3400 2    60   ~ 0
 PC14
-Text Label 8250 2650 2    60   ~ 0
+Text Label 5950 3500 2    60   ~ 0
 PC15
-NoConn ~ 8250 1750
-NoConn ~ 8250 1850
-Text Label 9050 3150 0    60   ~ 0
+NoConn ~ 5950 2600
+NoConn ~ 5950 2700
+Text Label 6750 4000 0    60   ~ 0
 PC0
-NoConn ~ 10600 3050
-NoConn ~ 10600 3150
-NoConn ~ 10600 1750
-NoConn ~ 10600 2150
-Text Label 9800 1650 2    60   ~ 0
+NoConn ~ 8300 3900
+NoConn ~ 8300 4000
+NoConn ~ 8300 2600
+NoConn ~ 8300 3000
+Text Label 7500 2500 2    60   ~ 0
 AVDD
-Text Label 9800 1750 2    60   ~ 0
+Text Label 7500 2600 2    60   ~ 0
 GND
-Text Label 10600 2250 0    60   ~ 0
+Text Label 8300 3100 0    60   ~ 0
 GND
-Text Label 10600 2850 0    60   ~ 0
+Text Label 8300 3700 0    60   ~ 0
 GND
-Text Label 10600 1650 0    60   ~ 0
+Text Label 8300 2500 0    60   ~ 0
 U5V
-Text Label 8250 1550 2    60   ~ 0
+Text Label 5950 2400 2    60   ~ 0
 VDD
-Text Label 8250 2250 2    60   ~ 0
+Text Label 5950 3100 2    60   ~ 0
 GND
-Text Label 8250 1650 2    60   ~ 0
+Text Label 5950 2500 2    60   ~ 0
 BOOT0
-Text Label 9050 2650 0    60   ~ 0
+Text Label 6750 3500 0    60   ~ 0
 PA0
-Text Label 9050 2750 0    60   ~ 0
+Text Label 6750 3600 0    60   ~ 0
 PA1
-Text Label 9800 3050 2    60   ~ 0
+Text Label 7500 3900 2    60   ~ 0
 PA2
-Text Label 9800 3150 2    60   ~ 0
+Text Label 7500 4000 2    60   ~ 0
 PA3
-Text Label 9050 2850 0    60   ~ 0
+Text Label 6750 3700 0    60   ~ 0
 PA4
-Text Label 9800 1850 2    60   ~ 0
+Text Label 7500 2700 2    60   ~ 0
 PA5
-Text Label 9800 1950 2    60   ~ 0
+Text Label 7500 2800 2    60   ~ 0
 PA6
-Text Label 9800 2050 2    60   ~ 0
+Text Label 7500 2900 2    60   ~ 0
 PA7
-Text Label 9800 2450 2    60   ~ 0
+Text Label 7500 3300 2    60   ~ 0
 PA8
-Text Label 9800 2350 2    60   ~ 0
+Text Label 7500 3200 2    60   ~ 0
 PA9
-Text Label 9800 2950 2    60   ~ 0
+Text Label 7500 3800 2    60   ~ 0
 PA10
-Text Label 10600 1950 0    60   ~ 0
+Text Label 8300 2800 0    60   ~ 0
 PA11
-Text Label 10600 1850 0    60   ~ 0
+Text Label 8300 2700 0    60   ~ 0
 PA12
-Text Label 8250 1950 2    60   ~ 0
+Text Label 5950 2800 2    60   ~ 0
 PA13
-Text Label 8250 2050 2    60   ~ 0
+Text Label 5950 2900 2    60   ~ 0
 PA14
-Text Label 8250 2150 2    60   ~ 0
+Text Label 5950 3000 2    60   ~ 0
 PA15
-Text Label 9050 2950 0    60   ~ 0
+Text Label 6750 3800 0    60   ~ 0
 PB0
-Text Label 10600 2450 0    60   ~ 0
+Text Label 8300 3300 0    60   ~ 0
 PB1
-Text Label 10600 2350 0    60   ~ 0
+Text Label 8300 3200 0    60   ~ 0
 PB2
-Text Label 9800 2850 2    60   ~ 0
+Text Label 7500 3700 2    60   ~ 0
 PB3
-Text Label 9800 2650 2    60   ~ 0
+Text Label 7500 3500 2    60   ~ 0
 PB4
-Text Label 9800 2750 2    60   ~ 0
+Text Label 7500 3600 2    60   ~ 0
 PB5
-Text Label 9800 2150 2    60   ~ 0
+Text Label 7500 3000 2    60   ~ 0
 PB6
-Text Label 8250 2350 2    60   ~ 0
+Text Label 5950 3200 2    60   ~ 0
 PB7
-Text Label 9800 1450 2    60   ~ 0
+Text Label 7500 2300 2    60   ~ 0
 PB8
-Text Label 9800 1550 2    60   ~ 0
+Text Label 7500 2400 2    60   ~ 0
 PB9
-Text Label 9800 2550 2    60   ~ 0
+Text Label 7500 3400 2    60   ~ 0
 PB10
-Text Label 10600 2050 0    60   ~ 0
+Text Label 8300 2900 0    60   ~ 0
 PB12
-Text Label 10600 2750 0    60   ~ 0
+Text Label 8300 3600 0    60   ~ 0
 PB13
-Text Label 10600 2650 0    60   ~ 0
+Text Label 8300 3500 0    60   ~ 0
 PB14
-Text Label 10600 2550 0    60   ~ 0
+Text Label 8300 3400 0    60   ~ 0
 PB15
-Text Label 8250 2750 2    60   ~ 0
+Text Label 5950 3600 2    60   ~ 0
 PH0
-Text Label 8250 2850 2    60   ~ 0
+Text Label 5950 3700 2    60   ~ 0
 PH1
-Text Label 8250 2950 2    60   ~ 0
+Text Label 5950 3800 2    60   ~ 0
 VBAT
-NoConn ~ 9050 2550
-Text Label 9050 2450 0    60   ~ 0
+NoConn ~ 6750 3400
+Text Label 6750 3300 0    60   ~ 0
 Vin
-Text Label 9050 2250 0    60   ~ 0
+Text Label 6750 3100 0    60   ~ 0
 GND
-Text Label 9050 2350 0    60   ~ 0
+Text Label 6750 3200 0    60   ~ 0
 GND
-Text Label 9050 2150 0    60   ~ 0
+Text Label 6750 3000 0    60   ~ 0
 5V
-Text Label 9050 2050 0    60   ~ 0
+Text Label 6750 2900 0    60   ~ 0
 3V3
-Text Label 9050 1950 0    60   ~ 0
+Text Label 6750 2800 0    60   ~ 0
 RESET
-Text Label 9050 1850 0    60   ~ 0
+Text Label 6750 2700 0    60   ~ 0
 IOREF
-NoConn ~ 9050 1750
-Text Label 9050 1650 0    60   ~ 0
+NoConn ~ 6750 2600
+Text Label 6750 2500 0    60   ~ 0
 GND
-Text Label 9050 1550 0    60   ~ 0
+Text Label 6750 2400 0    60   ~ 0
 E5V
-Text Label 9050 1450 0    60   ~ 0
+Text Label 6750 2300 0    60   ~ 0
 PD2
-Text Label 10250 4400 0    60   ~ 0
+Text Label 7950 5250 0    60   ~ 0
 USB_HS_D0
-Text Label 10250 4500 0    60   ~ 0
+Text Label 7950 5350 0    60   ~ 0
 USB_HS_D1
-Text Label 10250 4600 0    60   ~ 0
+Text Label 7950 5450 0    60   ~ 0
 USB_HS_D2
-Text Label 10250 4700 0    60   ~ 0
+Text Label 7950 5550 0    60   ~ 0
 USB_HS_D3
-Text Label 10250 4800 0    60   ~ 0
+Text Label 7950 5650 0    60   ~ 0
 USB_HS_D4
-Text Label 10250 4900 0    60   ~ 0
+Text Label 7950 5750 0    60   ~ 0
 USB_HS_D5
-Text Label 10250 5000 0    60   ~ 0
+Text Label 7950 5850 0    60   ~ 0
 USB_HS_D6
-Text Label 10250 5200 0    60   ~ 0
+Text Label 7950 6050 0    60   ~ 0
 USB_HS_CLK
-Text Label 10250 5100 0    60   ~ 0
+Text Label 7950 5950 0    60   ~ 0
 USB_HS_D7
-Text Label 10250 5300 0    60   ~ 0
+Text Label 7950 6150 0    60   ~ 0
 USB_HS_DIR
-Text Label 10250 5400 0    60   ~ 0
+Text Label 7950 6250 0    60   ~ 0
 USB_HS_STP
-Text Label 10250 5500 0    60   ~ 0
+Text Label 7950 6350 0    60   ~ 0
 USB_HS_NXT
-Text Label 10050 5200 2    60   ~ 0
+Text Label 7750 6050 2    60   ~ 0
 PA5
-Text Label 10050 4400 2    60   ~ 0
+Text Label 7750 5250 2    60   ~ 0
 PA3
-Text Label 10050 4500 2    60   ~ 0
+Text Label 7750 5350 2    60   ~ 0
 PB0
-Text Label 10050 4600 2    60   ~ 0
+Text Label 7750 5450 2    60   ~ 0
 PB1
-Text Label 10050 4800 2    60   ~ 0
+Text Label 7750 5650 2    60   ~ 0
 PB2
-Text Label 10050 5100 2    60   ~ 0
+Text Label 7750 5950 2    60   ~ 0
 PB5
-Text Label 10050 4700 2    60   ~ 0
+Text Label 7750 5550 2    60   ~ 0
 PB10
-Text Label 10050 4900 2    60   ~ 0
+Text Label 7750 5750 2    60   ~ 0
 PB12
-Text Label 10050 5000 2    60   ~ 0
+Text Label 7750 5850 2    60   ~ 0
 PB13
-Text Label 10050 5300 2    60   ~ 0
+Text Label 7750 6150 2    60   ~ 0
 PC2
-Text Label 10050 5500 2    60   ~ 0
+Text Label 7750 6350 2    60   ~ 0
 PC3
-Text Label 10050 5400 2    60   ~ 0
+Text Label 7750 6250 2    60   ~ 0
 PC0
-Text Notes 8750 1050 0    60   ~ 0
+Text Notes 6450 1900 0    60   ~ 0
 Nucleo F446RE dev board pinout\nBoard is powered by its usb connection.\nJunction indicates pin is used\n
-Text Notes 9700 5150 2    60   ~ 0
+Text Notes 7400 6000 2    60   ~ 0
 This maps pins to the USB HS PHY \nthat would be required for USB \nhigh speed operation. This is probably \npointless while using the dev board, but \nwe want to avoid using these pins \nanyways so the design translates better.\n
-Text HLabel 5250 1150 0    60   Input ~ 0
+Text HLabel 2950 2000 0    60   Input ~ 0
 DB[15..0]
-Text Label 5750 1250 0    60   ~ 0
+Text Label 3450 2100 0    60   ~ 0
 DB0
-Text Label 5750 1350 0    60   ~ 0
+Text Label 3450 2200 0    60   ~ 0
 DB1
-Text Label 5750 1450 0    60   ~ 0
+Text Label 3450 2300 0    60   ~ 0
 DB2
-Text Label 5750 1550 0    60   ~ 0
+Text Label 3450 2400 0    60   ~ 0
 DB3
-Text Label 5750 1650 0    60   ~ 0
+Text Label 3450 2500 0    60   ~ 0
 DB4
-Text Label 5750 1750 0    60   ~ 0
+Text Label 3450 2600 0    60   ~ 0
 DB5
-Text Label 5750 1850 0    60   ~ 0
+Text Label 3450 2700 0    60   ~ 0
 DB6
-Text Label 5750 1950 0    60   ~ 0
+Text Label 3450 2800 0    60   ~ 0
 DB7
-Text Label 5750 2050 0    60   ~ 0
+Text Label 3450 2900 0    60   ~ 0
 DB8
-Text Label 5750 2150 0    60   ~ 0
+Text Label 3450 3000 0    60   ~ 0
 DB9
-Text Label 5750 2250 0    60   ~ 0
+Text Label 3450 3100 0    60   ~ 0
 DB10
-Text Label 5750 2350 0    60   ~ 0
+Text Label 3450 3200 0    60   ~ 0
 DB11
-Text Label 5750 2450 0    60   ~ 0
+Text Label 3450 3300 0    60   ~ 0
 DB12
-Text Label 5750 2550 0    60   ~ 0
+Text Label 3450 3400 0    60   ~ 0
 DB13
-Text Label 5750 2650 0    60   ~ 0
+Text Label 3450 3500 0    60   ~ 0
 DB14
-Text Label 5750 2750 0    60   ~ 0
+Text Label 3450 3600 0    60   ~ 0
 DB15
 Entry Wire Line
-	5550 1150 5650 1250
+	3250 2000 3350 2100
 Entry Wire Line
-	5550 1250 5650 1350
+	3250 2100 3350 2200
 Entry Wire Line
-	5550 1350 5650 1450
+	3250 2200 3350 2300
 Entry Wire Line
-	5550 1450 5650 1550
+	3250 2300 3350 2400
 Entry Wire Line
-	5550 1550 5650 1650
+	3250 2400 3350 2500
 Entry Wire Line
-	5550 1650 5650 1750
+	3250 2500 3350 2600
 Entry Wire Line
-	5550 1750 5650 1850
+	3250 2600 3350 2700
 Entry Wire Line
-	5550 1850 5650 1950
+	3250 2700 3350 2800
 Entry Wire Line
-	5550 1950 5650 2050
+	3250 2800 3350 2900
 Entry Wire Line
-	5550 2050 5650 2150
+	3250 2900 3350 3000
 Entry Wire Line
-	5550 2150 5650 2250
+	3250 3000 3350 3100
 Entry Wire Line
-	5550 2250 5650 2350
+	3250 3100 3350 3200
 Entry Wire Line
-	5550 2350 5650 2450
+	3250 3200 3350 3300
 Entry Wire Line
-	5550 2450 5650 2550
+	3250 3300 3350 3400
 Entry Wire Line
-	5550 2550 5650 2650
+	3250 3400 3350 3500
 Entry Wire Line
-	5550 2650 5650 2750
-Text HLabel 5250 3500 0    60   Input ~ 0
+	3250 3500 3350 3600
+Text HLabel 2950 4350 0    60   Input ~ 0
 ~DRDY
-Text HLabel 5250 3400 0    60   Output ~ 0
+Text HLabel 2950 4250 0    60   Output ~ 0
 ~RESET
-Text HLabel 5250 3300 0    60   Output ~ 0
+Text HLabel 2950 4150 0    60   Output ~ 0
 ~CS
-Text HLabel 5250 3200 0    60   Output ~ 0
+Text HLabel 2950 4050 0    60   Output ~ 0
 ~RD
-Text HLabel 5250 3100 0    60   Output ~ 0
+Text HLabel 2950 3950 0    60   Output ~ 0
 ~SYNC
-Text Label 6150 2350 0    60   ~ 0
+Text Label 3850 3200 0    60   ~ 0
 PA0
-Text Label 6150 2250 0    60   ~ 0
+Text Label 3850 3100 0    60   ~ 0
 PA1
-Text Label 6150 2150 0    60   ~ 0
+Text Label 3850 3000 0    60   ~ 0
 PA4
-Text Label 6150 2050 0    60   ~ 0
+Text Label 3850 2900 0    60   ~ 0
 PC1
-Text Label 6150 3100 0    60   ~ 0
+Text Label 3850 3950 0    60   ~ 0
 PC10
-Text Label 6150 3400 0    60   ~ 0
+Text Label 3850 4250 0    60   ~ 0
 PC11
-Text Label 6150 3500 0    60   ~ 0
+Text Label 3850 4350 0    60   ~ 0
 PC12
-Text Label 6950 2650 0    60   ~ 0
+Text Label 4650 3500 0    60   ~ 0
 PC13
-Text Label 6950 2550 0    60   ~ 0
+Text Label 4650 3400 0    60   ~ 0
 PC14
-Text Label 6950 2450 0    60   ~ 0
+Text Label 4650 3300 0    60   ~ 0
 PC15
-Text Label 6150 3200 0    60   ~ 0
+Text Label 3850 4050 0    60   ~ 0
 PA13
-Text Label 6150 3300 0    60   ~ 0
+Text Label 3850 4150 0    60   ~ 0
 PA14
-Text Label 6150 2750 0    60   ~ 0
+Text Label 3850 3600 0    60   ~ 0
 PA15
-Text Label 6150 1950 0    60   ~ 0
+Text Label 3850 2800 0    60   ~ 0
 PA10
-Text Label 6150 1450 0    60   ~ 0
+Text Label 3850 2300 0    60   ~ 0
 PC5
-Text Label 6150 1350 0    60   ~ 0
+Text Label 3850 2200 0    60   ~ 0
 PC6
-Text Label 6150 1250 0    60   ~ 0
+Text Label 3850 2100 0    60   ~ 0
 PC8
-Text Label 6150 1550 0    60   ~ 0
+Text Label 3850 2400 0    60   ~ 0
 PA12
-Text Label 6150 1650 0    60   ~ 0
+Text Label 3850 2500 0    60   ~ 0
 PA11
-NoConn ~ 9800 3050
-Text Label 6150 1850 0    60   ~ 0
+NoConn ~ 7500 3900
+Text Label 3850 2700 0    60   ~ 0
 PA8
-Text Label 6150 1750 0    60   ~ 0
+Text Label 3850 2600 0    60   ~ 0
 PA9
-NoConn ~ 8250 1550
-NoConn ~ 8250 1650
-NoConn ~ 8250 2750
-NoConn ~ 8250 2850
-NoConn ~ 9050 1550
-NoConn ~ 9050 1450
-NoConn ~ 9800 1350
-NoConn ~ 9800 1450
-NoConn ~ 9800 1550
-NoConn ~ 9800 1950
-NoConn ~ 9800 2050
-NoConn ~ 9800 2150
-NoConn ~ 9800 2250
-NoConn ~ 9800 2650
-NoConn ~ 9800 2850
-NoConn ~ 10600 2950
-NoConn ~ 10600 2550
-NoConn ~ 10600 2650
-NoConn ~ 10600 1650
-Text Label 9050 3600 0    60   ~ 0
+NoConn ~ 5950 2400
+NoConn ~ 5950 2500
+NoConn ~ 5950 3600
+NoConn ~ 5950 3700
+NoConn ~ 6750 2400
+NoConn ~ 6750 2300
+NoConn ~ 7500 2200
+NoConn ~ 7500 2300
+NoConn ~ 7500 2400
+NoConn ~ 7500 2800
+NoConn ~ 7500 2900
+NoConn ~ 7500 3000
+NoConn ~ 7500 3100
+NoConn ~ 7500 3500
+NoConn ~ 7500 3700
+NoConn ~ 8300 3800
+NoConn ~ 8300 3400
+NoConn ~ 8300 3500
+NoConn ~ 8300 2500
+Text Label 6750 4450 0    60   ~ 0
 GND
 $Comp
 L GND #PWR034
 U 1 1 5AC5CD87
-P 9050 3750
-F 0 "#PWR034" H 9050 3500 50  0001 C CNN
-F 1 "GND" H 9050 3600 50  0000 C CNN
-F 2 "" H 9050 3750 50  0001 C CNN
-F 3 "" H 9050 3750 50  0001 C CNN
-	1    9050 3750
+P 6750 4600
+F 0 "#PWR034" H 6750 4350 50  0001 C CNN
+F 1 "GND" H 6750 4450 50  0000 C CNN
+F 2 "" H 6750 4600 50  0001 C CNN
+F 3 "" H 6750 4600 50  0001 C CNN
+	1    6750 4600
 	1    0    0    -1  
 $EndComp
-NoConn ~ 9050 1850
-NoConn ~ 9050 1950
-NoConn ~ 9050 2050
-NoConn ~ 9050 2150
-NoConn ~ 9050 2450
-NoConn ~ 8250 2350
-NoConn ~ 8250 2950
-NoConn ~ 10250 4400
-NoConn ~ 10250 4500
-NoConn ~ 10250 4600
-NoConn ~ 10250 4700
-NoConn ~ 10250 4800
-NoConn ~ 10250 4900
-NoConn ~ 10250 5000
-NoConn ~ 10250 5100
-NoConn ~ 10250 5200
-NoConn ~ 10250 5300
-NoConn ~ 10250 5400
-NoConn ~ 10250 5500
-NoConn ~ 9800 1650
+NoConn ~ 6750 2700
+NoConn ~ 6750 2800
+NoConn ~ 6750 2900
+NoConn ~ 6750 3000
+NoConn ~ 6750 3300
+NoConn ~ 5950 3200
+NoConn ~ 5950 3800
+NoConn ~ 7950 5250
+NoConn ~ 7950 5350
+NoConn ~ 7950 5450
+NoConn ~ 7950 5550
+NoConn ~ 7950 5650
+NoConn ~ 7950 5750
+NoConn ~ 7950 5850
+NoConn ~ 7950 5950
+NoConn ~ 7950 6050
+NoConn ~ 7950 6150
+NoConn ~ 7950 6250
+NoConn ~ 7950 6350
+NoConn ~ 7500 2500
 $Comp
 L Conn_02x19_Odd_Even J4
 U 1 1 5ACD5E6B
-P 8600 2250
-F 0 "J4" H 8650 3250 50  0000 C CNN
-F 1 "Nucleo_F446_LHS" H 8650 1250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 8600 2250 50  0001 C CNN
-F 3 "" H 8600 2250 50  0001 C CNN
-	1    8600 2250
+P 6300 3100
+F 0 "J4" H 6350 4100 50  0000 C CNN
+F 1 "Nucleo_F446_LHS" H 6350 2100 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 6300 3100 50  0001 C CNN
+F 3 "" H 6300 3100 50  0001 C CNN
+	1    6300 3100
 	1    0    0    -1  
 $EndComp
 $Comp
 L Conn_02x19_Odd_Even J5
 U 1 1 5ACD5EA9
-P 10150 2250
-F 0 "J5" H 10200 3250 50  0000 C CNN
-F 1 "Nucleo_F446_RHS" H 10200 1250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 10150 2250 50  0001 C CNN
-F 3 "" H 10150 2250 50  0001 C CNN
-	1    10150 2250
+P 7850 3100
+F 0 "J5" H 7900 4100 50  0000 C CNN
+F 1 "Nucleo_F446_RHS" H 7900 2100 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x19_Pitch2.54mm" H 7850 3100 50  0001 C CNN
+F 3 "" H 7850 3100 50  0001 C CNN
+	1    7850 3100
 	1    0    0    -1  
 $EndComp
-Text Notes 4000 2500 0    60   ~ 0
+Text Notes 1700 3350 0    60   ~ 0
 PC13 is not reading correctly, \nPC4 possible alternate
-Text Notes 4000 2250 0    60   ~ 0
+Text Notes 1700 3100 0    60   ~ 0
 May be issues with all of PC13, \nPC14 and PC15 due to battery \nmanagement system.
-NoConn ~ 6700 2650
-Text Notes 6500 2250 0    60   ~ 0
+NoConn ~ 4400 3500
+Text Notes 4200 3100 0    60   ~ 0
 Cut and relocate these traces
 Wire Wire Line
-	8250 1350 8400 1350
+	5950 2200 6100 2200
 Wire Wire Line
-	8250 1450 8400 1450
+	5950 2300 6100 2300
 Wire Wire Line
-	8250 1550 8400 1550
+	5950 2400 6100 2400
 Wire Wire Line
-	8250 1650 8400 1650
+	5950 2500 6100 2500
 Wire Wire Line
-	8250 1750 8400 1750
+	5950 2600 6100 2600
 Wire Wire Line
-	8250 1850 8400 1850
+	5950 2700 6100 2700
 Wire Wire Line
-	8250 1950 8400 1950
+	5950 2800 6100 2800
 Wire Wire Line
-	8250 2050 8400 2050
+	5950 2900 6100 2900
 Wire Wire Line
-	8250 2150 8400 2150
+	5950 3000 6100 3000
 Wire Wire Line
-	8250 2250 8400 2250
+	5950 3100 6100 3100
 Wire Wire Line
-	8250 2350 8400 2350
+	5950 3200 6100 3200
 Wire Wire Line
-	8250 2450 8400 2450
+	5950 3300 6100 3300
 Wire Wire Line
-	8250 2550 8400 2550
+	5950 3400 6100 3400
 Wire Wire Line
-	8250 2650 8400 2650
+	5950 3500 6100 3500
 Wire Wire Line
-	8250 2750 8400 2750
+	5950 3600 6100 3600
 Wire Wire Line
-	8250 2850 8400 2850
+	5950 3700 6100 3700
 Wire Wire Line
-	8250 2950 8400 2950
+	5950 3800 6100 3800
 Wire Wire Line
-	8250 3050 8400 3050
+	5950 3900 6100 3900
 Wire Wire Line
-	8250 3150 8400 3150
+	5950 4000 6100 4000
 Wire Wire Line
-	8900 1350 9050 1350
+	6600 2200 6750 2200
 Wire Wire Line
-	8900 1450 9050 1450
+	6600 2300 6750 2300
 Wire Wire Line
-	8900 1550 9050 1550
+	6600 2400 6750 2400
 Wire Wire Line
-	8900 1650 9050 1650
+	6600 2500 6750 2500
 Wire Wire Line
-	8900 1750 9050 1750
+	6600 2600 6750 2600
 Wire Wire Line
-	8900 1850 9050 1850
+	6600 2700 6750 2700
 Wire Wire Line
-	8900 1950 9050 1950
+	6600 2800 6750 2800
 Wire Wire Line
-	8900 2050 9050 2050
+	6600 2900 6750 2900
 Wire Wire Line
-	8900 2150 9050 2150
+	6600 3000 6750 3000
 Wire Wire Line
-	8900 2250 9050 2250
+	6600 3100 6750 3100
 Wire Wire Line
-	8900 2350 9050 2350
+	6600 3200 6750 3200
 Wire Wire Line
-	8900 2450 9050 2450
+	6600 3300 6750 3300
 Wire Wire Line
-	8900 2550 9050 2550
+	6600 3400 6750 3400
 Wire Wire Line
-	8900 2650 9050 2650
+	6600 3500 6750 3500
 Wire Wire Line
-	8900 2750 9050 2750
+	6600 3600 6750 3600
 Wire Wire Line
-	8900 2850 9050 2850
+	6600 3700 6750 3700
 Wire Wire Line
-	8900 2950 9050 2950
+	6600 3800 6750 3800
 Wire Wire Line
-	8900 3050 9050 3050
+	6600 3900 6750 3900
 Wire Wire Line
-	8900 3150 9050 3150
+	6600 4000 6750 4000
 Wire Wire Line
-	9950 1350 9800 1350
+	7650 2200 7500 2200
 Wire Wire Line
-	9950 1450 9800 1450
+	7650 2300 7500 2300
 Wire Wire Line
-	9950 1550 9800 1550
+	7650 2400 7500 2400
 Wire Wire Line
-	9950 1650 9800 1650
+	7650 2500 7500 2500
 Wire Wire Line
-	9950 1750 9800 1750
+	7650 2600 7500 2600
 Wire Wire Line
-	9950 1850 9800 1850
+	7650 2700 7500 2700
 Wire Wire Line
-	9950 1950 9800 1950
+	7650 2800 7500 2800
 Wire Wire Line
-	9950 2050 9800 2050
+	7650 2900 7500 2900
 Wire Wire Line
-	9950 2150 9800 2150
+	7650 3000 7500 3000
 Wire Wire Line
-	9950 2250 9800 2250
+	7650 3100 7500 3100
 Wire Wire Line
-	9950 2350 9800 2350
+	7650 3200 7500 3200
 Wire Wire Line
-	9950 2450 9800 2450
+	7650 3300 7500 3300
 Wire Wire Line
-	9950 2550 9800 2550
+	7650 3400 7500 3400
 Wire Wire Line
-	9950 2650 9800 2650
+	7650 3500 7500 3500
 Wire Wire Line
-	9950 2750 9800 2750
+	7650 3600 7500 3600
 Wire Wire Line
-	9950 2850 9800 2850
+	7650 3700 7500 3700
 Wire Wire Line
-	9950 2950 9800 2950
+	7650 3800 7500 3800
 Wire Wire Line
-	9950 3050 9800 3050
+	7650 3900 7500 3900
 Wire Wire Line
-	9950 3150 9800 3150
+	7650 4000 7500 4000
 Wire Wire Line
-	10450 1350 10600 1350
+	8150 2200 8300 2200
 Wire Wire Line
-	10450 1450 10600 1450
+	8150 2300 8300 2300
 Wire Wire Line
-	10450 1550 10600 1550
+	8150 2400 8300 2400
 Wire Wire Line
-	10450 1650 10600 1650
+	8150 2500 8300 2500
 Wire Wire Line
-	10450 1750 10600 1750
+	8150 2600 8300 2600
 Wire Wire Line
-	10450 1850 10600 1850
+	8150 2700 8300 2700
 Wire Wire Line
-	10450 1950 10600 1950
+	8150 2800 8300 2800
 Wire Wire Line
-	10450 2050 10600 2050
+	8150 2900 8300 2900
 Wire Wire Line
-	10450 2150 10600 2150
+	8150 3000 8300 3000
 Wire Wire Line
-	10450 2250 10600 2250
+	8150 3100 8300 3100
 Wire Wire Line
-	10450 2350 10600 2350
+	8150 3200 8300 3200
 Wire Wire Line
-	10450 2450 10600 2450
+	8150 3300 8300 3300
 Wire Wire Line
-	10450 2550 10600 2550
+	8150 3400 8300 3400
 Wire Wire Line
-	10450 2650 10600 2650
+	8150 3500 8300 3500
 Wire Wire Line
-	10450 2750 10600 2750
+	8150 3600 8300 3600
 Wire Wire Line
-	10450 2850 10600 2850
+	8150 3700 8300 3700
 Wire Wire Line
-	10450 2950 10600 2950
+	8150 3800 8300 3800
 Wire Wire Line
-	10450 3050 10600 3050
+	8150 3900 8300 3900
 Wire Wire Line
-	10450 3150 10600 3150
+	8150 4000 8300 4000
 Wire Notes Line
-	7900 1150 7900 3350
+	5600 2000 5600 4200
 Wire Notes Line
-	7900 3350 10900 3350
+	5600 4200 8600 4200
 Wire Notes Line
-	10900 3350 10900 1150
+	8600 4200 8600 2000
 Wire Notes Line
-	10900 1150 7900 1150
+	8600 2000 5600 2000
 Wire Wire Line
-	5650 1250 6150 1250
+	3350 2100 3850 2100
 Wire Wire Line
-	5650 1350 6150 1350
+	3350 2200 3850 2200
 Wire Wire Line
-	5650 1450 6150 1450
+	3350 2300 3850 2300
 Wire Wire Line
-	5650 1550 6150 1550
+	3350 2400 3850 2400
 Wire Wire Line
-	5650 1650 6150 1650
+	3350 2500 3850 2500
 Wire Wire Line
-	5650 1750 6150 1750
+	3350 2600 3850 2600
 Wire Wire Line
-	5650 1850 6150 1850
+	3350 2700 3850 2700
 Wire Wire Line
-	5650 1950 6150 1950
+	3350 2800 3850 2800
 Wire Wire Line
-	5650 2050 6150 2050
+	3350 2900 3850 2900
 Wire Wire Line
-	5650 2150 6150 2150
+	3350 3000 3850 3000
 Wire Wire Line
-	5650 2250 6150 2250
+	3350 3100 3850 3100
 Wire Wire Line
-	5650 2350 6150 2350
+	3350 3200 3850 3200
 Wire Bus Line
-	5550 1150 5550 2650
+	3250 2000 3250 3500
 Wire Bus Line
-	5550 1150 5250 1150
-Connection ~ 9800 3150
-Connection ~ 9050 2950
-Connection ~ 10600 2450
-Connection ~ 9800 2550
-Connection ~ 10600 2350
-Connection ~ 10600 2050
-Connection ~ 10600 2750
-Connection ~ 9800 2750
-Connection ~ 9800 1850
-Connection ~ 8250 3050
-Connection ~ 8250 3150
-Connection ~ 9050 3150
+	3250 2000 2950 2000
+Connection ~ 7500 4000
+Connection ~ 6750 3800
+Connection ~ 8300 3300
+Connection ~ 7500 3400
+Connection ~ 8300 3200
+Connection ~ 8300 2900
+Connection ~ 8300 3600
+Connection ~ 7500 3600
+Connection ~ 7500 2700
+Connection ~ 5950 3900
+Connection ~ 5950 4000
+Connection ~ 6750 4000
 Wire Wire Line
-	5250 3100 6150 3100
+	2950 3950 3850 3950
 Wire Wire Line
-	5250 3400 6150 3400
+	2950 4250 3850 4250
 Wire Wire Line
-	5250 3500 6150 3500
+	2950 4350 3850 4350
 Wire Wire Line
-	5250 3200 6150 3200
+	2950 4050 3850 4050
 Wire Wire Line
-	5250 3300 6150 3300
-Connection ~ 8250 1350
-Connection ~ 8250 1450
-Connection ~ 9050 1350
-Connection ~ 9050 2650
-Connection ~ 9050 2750
-Connection ~ 9050 2850
-Connection ~ 8250 1950
-Connection ~ 8250 2050
-Connection ~ 8250 2150
-Connection ~ 9800 2950
-Connection ~ 8250 2450
-Connection ~ 8250 2550
-Connection ~ 8250 2650
-Connection ~ 9050 3050
-Connection ~ 10600 1550
-Connection ~ 10600 1450
-Connection ~ 10600 1350
-Connection ~ 10600 1850
-Connection ~ 10600 1950
-Connection ~ 9800 2450
-Connection ~ 9800 2350
+	2950 4150 3850 4150
+Connection ~ 5950 2200
+Connection ~ 5950 2300
+Connection ~ 6750 2200
+Connection ~ 6750 3500
+Connection ~ 6750 3600
+Connection ~ 6750 3700
+Connection ~ 5950 2800
+Connection ~ 5950 2900
+Connection ~ 5950 3000
+Connection ~ 7500 3800
+Connection ~ 5950 3300
+Connection ~ 5950 3400
+Connection ~ 5950 3500
+Connection ~ 6750 3900
+Connection ~ 8300 2400
+Connection ~ 8300 2300
+Connection ~ 8300 2200
+Connection ~ 8300 2700
+Connection ~ 8300 2800
+Connection ~ 7500 3300
+Connection ~ 7500 3200
 Wire Wire Line
-	9050 3750 9050 3600
+	6750 4600 6750 4450
 Wire Notes Line
-	10900 4250 10900 5550
+	8600 5100 8600 6400
 Wire Notes Line
-	9750 4250 10900 4250
+	7450 5100 8600 5100
 Wire Notes Line
-	10900 5550 9750 5550
+	8600 6400 7450 6400
 Wire Wire Line
-	10250 5500 10050 5500
+	7950 6350 7750 6350
 Wire Wire Line
-	10250 5400 10050 5400
+	7950 6250 7750 6250
 Wire Wire Line
-	10250 5300 10050 5300
+	7950 6150 7750 6150
 Wire Wire Line
-	10250 5200 10050 5200
+	7950 6050 7750 6050
 Wire Wire Line
-	10250 5100 10050 5100
+	7950 5950 7750 5950
 Wire Wire Line
-	10250 5000 10050 5000
+	7950 5850 7750 5850
 Wire Wire Line
-	10250 4900 10050 4900
+	7950 5750 7750 5750
 Wire Wire Line
-	10250 4800 10050 4800
+	7950 5650 7750 5650
 Wire Wire Line
-	10250 4700 10050 4700
+	7950 5550 7750 5550
 Wire Wire Line
-	10250 4600 10050 4600
+	7950 5450 7750 5450
 Wire Wire Line
-	10250 4400 10050 4400
+	7950 5250 7750 5250
 Wire Wire Line
-	10250 4500 10050 4500
+	7950 5350 7750 5350
 Wire Notes Line
-	9750 5550 9750 4250
+	7450 6400 7450 5100
 Wire Wire Line
-	5650 2750 6150 2750
+	3350 3600 3850 3600
 Wire Wire Line
-	6950 2650 6700 2650
+	4650 3500 4400 3500
 Wire Wire Line
-	5650 2650 6400 2650
+	3350 3500 4100 3500
 Wire Wire Line
-	6400 2650 6400 3000
+	4100 3500 4100 3850
 Wire Wire Line
-	6400 3000 6950 3000
-NoConn ~ 6700 2550
-NoConn ~ 6700 2450
+	4100 3850 4650 3850
+NoConn ~ 4400 3400
+NoConn ~ 4400 3300
 Wire Wire Line
-	6700 2450 6950 2450
+	4400 3300 4650 3300
 Wire Wire Line
-	6700 2550 6950 2550
+	4400 3400 4650 3400
 Wire Wire Line
-	5650 2450 6500 2450
+	3350 3300 4200 3300
 Wire Wire Line
-	5650 2550 6450 2550
+	3350 3400 4150 3400
 Wire Wire Line
-	6450 2550 6450 2900
+	4150 3400 4150 3750
 Wire Wire Line
-	6450 2900 6950 2900
+	4150 3750 4650 3750
 Wire Wire Line
-	6500 2450 6500 2800
+	4200 3300 4200 3650
 Wire Wire Line
-	6500 2800 6950 2800
-Text Label 6950 2800 0    60   ~ 0
+	4200 3650 4650 3650
+Text Label 4650 3650 0    60   ~ 0
 PA6
-Text Label 6950 2900 0    60   ~ 0
+Text Label 4650 3750 0    60   ~ 0
 PA7
 Wire Notes Line
-	6550 2300 6550 3150
+	4250 3150 4250 4000
 Wire Notes Line
-	6550 3150 7800 3150
+	4250 4000 5500 4000
 Wire Notes Line
-	7800 3150 7800 2300
+	5500 4000 5500 3150
 Wire Notes Line
-	7800 2300 6550 2300
-Text Notes 6550 3550 0    60   ~ 0
+	5500 3150 4250 3150
+Text Notes 4250 4400 0    60   ~ 0
 Orig PA5 was used here, \nbut it is connected to the \ndev board LED. \nPC7 is used instead.
-Text Label 6950 3000 0    60   ~ 0
+Text Label 4650 3850 0    60   ~ 0
 PC7
 $EndSCHEMATC
