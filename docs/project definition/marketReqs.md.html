@@ -2,7 +2,7 @@
 
 The customers for the Iridium ADC need the device to be high performance, reliable, robust, and accurate. 
 These manifest as a system with balanced inputs, low noise, high bandwidth, and with a stable reference. 
-Because most of the functionality comes through the software, it will be important to develop that side of the business when the hardware is completed. 
+Because most of the functionality comes through the software, it will be important to develop that side of the business and create robust, feature rich software.
 For ease and flexibility of use, the unit should be compact and self-contained and provide the most common input types. 
 The ideal form factor would be similar to many audio interfaces and the Audio Precision line of analyzers, such as those in Figure [interfaces].
 
@@ -84,36 +84,31 @@ Specific marketing requirements are listed in table [marketReqs].
 
 ## Marketing and Engineering Requirements.
 
-| Importance |     Marketing Requirement     |               Engineering Requirement               |                                                                                                           Justification                                                                                                            |
-|------------|-------------------------------|-----------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| High       | Low noise                     | Noise floor < -110dB with 50 ohm input termination. | Low Self noise preserves as much of the available dynamic range as possible. This enables measurement of signal than span from a few micro volts to several volts.                                                                 |
-| High       | High bandwidth                | +/- 1 dB from 10Hz to 300 kHz.                      | Bandwidth allows for measurement of signal and products that are beyond the scope of other signal analyzers including ultrasonic and switch mode power supplies.                                                                  |
-| High       | Low Distortion                | THD < 0.001%                                       | Attempting to measure device that have very low distortion requires a measurement unit with even lower distortion.                                                                                                                 |
-| High       | Stable, known reference       | 5V +/- 0.01% 25ppm temp co, low drift.               | This allows for confidently transforming the relative measurement of decibel-full scale into an absolute voltage level. This is a large part of what separates this from the available consumer level devices.                     |
-| High       | Balanced inputs               | CMRR > 60 dB.                                       | Essential for eliminating noise pickup from sources with very low output levels. Professional audio systems are nearly always differential.                                                                                        |
-| Medium     | Built in power supply         | IEC C14 Inlet, 120VAC 60Hz.                         | A completely integrated power supply makes for a cohesive, professional product. It also allows for complete control over the power quality, while using an external supply may result in use of a noisier or insufficient supply. |
-| Medium     | Works with any computer       | USB Audio Class Device.                             | Allows device to be cross platform, using drivers already integrated into most systems. Alternative data transfer requires writing and maintaining our own driver.                                                                 |
-| Low        | Variety of source measurements | Selectable Input Impedance of 50 Ω, 2 kΩ, or 1 MΩ.  | Lower input impedance may provide lower self noise, at the expense of less signal from high impedance sources.                                                                                                                     |
+| Importance   | Marketing Requirement             | Engineering Requirement                               | Justification                                                                                                                                                                                                  |
+| ------------ | -------------------------------   | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| High         | Low noise                         | Noise floor < -110dB with 50 ohm input termination.   | Low Self noise preserves as much of the available dynamic range as possible. This enables measurement of signal than span from a few micro volts to several volts.                                             |
+| High         | High bandwidth                    | +/- 1 dB from 10Hz to 300 kHz.                        | Bandwidth allows for measurement of signal and products that are beyond the scope of other signal analyzers including ultrasonic and switch mode power supplies.                                               |
+| High         | Low Distortion                    | THD < 0.001%                                          | Attempting to measure device that have very low distortion requires a measurement unit with even lower distortion.                                                                                             |
+| High         | Stable, known reference           | 5V +/- 0.01% 25ppm temp co, low drift.                | This allows for confidently transforming the relative measurement of decibel-full scale into an absolute voltage level. This is a large part of what separates this from the available consumer level devices. |
+| High         | Balanced inputs                   | CMRR > 60 dB.                                         | Essential for eliminating noise pickup from sources with very low output levels. Professional audio systems are nearly always differential.                                                                    |
+| Medium       | Common/generic power supply       | DC power supply, 5mm barrel connector.                | Simplifies the setup and operation of the device and does not tie up a lab supply which may be required for the device under test.                                                                             |
 [Table [marketReqs]: Marketing requirements.]
 
 ## Block Diagram, Requirements, Specifications.
 
-The Level 0 block diagram is seen in figure [L0]. 
-At level 0 there are two signal inputs, each are balanced inputs and feature a selectable input impedance.
-The impedance is selectable through front panel switches and offer selection of 50 Ω, 2 kΩ, or 1 MΩ impedance.
-This allows for ideal selection of signal transfer, without compromising noise performance.
-Power is supplied through a standard IEC C14 power inlet. 
-The digital connection is over USB and uses a USB type B connector. 
+The Level 0 block diagram is seen in figure [L0].  The signal input is specified as a balanced
+input, although it may be used with unbalanced signals as well. The USB connection serves dual
+purpose as a way to get the data out and to receive control signals.
 
 ****************************************************************************
 *                           .---------------------.                        *
 *                          |                       |                       *
-*          Channel 1 ----->|                       |                       *
-*          Channel 2 ----->|                       |                       *
-*                          |      Iridium ADC      +-----> USB Connection  *
-*   Impedance Switch ----->|                       |                       *
+*     Balanced Input ----->|                       |                       *
 *                          |                       |                       *
-*     Power, 120V AC ----->|                       |                       *
+*                          |      Iridium ADC      +<-----> USB Connection *
+*                          |                       |                       *
+*                          |                       |                       *
+*    DC Power Supply ----->|                       |                       *
 *                          |                       |                       *
 *                           '---------------------'                        *
 ****************************************************************************
@@ -124,45 +119,45 @@ The level 1 block diagram in figure [L1] demonstrates the internal architecture 
 Each block is summarized in table [L1table].
 
 
-***************************************************************************************************
-*           .----------------------------------------------------------------------------.        *
-*          |                                                                              |       *
-*          |   .------------.     .-------------.     .----------------.    .----------.  |       *
-*          |  |              |   |               |   |                  |  |            | |       *
-* Signal --+->| Differential +-->| Anti-aliasing +-->|       ADC        +  | USB Bridge +-+-> USB *
-*          |  | Input        |   | Filter        |   |                  |  |            | |       *
-*          |  |              |   |               |   |                  |  |            | |       *
-*          |   '------------'     '-------------'     '------+---------'    '---+--+---'  |       *
-*          |      ^                                          |  ^               |  ^      |       *
-*    Zin --+------+   +---> To All                           v  |               v  |      |       *
-* Select   |   .------+-----.     .------------.          .-----+------------------+---.  |       *
-*          |  |              |   |              |        |                              | |       *
-*          |  | AC/DC        |   | Voltage      |        | Controller                   | |       *
-*          |  | Supply       |   | Reference    |        | (Micro or FPGA)              | |       *
-*          |  |              |   |              |        |                              | |       *
-*          |   '------------'     '------------'          '----------------------------'  |       *
-*          |         ^                                                                    |       *
-*           '--------+-------------------------------------------------------------------'        *
-*                    |                                                                            *
-*                  Power                                                                          *
-***************************************************************************************************
+****************************************************************************************************
+*          .------------------------------------------------------------------------------.        *
+*         |                                                                                |       *
+*         |   .------------.     .-------------.     .----------------.      .----------.  |       *
+*         |  |              |   |               |   |                  |    |            | |       *
+* Signal -+->| Differential +-->| Anti-aliasing +-->|       ADC        +    | USB Bridge +-+-> USB *
+*         |  | Input        |   | Filter        |   |                  |    |            | |       *
+*         |  |              |   |               |   |                  |    |            | |       *
+*         |   '------------'     '-------------'     '--------+-------'      '---+--+---'  |       *
+*         |                                                   |  ^               |  ^      |       *
+*         |          +---> To All                             v  |               v  |      |       *
+*         |   .------+-------.     .------------.          .-----+------------------+---.  |       *
+*         |  |                |   |              |        |                              | |       *
+*         |  | LDO Regulators |   | Voltage      |        | Microcontroller              | |       *
+*         |  |                |   | Reference    |        |                              | |       *
+*         |  |                |   |              |        |                              | |       *
+*         |   '--------------'     '------------'          '----------------------------'  |       *
+*         |         ^                                                                      |       *
+*          '--------+---------------------------------------------------------------------'        *
+*                   |                                                                              *
+*                 Power                                                                            *
+****************************************************************************************************
 [Figure [L1]: Level 1 Block Diagram]
 
 |        Block         |                                                                  Description                                                                  |
 |----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| Differential Input   | Low noise and distortion with selectable input impedance.                                                                                     |
-| Anti Aliasing Filter | Cut-off frequency will be determined by bandwidth of final ADC.                                                                               |
+| Differential Input   | Maximum 10 V differential. Extermely low noise and distortion. |
+| Anti Aliasing Filter | Cut-off frequency will be determined by bandwidth of final ADC.|
 | ADC                  | >20 bit to use all of the potential dynamic range. Delta-Sigma converters offer the best linearity and noise performance in this frequency range. |
-| Controller           | Responsible for setting up the digital devices and preparing data for USB transfer. Must be fast enough to handle stream of data from ADC.    |
-| USB Bridge           | USB 2.0 High Speed capable or better.                                                                                                         |
-| Voltage Reference    | Low Drift, Low Temp co. reference will be trimmed for accuracy.                                                                               |
-| Power Supply         | Must generate low noise +/- 15 V supply for input stage as well as 5V and 3.3V sources for digital devices.                                   |
+| Controller           | Responsible for setting up the digital devices and preparing data for USB transfer. Must be fast enough to handle stream of data from ADC.|
+| USB Bridge           | USB 2.0 High Speed capable or better. |
+| Voltage Reference    | Low Drift, Low Temp co. reference. |
+| LDO Regulators       | Must generate low noise 12 V supply for input stage as well as 5V and 2.5V sources for the ADC. |
 [Table [L1table]: description of level 1 block diagram.]
 
 ## Testing and Verification.
 
 The product will be tested by performing frequency domain analysis on its digital output using software such as ARTA. 
-Using a low distortion signal input,  the SNR, THD, and THD+N can be measured. 
+Using a low distortion signal input, the SNR, THD, and THD+N can be measured. 
 With two sine waves input, the IMD may be measured. 
 Using a noise source, the frequency response can be measured.
 Acceptable performance will match what is set out in the Engineering requirements of table [marketReqs].

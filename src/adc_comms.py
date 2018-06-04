@@ -15,7 +15,7 @@ BIN = 2
 
 # SCALE_FACTOR is multiplied by the normalized signal magnitude, where the full
 # scale range is -1 to 1
-SCALE_FACTOR = 1 / 0.11957
+SCALE_FACTOR = 0.70665 / (2 * 0.083784)
 
 data_buffer = []
 
