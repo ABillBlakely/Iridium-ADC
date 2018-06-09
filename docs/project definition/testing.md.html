@@ -16,7 +16,7 @@ limiting the noise floor to well above the level of this project. They also clai
 distortion, but the published specification of 0.03% is over 100x more than what we wish to
 achieve.[^trueform]
 
-So using the lab equipment available, a source can be characterized fully in order to compare
+So, using the lab equipment available, a source can not be characterized fully in order to compare
 performance across systems. And even if it could, the available signal sources have so much
 distortion and noise that measuring the system performance will be impossible.
 
@@ -31,6 +31,8 @@ us to estimate the performance of the system's distortion levels including THD a
 
 Many additional characteristics may be made without the need of a low distortion source and may be
 made with other equipment as stated.
+
++++++
 
 ## Calibration.
 
@@ -59,19 +61,20 @@ This value is inserted into the code to scale the data correctly.
 For frequency response measurements, a Rigol DS1062Z function generator is used to create a white
 noise source. The response is viewed in the frequency domain with no window, maximum number of
 samples, and frequency domain averaging on with 100 samples averaged. The resulting plots for each
-sample rate are shown in figure [measureFreqResp]. The minimum frequency domain measureable frequency and
+sample rate are shown in figure [measureFreqResp]. The minimum frequency domain measurable frequency and
 the estimated -3dB maximum frequency are listed in table [freqRespTable].
 
 ![Figure [measureFreqResp]: From top to bottom, frequency response plots 
-of highest, middle, and lowest sample rates](Images/measureFreqResponse.png)
+of highest, middle, and lowest sample rates.](Images/measureFreqResponse.png)
 
 | Sample Rate [kSPS] | Min Freq [Hz] | Max Freq [kHz] |
 | ------------------ | ------------- | -------------- |
 | 312.5              | 19.07         | 133            |
 | 156.25             | 9.54          | 68             |
 | 78.125             | 4.77          | 33             |
-[Table [freqRespTable]: Summary of frequency response measurements]
+[Table [freqRespTable]: Summary of frequency response measurements.]
 
++++++
 
 ## Noise.
 
@@ -85,7 +88,7 @@ bandwidth, and no window is used in the frequency domain.
 | 47.0 ohms | 24.03 uV          | -127.70 dB at 1 kHz   |
 [Table [noisePerformance]: Noise measurements in time domain and frequency domain.]
 
-![Figure [measureNoiseTime]: Noise oin the time domain under system's maximum bandwidth 
+![Figure [measureNoiseTime]: Noise in the time domain under system's maximum bandwidth 
 terminated with 50 ohm differential impedance.](Images/measureNoiseTime.png)
 
 ![Figure [measureNoiseFreq]: Noise in the frequency domain. 
@@ -101,7 +104,7 @@ $$ CMRR = 20\log\left(\frac{measured}{input}\right) $$
 
 A setup similar to the calibration system is used here, but the Rigol DS1062Z is used as signal
 source for its extended bandwidth. CMRR can vary with frequency, so it is checked for several
-different frequencies. The measured level is taken from the RMS display in the GUI while the INput
+different frequencies. The measured level is taken from the RMS display in the GUI while the input
 level is measured with the Agilent 34661A multimeter.
 
 
@@ -115,7 +118,7 @@ level is measured with the Agilent 34661A multimeter.
 ## Dynamic Range.
 
 The dynamic range of a system is the ratio of maximum signal input relative to the minimum signal,
-expressed in decibels. Typically this is compared to the noise floor. In the time domain the dynamic
+expressed in decibels. Typically, this is compared to the noise floor. In the time domain the dynamic
 range is given by the maximum input level over the RMS noise level. However in frequency domain,
 this becomes the maximum signal level over the noise density. Since noise density is always lower
 than the RMS noise, dynamic range is higher in the frequency domain than the time domain.

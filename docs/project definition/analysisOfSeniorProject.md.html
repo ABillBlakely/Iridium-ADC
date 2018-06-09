@@ -1,38 +1,38 @@
-(#) Appendix A: Analysis of Senior Project.
+## Appendix A: Analysis of Senior Project.
 
 <!-- Include Ethics section. -->
 Project Title: Iridium ADC
 
 Student’s Name: Bill Blakely
 
-(##) Summary of Functional Requirements.
+### Summary of Functional Requirements.
 
  <!-- Describe the overall capabilities or functions of your
 project or design. Describe what your project does. (Do not describe how you designed it). --> 
 
 This project is intended to be used for scientific and engineering measurement of highly dynamic
 signals.  It features a differential input that is sampled with a precision ADC. The digital data is
-then sent to a computer over a USB connection where it is processed and diplayed by a companion
+then sent to a computer over a USB connection where it is processed and displayed by a companion
 program. The PC based program allows the user to view the signal in time and frequency domain
 simultaneously. It also provides control over the sample rate, sample length, windowing function,
 and frequency domain magnitude averaging.
 
 
-(##) Primary Constraints. 
+### Primary Constraints. 
 
 <!-- Describe significant challenges or difficulties associated with your project or implementation. For example, what were limiting factors, or other issues that impacted your approach? What made your project difficult? What parameters or specifications limited your options or directed your approach? -->
 
 This device is intended to be a very high performance device in regard to noise and distortion.
-Extreme care must be taken in order to preserve as much of the linearity and dynamic range as
-possible.  Digitally, high resolution high bandwidth signals result in a large number of bits.  The
-digital controller and USB bridge must be specified and correctly implemented to handle the amount
-of data that is expected to be pushed through the channel. The user mode program must be intuitive
-and easy to use.
+Extreme care must be taken to preserve as much of the linearity and dynamic range as possible.
+Digitally, high-resolution, high-bandwidth signals result in a large number of bits.  The digital
+controller and USB bridge must be specified and correctly implemented to handle the amount of data
+that is expected to be pushed through the channel. The user mode program must be intuitive and easy
+to use.
 
 
-(##) Economics.
+### Economics.
 
-(###) Impacts.
+#### Impacts.
 
 **Human Capital:**  
 This device is intended to fit into the relatively low volume market of professional test equipment.
@@ -42,7 +42,7 @@ signals, and therefore increases the knowledge and capability of engineers and r
 around the world.
 
 **Financial Capital:**
-Initial development is to be self funded. Moving beyond the prototyping stage will require seeking
+Initial development is to be self-funded. Moving beyond the prototyping stage will require seeking
 out partners, investors, and venture capitalists willing to fund the project.
 
 **Manufactured or Real Capital:**
@@ -58,7 +58,7 @@ help to reduce the power consumption of the device.  The best way to prevent was
 in this device is to create a robust, dependable product that will not need to be replaced due to
 performance limitations or breakage.
 
-(###) Cost and Benefits.
+#### Cost and Benefits.
 
 During prototype development stage, by far the largest associated cost is time.  Large amounts of
 time must be put into the research of the techniques and methods of high performance analog design,
@@ -82,14 +82,14 @@ A condensed version of the BOM is presented in table [condensedBOM].
 [Table [condensedBOM]: Condensed BOM showing the cost breakdown of the project.]
 
 
-(##) Manufacturing.
+### Manufacturing.
 
 Initial estimated volume is expected to be low. The value to customers is high and this will justify
-a retail price of around 5x the BOM cost. Using the lower cost estimate from table [rough_cost] this
+a retail price of around 5x the BOM cost. Using the lower cost estimate from table [condensedBOM] this
 will result in a retail price of around $900.  With a direct sales model and estimated first year
-volume of 100 units, this is a yearly revenue of $72,500.
+volume of 100 units, this is a yearly revenue of $72,500. 
 
-(##) Environmental.
+### Environmental.
 
 Environmentally friendly products start in the design phase.  This device is designed to be durable
 and should not need to be replaced for a long time.  Additional environmental impact reduction will
@@ -97,7 +97,7 @@ be had by seeking out environmentally friendly manufacturers.  Reputable PCB ven
 careful with the hazardous chemicals used in production.  Ideally, we would use a manufacturing
 plant that makes use of sustainable energy sources to power their facilities.
 
-(##) Manufacturability.
+### Manufacturability.
 
 Units have several things that make manufacturing challenging.  Each unit is expected to be tested
 and calibrated individually to assure high accuracy, precision, and performance. Aside from this,
@@ -107,28 +107,28 @@ may be desired, it is not critical to the function, so that the only actually un
 unit is the PCB assembly.
 
 
-(##) Sustainability.
+### Sustainability.
 
 The product is designed to have a long lifetime.  The anticipated support issues if produced are
 repairs and recalibration.  The core performance of the hardware currently exceeds the performance
 of the software, so it is possible that units can be software upgradeable to unlock additional
 performance. This can extend the product lifetime therefore saving natural resources.
 
-(##) Ethical. 
+### Ethical. 
 
 There is an ethical obligation to design and manufacture a device that does not incorporate planned
 obsolescence.  It must also be designed for safe operation, especially the power supply.  Perhaps
 most critically  for this device is to publish the performance specifications as honestly and
 completely as possible.
 
-(##) Health and Safety. 
+### Health and Safety. 
 
 The device poses little direct health risk. There are no dangerous voltages present or moving
 mechanical parts. The indirect health dangers are byproducts of manufacturing. Use of lead free
 solder and environmentally friendly manufacturing processes are important to minimize the long term
 impact of any electronic device. 
 
-(##) Social and Political. 
+### Social and Political. 
 
 The audio market has a long history of rejecting measurement and characterization. To some extent,
 this is changing. Most purchasing is done online and because devices can not be heard as beforehand,
@@ -137,7 +137,7 @@ companies do not have a cost effective way to accurately characterize their devi
 potential to influence the way that audio companies publish their performance characterization
 tests.
 
-(##) Development.
+### Development.
 
 Development of this project utilized a diverse skillset. The project mixed high performance analog,
 embedded system design, and a PC application together into one project. This required filter design,

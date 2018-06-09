@@ -22,7 +22,7 @@ The AK5578 is a tempting choice. It offers lowest cost, and drastically lower co
 can be set up to provide lower noise by paralleling the input channels and outputting the average of
 all channels. When all 8 channels are mixed down to a single output, the signal to noise ratio
 increases from 121 dB to 130 dB. The maximum output data rate should be more than enough to meet the
-target bandwidth, but this is where the chip fails. The -3 dB bandwidth is much lower than the
+target bandwidth but this is where the chip fails. The -3 dB bandwidth is much lower than the
 expected 1/2 maximum sample rate. Looking at the frequency response chart, the part displays a very
 slow roll off that limits the bandwidth and does not offer true antialiasing at the output data
 rate's Nyquist limit. For the intended use this would not be a problem, there is ample bandwidth to
@@ -30,19 +30,18 @@ create a true antialiasing filter outside of the 20 kHz audio band limit. For ou
 measurement device, this chip will not work.
 
 The next choice would be the ADS1675, which offers the largest bandwidth out of these options.
-However, this chip actually suffers from a similar problem as the AK5578. The digital filter that
+However, this chip suffers from a similar problem as the AK5578. The digital filter that
 converts the low bit depth, modulator rate data stream to the high bit depth output data rate is not
 true antialiasing. The filters in the ADS1675 are set with their -6dB point at the output data rate
-Nyquist limit. This once again means that their must be an analog anti aliasing filter in order to
+Nyquist limit. This once again means that there must be an analog anti aliasing filter to
 reduce aliasing to acceptable levels. The problem is even worse when multiple data rates will be
 supported. A different anti alias filter is required at each output data rate.
 
-The AD7760 is the most expensive of the group, but it at does offer true antialiasing in the
-digital filter. This means that the analog front end only needs to provide antialiasing at the
-modulator data rate, in this case 20 MHz. With this setup, the analog filtering is greatly
-simplified and the operation is more versatile, with the ability to support multiple bandwidth
-selections without compromising performance. After choosing the AD7760, the rest of the design is
-able to proceed.
+The AD7760 is the most expensive of the group, but it at does offer true antialiasing in the digital
+filter. This means that the analog front end only needs to provide antialiasing at the modulator
+data rate, in this case 20 MHz. With this setup, the analog filtering is simplified and the
+operation is more versatile, with the ability to support multiple bandwidth selections without
+compromising performance. After choosing the AD7760, the rest of the design can proceed.
 
 +++++
 
@@ -64,10 +63,10 @@ Using the equation in figure [clock_jitter] with the minimum over sampling rate 
 maximum frequency of 1 MHz, and desired SNR of 110 dB, a maximum jitter of 1.42 ps is determined. A
 CTS components model CB3 clock oscillator module is picked with a maximum rms jitter of 1 ps. It
 requires no external parts to operate. Following the recommendation in the data sheet, the clock
-signal is buffered using a On Semi NC7SZ08M5 AND gate. The resulting schematicdesign can be seen in
+signal is buffered using a On Semi NC7SZ08M5 AND gate. The resulting schematic design can be seen in
 figure [schemCLK].
 
-![Figure [schemCLK]: Implementation of 40 MHz clock with buffer.](Images/schemCLK.png width ="80%")
+![Figure [schemCLK]: Implementation of 40 MHz clock with buffer.](Images/schemCLK.png width="80%")
 
 +++++
 
@@ -79,7 +78,7 @@ Another input directly affecting the sampling quality is the reference voltage. 
 range, the maximum reference voltage of 4.096 V is used. The recommended part is Analog Devices'
 ADR434. Low temperature coefficient of 1 ppm ensures there is little to no drift during use and
 after initial calibration. The long term stability 40 ppm during the first 1000 hours, reducing the
-need recalibrate. The signal is filtered with a large, low ESR cermaic capacitor as well as a compensation
+need recalibrate. The signal is filtered with a large, low ESR ceramic capacitor as well as a compensation
 network near the reference IC. An additional filter placed near the ADC further reduces any
 noise that may be picked up on board.
 
@@ -115,7 +114,7 @@ drawing switching current simultaneously), which must be kept out of the other s
 is tapped off the 15 VDC power input and regulated down to 2.5 V. This results in a lot of heat, so
 the NCV1117 in DPAK package is used for good heat transfer capabilities. It is connected to a copper
 pour on the PCB to help dissipate heat. A switching regulator would be a better choice here to
-operate more efficiently, and is recommended for the next design cycle.
+operate more efficiently and is recommended for the next design cycle.
 
 The 5 V regulator powers both the sensitive input amplifier, the internal reference voltage buffer,
 the external 40 MHz oscillator, and the delta sigma modulator circuit operating at 20 MHz. The 5 V
@@ -140,7 +139,7 @@ The main section of the circuit consists of two of Texas Instrument's OPA1632 fu
 amps. These were selected for their 1.3 nV/sqrt(Hz) noise power density and extremely low harmonic
 distortion of 0.000022%. Fully differential op amps lend themselves to designs based around an
 inverting op amp. Texas Instruments Webench tool is used to design a fourth order Butterworth low
-pass filter at 2 Mhz using a multiple feedback topology. This design is adapted to the balanced
+pass filter at 2 MHz using a multiple feedback topology. This design is adapted to the balanced
 signal path. Low value resistors are used to keep noise low through these stages. Gain in these
 stages is about 0.6 so that the input signal range can be larger than the ADC input.
 
@@ -149,9 +148,9 @@ an op amp are set up as non-inverting buffer amps to provide a high input impeda
 coupled through 2.2 uF capacitors and input impedance is set by 1 Mohm resistors, creating a high
 pass filter at 0.072 Hz. The stages are setup so that they can be used as gain stages if required,
 although in the current iteration they are only used as unity gain buffers. The OPA1612 is used for
-its excellent performance. At 1.1 nV/sqrt(Hz) and 0.000015% distortion this manges to exceed the
+its excellent performance. At 1.1 nV/sqrt(Hz) and 0.000015% distortion this manages to exceed the
 performance of the OPA1632. Power for the input amplifiers come from a 12 VDC single supply. It
-uses the same ADP7104 series regulator as the 5V rail, but is an adjustable version setup to
+uses the same ADP7104 series regulator as the 5V rail but is an adjustable version setup to
 produce a 12 V output. The bias voltage used in the first stage is buffered by a Texas Instruments
 OPA207 low noise op amp to provide stable DC performance without introducing low frequency drift
 into the circuit.
@@ -167,8 +166,10 @@ respectively.
 ![Figure [spiceAC]: Simulated frequency response of circuit with cursors showing the -3 dB at 
 1.1 MHz and the magnitude at the 20 MHz aliasing equal to -124 dB.](Images/spice_frequency_response.png width="90%")
 
++++++
+
 ![Figure [spiceNoise]: Noise analysis showing the noise voltage density in linear scale (blue line, 
-left axis) and deciBel scale (green line, right axis). Also shown is the RMS noise over this 
+left axis) and decibel scale (green line, right axis). Also shown is the RMS noise over this 
 bandwidth. The simulated noise is incredibly low, indicating that other sources are likely to 
 dominate the system.](Images/spice_noise.png width ="90%")
 
@@ -212,7 +213,7 @@ same dimensions and features two 2x19 pin header connectors so that it can mount
 the Nucleo board. To keep costs low, the board layout uses only two layers. 
 Some of the key design features of the PCB:
 * Connectors and off board wires use through hole connections, and everything else is surface mount. This allows the bottom layer to be almost entirely ground plane. 
-* To keep power supply bypass caps close to the ADC, some parts are mounted to the bottom side, but his is generally avoided.
+* To keep power supply bypass caps close to the ADC, some parts are mounted to the bottom side but this is generally avoided.
 * The differential signal path is kept nearly symmetrical to maintain a high CMRR.
 
 ## Embedded System.
@@ -236,7 +237,7 @@ respective header files. They are summarized as follows:
 * communications.cpp: Handles control signals and data transmission with the host computer.
 * pins.cpp: Pin assignment, setup, and functions for reading and writing data words. 
 
-Currently communication to the host computer happens over UART serial connection. The nucleo uses a
+Currently communication to the host computer happens over UART serial connection. The Nucleo uses a
 virtual serial port over USB, and this allows for a baud rate of 1.5 Mbaud. Even at this rate, the
 transmission of data back to the host is the primary bottleneck in the overall update rate of the
 system.

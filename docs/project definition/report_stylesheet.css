@@ -48,6 +48,11 @@ html, body {
 
 }
 
+.md .schematics img{
+    max-width: 200% !important;
+    margin: 0 -200px 0 -200px;
+}
+
 .markdeepFooter {
     visibility: hidden;
 }
@@ -64,10 +69,9 @@ html, body {
     font-family: 'Gentium Book Basic', serif;
     font-weight: 700;
     color: navy;
-
     border: 0;
     margin: 0;
-    margin-top: 0.5rem;
+    /*margin-top: 0.5rem;*/
     padding: 0;
     /*padding-top: 0.5em;*/
     /*padding-bottom: 0.1em;*/
@@ -81,6 +85,7 @@ html, body {
 
 .md h2, .nonumberh2 {
     font-size: 1.2em;
+    margin-top: -1em;
 }
 
 .md h3, .nonumberh3 {
