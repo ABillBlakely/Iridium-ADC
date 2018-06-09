@@ -15,7 +15,7 @@ BIN = 2
 
 # SCALE_FACTOR is multiplied by the normalized signal magnitude, where the full
 # scale range is -1 to 1
-SCALE_FACTOR = 0.70665 / (2 * 0.083784)
+SCALE_FACTOR = 8.44190
 
 data_buffer = []
 
@@ -87,7 +87,7 @@ class SerialComms():
 
         data_buffer = []
         '''Loop that waits for start, collects all the samples and stores result.'''
-        for nn in range(int(self.number_of_samples)*2):
+        for nn in range(int(self.number_of_samples)*6):
             # find the start of the data
             if self.stop_loops:
                 logging.info(f'Stop loop encountered')
@@ -215,13 +215,19 @@ if __name__ == '__main__':
 
     print('\n'.join(ser_test.status()))
 
-    # ser_test.start_sampling()
+    ser_test.write('v')
+    logging.info(f'Overrange: 0x{ser_test.readline().upper()} default is 0xCCCC')
+    ser_test.write('f')
+    logging.info(f'Offset: 0x{ser_test.readline().upper()} default is 0x0000')
+    ser_test.write('g')
+    logging.info(f'Gain: 0x{ser_test.readline().upper()} default is 0xA000')
 
-    logging.info('Acquisition Loop time: {}'.format(
-        timeit.timeit(ser_test.acquisition_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
-    logging.info('Decode Loop time: {}'.format(
-        timeit.timeit(ser_test.decode_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
-    logging.info(f'length of decoded buffers:\n\t{[len(x) for x in list(ser_test.decoded_data_queue)]}')
+
+    # logging.info('Acquisition Loop time: {}'.format(
+    #     timeit.timeit(ser_test.acquisition_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
+    # logging.info('Decode Loop time: {}'.format(
+    #     timeit.timeit(ser_test.decode_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
+    # logging.info(f'length of decoded buffers:\n\t{[len(x) for x in list(ser_test.decoded_data_queue)]}')
 
     # for kk in range(200):
     #     try:

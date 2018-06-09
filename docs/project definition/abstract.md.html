@@ -1,21 +1,18 @@
 # Abstract.
-Today's modern digital audio systems are pushing performance boundaries. 
-Most high quality digital to analog converters for audio are capable of 24 bit 96 kHz conversion. 
-Professional audio interfaces frequently use 24 or 32 bit 192 kHz sample rates. 
-These systems are able to achieve a dynamic ranges greater than 100 dB, and distortion on the magnitude of single parts per million. 
-This project proposes a high resolution analog digital converter (ADC) to measure and characterize these types of devices.
 
-The proposed system will be capable of 24 bit conversion and an extended frequency range of at least 300 kHz. 
-This allows for a theoretical Dynamic range of over 140 dB, ensuring the systems noise performance is limited by other factors. 
-The extended frequency response offers several benefits:
+Today's modern digital audio systems are pushing performance boundaries. Most high quality audio digital to analog converters are capable of 24 bit, 96 kHz conversion. Professional audio
+interfaces frequently use 24 or 32 bit 192 kHz sample rates. These systems are able to achieve a
+dynamic ranges greater than 100 dB, and distortion on the magnitude of single parts per million.
+This project proposes a high resolution analog digital converter (ADC) to measure and characterize
+these types of devices.
+
+The proposed system will be capable of 24 bit conversion and an extended frequency range compared to the typical 20 Hz to 20 kHz audio band. This allows for a theoretical dynamic range of over 140 dB, ensuring the systems noise performance is limited by other factors. The extended frequency response offers several benefits:
 
 1. Measurement of distortion products that occur on fundamental frequencies above 10kHz. Even though these products are not necessarily audible, they should be observed if present.
-2. Observation of out-of-band oscillations or other noise. Various issues in a device could result in unintentional self oscillation which will likely be at a greater frequency than conventional audio measurement equipment operating at a maximum of 192kHz can observe.
-3. Measurement of non audio signals. Many common signals operate in the tens or hundreds of kHz range. Switch mode power supplies operate in frequencies of 100kHz and up [^switchmode]. Industrial, scientific, and medical equipment may use ultrasonic equipment, and vibration or resonant analysis may produce signals that go well beyond 20 kHz.
+2. Observation of out-of-band oscillations, interference, or other noise. Various issues in a device could result in unintentional self oscillation which will likely be at a greater frequency than conventional audio measurement equipment operating at a maximum of 192kHz can observe.
+3. Measurement of non audio signals. Many common signals operate in the tens or hundreds of kHz range. Switch mode power supplies operate in frequencies of 100kHz and up [^switchmode]. Industrial, scientific, and medical equipment may use ultrasonic equipment, and vibration or resonant analysis may produce signals that go well beyond 20 kHz [^vibration].
 
-The digitized data will be transferred over USB. As a USB Audio Class device, the system can be used with almost any computer. 
-The data can be analyzed with custom scripts in MATLAB or Python or in existing software such as ARTA labs [^Arta]. 
-This allows for frequency domain measurements such as: frequency response, Total Harmonic Distortion (THD), Intermodulation Distortion(IMD), and more
+The digitized data will be transferred over USB, and a custom program will display the data in time and frequency domain simultaneously. This interfacce also enables control over the sampling and data processing parameters.
 
 <!-- Markdeep footer -->
     <script src="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.js"></script>

@@ -1,138 +1,153 @@
-# Analysis of Senior Project.
+(#) Appendix A: Analysis of Senior Project.
+
 <!-- Include Ethics section. -->
 Project Title: Iridium ADC
 
 Student’s Name: Bill Blakely
 
-Adviser’s Name: Professor MacCarly
+(##) Summary of Functional Requirements.
 
-## Summary of Functional Requirements.
-<!-- Describe the overall capabilities or functions of your project or design. Describe what your project does. (Do not describe how you designed it). -->
-This project is intended to be used for scientific and engineering measurement of high dynamic range signals. 
-It features two balanced inputs that are sent through a precision ADC and the digital data is then sent to a computer over a USB connection. 
-It features a selectable input impedance to increase the applicability to a range of signal sources.
-The hardware also includes an integrated power supply and generation of a stable, calibrated reference voltage. 
-The product is differentiated from professional and consumer devices largely by its precision and bandwidth. 
+ <!-- Describe the overall capabilities or functions of your
+project or design. Describe what your project does. (Do not describe how you designed it). --> 
+
+This project is intended to be used for scientific and engineering measurement of highly dynamic
+signals.  It features a differential input that is sampled with a precision ADC. The digital data is
+then sent to a computer over a USB connection where it is processed and diplayed by a companion
+program. The PC based program allows the user to view the signal in time and frequency domain
+simultaneously. It also provides control over the sample rate, sample length, windowing function,
+and frequency domain magnitude averaging.
 
 
-## Primary Constraints. 
+(##) Primary Constraints. 
+
 <!-- Describe significant challenges or difficulties associated with your project or implementation. For example, what were limiting factors, or other issues that impacted your approach? What made your project difficult? What parameters or specifications limited your options or directed your approach? -->
 
-This device is intended to be a very high performance device in regard to noise and distortion. 
-Extreme care must be taken in order to preserve as much of the linearity and dynamic range as possible. 
-Digitally, high resolution high bandwidth signals result in a large number of bits. 
-The digital controller and USB bridge must be specified and correctly implemented to handle the amount of data that is expected to be pushed through the channel.
+This device is intended to be a very high performance device in regard to noise and distortion.
+Extreme care must be taken in order to preserve as much of the linearity and dynamic range as
+possible.  Digitally, high resolution high bandwidth signals result in a large number of bits.  The
+digital controller and USB bridge must be specified and correctly implemented to handle the amount
+of data that is expected to be pushed through the channel. The user mode program must be intuitive
+and easy to use.
 
 
-## Economics.
+(##) Economics.
 
-### Impacts.
+(###) Impacts.
 
-**Human Capital:** 
-This device is intended to fit into the relatively low volume market of professional test equipment. 
-This creates the potential for jobs in development and manufacturing, as well as in support. 
-The device seeks to increase the level of frequency domain analysis done in the space of low frequency signals, and therefore increases the knowledge and capability of engineers and researchers all around the world.
+**Human Capital:**  
+This device is intended to fit into the relatively low volume market of professional test equipment.
+This creates the potential for jobs in development and manufacturing, as well as in support.  The
+device seeks to increase the level of frequency domain analysis done in the space of low frequency
+signals, and therefore increases the knowledge and capability of engineers and researchers all
+around the world.
 
 **Financial Capital:**
-Initial development is to be self funded. Moving beyond the prototyping stage will require seeking out partners, investors, and venture capitalists willing to fund the project. 
+Initial development is to be self funded. Moving beyond the prototyping stage will require seeking
+out partners, investors, and venture capitalists willing to fund the project.
 
 **Manufactured or Real Capital:**
-Serious development of this project into a company will require investment to acquire a suitable suite of test and measurement equipment. 
-It will also require that the manufacturing facilities and office space are acquired.
+Serious development of this project into a company will require investment to acquire a suitable
+suite of test and measurement equipment.  It will also require that the manufacturing facilities and
+office space are acquired.
 
 **Natural Capital:**
-The device has similar environmental impact to much other lab equipment such as bench multimeters. 
-Effort to reduce the natural can be made such as use of lead-free parts and sustainable energy used in office and manufacturing facilities.
-The lack of a standby mode and display-less design help to reduce the power consumption of the device. 
-The best way to prevent wasted natural capital in this device is to create a robust, dependable product that will not need to be replaced due to performance limitations or breakage.
+The device has similar environmental impact to much other lab equipment such as bench multimeters.
+Effort to reduce the natural capital can be made such as use of lead-free parts and sustainable
+energy used in office and manufacturing facilities. The display-less design and power management
+help to reduce the power consumption of the device.  The best way to prevent wasted natural capital
+in this device is to create a robust, dependable product that will not need to be replaced due to
+performance limitations or breakage.
 
-### Cost and Benefits.
+(###) Cost and Benefits.
 
-During prototype development stage, by far the largest associated cost is time. 
-Large amounts of time must be put into the research of the techniques and methods of high performance analog design, parts selection, code development, careful PCB layout, and more. 
-The only significant capital expense is in the parts and PCB manufacture, no additional special equipment is required for development of the prototype.
+During prototype development stage, by far the largest associated cost is time.  Large amounts of
+time must be put into the research of the techniques and methods of high performance analog design,
+parts selection, code development, careful PCB layout, and more.  The only significant capital
+expense is in the parts and PCB manufacture, no additional special equipment is required for
+development of the prototype.
 
-Since final part selection is still pending, a rough estimate of the cost may be performed. 
-The estimate for range of cost is presented in table [rough_cost] and this provides an estimated total per unit cost range of $123 - $303.
+The total BOM cost comes to 175.34
 
+A condensed version of the BOM is presented in table [condensedBOM].
 
-| #  |            Part           | Cost Range (dollars/each) | Min Cost (dollars) | Max Cost (dollars) |
-|----|---------------------------|---------------------------|--------------------|--------------------|
-|  1 | Power transformer         | 10 - 20                   |                 10 |                 20 |
-|  2 | ADC (cost per channel)    | 5 - 40                    |                 10 |                 80 |
-|  1 | Microcontroller           | 5 - 10                    |                  5 |                 10 |
-|  6 | Precision op amps         | 2 - 5                     |                 12 |                 30 |
-|  1 | Voltage reference         | 2 - 5                     |                  2 |                  5 |
-|  4 | Connectors                | 1 - 2                     |                  4 |                  8 |
-| 10 | Additional ICs            | 1 - 2                     |                 10 |                 20 |
-| 50 | Passives (est. avg. cost) | 0.20                      |                 10 |                 20 |
-|  2 | PCB                       | 20 - 30                   |                 40 |                 60 |
-|  1 | Enclosure                 | 20 - 50                   |                 20 |                 50 |
-[Table [rough_cost]: Estimated price and quantity per unit when purchased in single quantity.]
-
-
-The first prototype should be functional toward the end of March 2018 so that functionality can be verified. 
-A second version with performance improvements should be produced in May 2018. 
-In June 2018, actual measured performance should be available for publication.
-At this point, steps forward can be made in finding investing and manufacturing partners.
-
-## Manufacturing.
-
-Initial estimated volume is expected to be low.
-The value to customers is high and this will justify a retail price of around 5x the BOM cost.
-Using the lower cost estimate from table [rough_cost] this will result in a retail price of around $600. 
-With a direct sales model and estimated first year volume of 100 units, this is a yearly revenue of $47,700. 
-
-## Environmental.
-
-Environmentally friendly products start in the design phase. 
-This device is designed to be durable and should not need to be replaced for a long time. 
-Additional environmental impact reduction will be had by seeking out environmentally friendly manufacturers. 
-Reputable PCB vendors that are careful with the hazardous chemicals used in production. 
-Ideally, we would use a manufacturing plant that makes use of sustainable energy sources to power their facilities. 
-
-## Manufacturability.
-
-Units have several things that make manufacturing challenging. 
-Each unit is expected to be tested and calibrated individually to assure high accuracy, precision, and performance.
-Aside from this, there is little that is especially challenging about the device. 
-It reduces to PCB assemblies in a box, which is something that manufacturers have gotten very good at doing. 
-While a custom enclosure may be desired, it is not critical to the function, so that the only actually unique part of the unit is the PCB assembly.
+| Part                        | Approximate Cost ($) |
+| --------------------------- | -------------------- |
+| ADC                         | 57                   |
+| Microcontroller dev board   | 15                   |
+| Precision op amps           | 20                   |
+| Power Supply and reference  | 20                   |
+| Connectors                  | 12                   |
+| Passives (est. avg. cost)   | 38                   |
+| PCB                         | 15                   |
+[Table [condensedBOM]: Condensed BOM showing the cost breakdown of the project.]
 
 
-## Sustainability.
+(##) Manufacturing.
 
-The product is designed to have a long lifetime. 
-The anticipated support issues are repairs and recalibration. 
-By using existing standards for communication in USB and the USB audio class driver, problems of becoming obsolete due to software are largely removed. 
-Even if production and support was stopped, the devices should continue to operate for a long time.
+Initial estimated volume is expected to be low. The value to customers is high and this will justify
+a retail price of around 5x the BOM cost. Using the lower cost estimate from table [rough_cost] this
+will result in a retail price of around $900.  With a direct sales model and estimated first year
+volume of 100 units, this is a yearly revenue of $72,500.
 
-While an improved version of this device would add the ability to generate signals as well, the immediate next step in developing a product line would begin with developing an open source software package that is able to perform frequency domain analysis. This software would have a scripting API allowing engineers and scientists to write custom testing routines, perform data logging, or perform customized analysis. 
+(##) Environmental.
 
-## Ethical. 
+Environmentally friendly products start in the design phase.  This device is designed to be durable
+and should not need to be replaced for a long time.  Additional environmental impact reduction will
+be had by seeking out environmentally friendly manufacturers.  Reputable PCB vendors that are
+careful with the hazardous chemicals used in production.  Ideally, we would use a manufacturing
+plant that makes use of sustainable energy sources to power their facilities.
 
-There is an ethical obligation to design and manufacture a device that does not incorporate planned obsolescence. 
-It must also be designed for safe operation, especially the power supply. 
-Perhaps most critically  for this device is to publish the performance specifications as honestly and completely as possible. 
+(##) Manufacturability.
 
-## Health and Safety. 
+Units have several things that make manufacturing challenging.  Each unit is expected to be tested
+and calibrated individually to assure high accuracy, precision, and performance. Aside from this,
+there is little that is especially challenging about the device.  It reduces to PCB assemblies in a
+box, which is something that manufacturers have gotten very good at doing.  While a custom enclosure
+may be desired, it is not critical to the function, so that the only actually unique part of the
+unit is the PCB assembly.
 
-This device is intended to be powered directly from the wall outlet. 
-Most of the major safety concerns stem from this. 
-Using a power transformer for isolation and observing safety precautions like an earth grounded chassis will be critical for the safe operation of the device. 
-Additionally, the device must be designed so that it can not damage either the connected computer or the connected signal source.
 
-## Social and Political. 
+(##) Sustainability.
 
-The audio market has a long history of rejecting measurement and characterization. 
-To some extent, this is changing now that most purchasing is done online and can not be heard as much beforehand. 
-Currently small audio companies do not have a cost effective way to accurately characterize their devices. 
-This has the potential to influence the way that audio companies publish their performance characteristics. 
+The product is designed to have a long lifetime.  The anticipated support issues if produced are
+repairs and recalibration.  The core performance of the hardware currently exceeds the performance
+of the software, so it is possible that units can be software upgradeable to unlock additional
+performance. This can extend the product lifetime therefore saving natural resources.
 
-<!-- ## Development. 
+(##) Ethical. 
 
-*  Describe any new tools or techniques, used for either development or analysis that you learned independently during the course of your project. Include a literature search.
- -->
+There is an ethical obligation to design and manufacture a device that does not incorporate planned
+obsolescence.  It must also be designed for safe operation, especially the power supply.  Perhaps
+most critically  for this device is to publish the performance specifications as honestly and
+completely as possible.
+
+(##) Health and Safety. 
+
+The device poses little direct health risk. There are no dangerous voltages present or moving
+mechanical parts. The indirect health dangers are byproducts of manufacturing. Use of lead free
+solder and environmentally friendly manufacturing processes are important to minimize the long term
+impact of any electronic device. 
+
+(##) Social and Political. 
+
+The audio market has a long history of rejecting measurement and characterization. To some extent,
+this is changing. Most purchasing is done online and because devices can not be heard as beforehand,
+people have turned to test data to inform their purchasing decisions. Currently small audio
+companies do not have a cost effective way to accurately characterize their devices. This has the
+potential to influence the way that audio companies publish their performance characterization
+tests.
+
+(##) Development.
+
+Development of this project utilized a diverse skillset. The project mixed high performance analog,
+embedded system design, and a PC application together into one project. This required filter design,
+noise analysis,  schematic capture, PCB layout, C++ and python development, as well as an
+understanding of the FFT and frequency domain analysis. This tied together many separate interests
+into one comprehensive package. The steepest learning curve was in the PCB layout. The ADC package,
+a 64 pin QFP, 0.5 mm pin pitch, and exposed paddle proved to be quite a challenge to layout and
+assemble. In a new design, moving to a four layer PCB, not routing any traces underneath the
+package, and using wider traces and spacing would be highly recommended.
+
 
 <!-- Markdeep footer -->
     <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>

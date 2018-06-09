@@ -1,0 +1,18 @@
+# Conclusion.
+
+The Iridium ADC project is, overall, a success. Most of the performance specifications are met or exceeded. The distortion and noise performance in particular were able to exceed their target goal by a significant margin. There is, however, much that can be improved upon in a new revision.
+
+The update rate is currently around 2 seconds for the maximum sample rate. This is a limitation of transferring the data using UART over a USB virtual serial port. This transfer method was easy to set up in both the embedded system and the host application but is very limited in speed. It is also not very robust; there is not error detection and there is potential issues with buffer overflow or underflow that could result in bad data. This is the most pressing issue currently because it is a barrier to several of the other improvements that could be made. 
+
+Increasing the number of samples would have several benefits, including better frequency resolution and lower minimum frequencies. There are two limitations to this currently. The first is the aforementioned sample speed. The transfer time scales approximately equally with the number of samples, so attempting to take four times the number of samples would result in a painfully slow 8 second update rate. The second limitation is system memory. 16384 is the maximum number of samples because it is the largest power of two that fits in memory. Use of external memory could alleviate this issue.
+
+Currently only a small portion of the ADC sample rate capability is utilized. Two barriers are in the way of increased sample rates. Currently the ADC signals a sample is ready by pulling a pin low. This triggers and interrupt in the microcontroller that reads the data. There is around 1 us of latency between the pin pulling low and the data being read. A poll based approach reduces this lag considerably but the pulse does not last long enough to always be caught in a polling system. External circuitry to extend the time the pin stays low could enable the poll based approach and allow a doubling of the sample rate. Additional speed could be achieved if all 16 data bus pins are connected on a single port. This may be possible with the current Nucleo F446RE development board but it will require some modification of the Nucleo board to free up all of Port A. This reduces a read cycle from 4 port reads to two, saving several hundred nanoseconds. 
+
+A PCB redesign will be necessary. Several problems were encountered with traces near the ADC. Major problems occurred due to traces being run under components. Cycles of heating and cooling  and mechanical abrasion during assembly caused solder mask to wear off and allowed shorts to develop. These traces can be rerouted easily if a switch to a four layer board is made. 
+
+
+<!-- Markdeep footer -->
+    <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
+    <link rel="stylesheet" href="report_stylesheet.css">
+    <script src="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.js"></script>
+    <script src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script>

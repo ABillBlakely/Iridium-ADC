@@ -1,0 +1,209 @@
+# Calibration and Testing.
+
+The product will be tested by analysis of its sampled data output. 
+Using a known signal as input, the dynamic range, CMRR, frequency response, THD and more can be
+measured. Acceptable performance will match what is set out in the Engineering
+requirements of table [marketReqs].
+
+![Figure [typLabDist]: The 3rd harmonic alone counts for 0.01% distortion in this measurement of a Rigol DS1062Z Function generator.](Images/typLabDist.png)
+
+Part of the reason for beginning this project was the lack of test equipment that could perform
+these low frequency, high dynamic range measurements. Oscilloscopes cover the frequency range but do
+not have the dynamic range to perform sensitive distortion measurements. Spectrum analyzers often do
+have the dynamic range, but do not cover the lowest part of the frequency range. Signal generators
+pose another problem, as seen in figure [typLabDist]. Keysight's line of Trueform function generators have a 14 or 16 bit converter,
+limiting the noise floor to well above the level of this project. They also claim lower harmonic
+distortion, but the published specification of 0.03% is over 100x more than what we wish to
+achieve.[^trueform]
+
+So using the lab equipment available, a source can be characterized fully in order to compare
+performance across systems. And even if it could, the available signal sources have so much
+distortion and noise that measuring the system performance will be impossible.
+
+The second reason for this project is to keep pace with the ever increasing performance of audio
+equipment. After looking at the performance of a Focusrite Scarlett 6i6 USB audio interface, it is
+determined that this offers very good performance that will allow some of the performance aspects to
+at least set some boundaries on performance characteristics. For each measurement, the Focusrite
+will be connected with one output into the Iridium ADC and the other back into the Focusrite
+interface. The performance can then be compared by examining our systems output with the Focusrite.
+The data from the Focusrite will be taken using ARTA spectrum analyzer mode. Using this setup allows
+us to estimate the performance of the system's distortion levels including THD and IMD.
+
+Many additional characteristics may be made without the need of a low distortion source and may be
+made with other equipment as stated.
+
+## Calibration.
+
+Before any measurements can be made, the systems magnitude must be calibrated.
+Because of the uncertainty of the exact reference voltage and circuit gain, a scale factor is found
+by sending a known signal into the input and reading the resulting signal in the Iridium interface.
+The input signal is measured using an Agilent 34661A multimeter to create a histogram of the signal
+and find a very accurate average level. This is compared against the RMS readout in the GUI which is
+calculated using the time domain sampled data. Because many measurements use a -3 dB input signal.
+The system is calibrated near this level. The Focusrite interface is used as signal generator for
+this test to produce a balanced signal input.
+
+![Figure: [histogram]: Measured input signal with average value of 0.7072412 V.](Images/calHist.jpg)
+
+<br>
+
+| Input Signal | System Measurement | Scale Factor |
+| ------------ | ------------------ | ------------ |
+| 0.7072412 V  | 0.0837775          | 8.44190 V    |
+[Table [scaleFactor]: Data and results of calculating scale factor]
+
+This value is inserted into the code to scale the data correctly.
+
+## Frequency Response and bandwidth.
+
+For frequency response measurements, a Rigol DS1062Z function generator is used to create a white
+noise source. The response is viewed in the frequency domain with no window, maximum number of
+samples, and frequency domain averaging on with 100 samples averaged. The resulting plots for each
+sample rate are shown in figure [measureFreqResp]. The minimum frequency domain measureable frequency and
+the estimated -3dB maximum frequency are listed in table [freqRespTable].
+
+![Figure [measureFreqResp]: From top to bottom, frequency response plots 
+of highest, middle, and lowest sample rates](Images/measureFreqResponse.png)
+
+| Sample Rate [kSPS] | Min Freq [Hz] | Max Freq [kHz] |
+| ------------------ | ------------- | -------------- |
+| 312.5              | 19.07         | 133            |
+| 156.25             | 9.54          | 68             |
+| 78.125             | 4.77          | 33             |
+[Table [freqRespTable]: Summary of frequency response measurements]
+
+
+## Noise.
+
+To measure noise, the input should be terminated with a resistor similar to the expected source
+impedance. After connecting the resistor, the RMS signal level and the voltage noise density can be
+measured in the time and frequency domain respectively. The RMS noise is measured at maximum
+bandwidth, and no window is used in the frequency domain.
+
+| Resistor  | RMS noise voltage | Voltage noise density |
+| --------  | ----------------- | --------------------- |
+| 47.0 ohms | 24.03 uV          | -127.70 dB at 1 kHz   |
+[Table [noisePerformance]: Noise measurements in time domain and frequency domain.]
+
+![Figure [measureNoiseTime]: Noise oin the time domain under system's maximum bandwidth 
+terminated with 50 ohm differential impedance.](Images/measureNoiseTime.png)
+
+![Figure [measureNoiseFreq]: Noise in the frequency domain. 
+No window used, frequency domain averaging on.](Images/measureNoiseFreq.png)
+
+## CMRR.
+
+Common mode rejection ratio is determined by sending a known signal into both of the differential
+inputs and measuring the signal that makes it through the system. The ratio of these is computed and
+converted to dB:
+
+$$ CMRR = 20\log\left(\frac{measured}{input}\right) $$
+
+A setup similar to the calibration system is used here, but the Rigol DS1062Z is used as signal
+source for its extended bandwidth. CMRR can vary with frequency, so it is checked for several
+different frequencies. The measured level is taken from the RMS display in the GUI while the INput
+level is measured with the Agilent 34661A multimeter.
+
+
+| Frequency | Input level [V] | Measured level [uV] | CMRR [dB] |
+| --------- | -----------     | --------------      | ----      |
+| 100 Hz    | 0.707362        | 72.52977            | 79.78     |
+| 1 kHz     | 0.707215        | 21.17327            | 90.48     |
+| 100 kHz   | 0.706289        | 287.713             | 67.80     |
+[Table [CMRR]: Common mode rejection ratio at several frequencies.]
+
+## Dynamic Range.
+
+The dynamic range of a system is the ratio of maximum signal input relative to the minimum signal,
+expressed in decibels. Typically this is compared to the noise floor. In the time domain the dynamic
+range is given by the maximum input level over the RMS noise level. However in frequency domain,
+this becomes the maximum signal level over the noise density. Since noise density is always lower
+than the RMS noise, dynamic range is higher in the frequency domain than the time domain.
+
+The maximum signal input is estimated by measuring the peak amplitude for a clipped signal input and
+dividing by $ \sqrt{2} $. This gives the theoretical maximum RMS value of the signal input. This is
+then divided by the RMS noise for time domain dynamic range and by the voltage noise density for
+frequency domain dynamic range found in table [noisePerformance]. The final dynamic range is
+expressed in decibels.
+
+| Maximum Signal | Est Max RMS | DR in time domain | DR in frequency domain |
+| -------------- | ----------- | ----------------- | ---------------------- |
+| 6.01 V         | 4.25 V      | 105.0 dB          | 140.3 dB               |
+[Table [dynamicRange]: Data and results of determining dynamic range. The lower limits used for calculation is the  same as in table [noisePerformance].]
+
+## Distortion.
+
+Total harmonic distortion is most often specified for a 1 kHz -3dB signal level. Distortion can
+change with frequency and input level, so for a better understanding of the system, measurements are
+made at -3 and +6dB, and at 1 and 10 kHz.
+
+The Focusrite is used as signal generator here and the THD display in ARTA is used to establish a
+boundary on distortion performance. It is important to note that the ARTA measurement will be
+including distortion in both the output and input of the Focusrite interface, while the signal
+feeding the Iridium ADC will be the distortion of the Focusrite's output and the distortion of the
+Iridium system itself. This may introduce some error into the measurement and is the reason this
+section can only set bounds on the distortion level and not precisely state the distortion itself.
+
+Total harmonic distortion is calculated by finding the ratio of power in the upper harmonics to the
+power in the main harmonic. The square root of this is taken, and the value is usually expressed as
+a percentage.
+
+$ THD = 100 \cdot \sqrt{\frac{\sum_{n=2}^\inf{H_n^2}}{H_1^2}} $
+
+Where $ H_n $ refers to the harmonic of the signal input. 
+
+To calculate distortion, a quick python script is used. The fundamental is measured from the
+frequency domain plot and input to the script, and the measurable harmonics are input as a list of
+values. All measurements can be input in dB and are converted to linear units for calculation.
+
+```python
+'''Calculate harmonic distortion as a percent 
+using dB magnitude values from spectrum analyzer.'''
+
+# fundamental level in dB.
+fundamental = -3.2096
+
+# list of higher harmonic levels in dB.
+harmonics = [-121.58, -124.35, -124.55, -123.9, -127.23]
+
+harmonic_power = sum([10**(peak/10) for peak in harmonics])
+fundamental_power = 10**(fundamental/10)
+
+distortion = (harmonic_power / fundamental_power)**0.5
+
+# Print distortion as a percent..
+print(f'Distortion: {distortion*100:.4}%')
+
+```
+[Listing [distortion]: An example of the python script for calculating THD.]
+
+
+![Figure [distTest1]: Test signal 1kHz, -3dB Iridium, left and Arta, right.](Images/measureDist-3dB1kHz.png)
+
+![Figure [distTest2]: Test signal 10kHz, -3dB Iridium, left and Arta, right.](Images/measureDist-3dB10kHz.png)
+
+![Figure [distTest3]: Test signal 1kHz, +6dB Iridium, left and Arta, right.](Images/measureDist+6dB1kHz.png)
+
+![Figure [distTest4]: Test signal 10kHz, +6dB Iridium, left and Arta, right.](Images/measureDist+6dB10kHz.png)
+
+
+
+| Frequency | input magnitude | Measured THD [%] | Loopback THD [%] |
+| --------- | --------------- | ------------     | ------------     |
+| 1 kHz     | -3 dB           | 0.0002051        | 0.0048           |
+| 10 kHz    | -3 dB           | 0.0003415        | 0.0018           |
+| 1 kHz     | +6 dB           | 0.003334         | 0.0017           |
+| 10 kHz    | +6 dB           | 0.003509         | 0.0054           |
+[Table [distortionResults]: Results of distortion test, Measured THD is the distortion calculated from Iridium ADC measurements, Loopback THD is the distortion of the Focusrite interface in loopback connection as measured by ARTA.]
+
+In most cases the distortion measured by Iridium ADC is lower than with the Focusrite interface.
+Even better equipment is required to characterize the system to a high degree of accuracy.  The one
+exception is at 1 kHz with a +6 dB which displays noticeably different distortion, indicating that
+further investigation into the cause of this may be required.
+
+<!-- Markdeep footer -->
+    <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
+    <link rel="stylesheet" href="report_stylesheet.css">
+    <script src="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.js"></script>
+    <script src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script>
+

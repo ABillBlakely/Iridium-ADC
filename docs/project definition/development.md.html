@@ -1,0 +1,257 @@
+# Development and Design.
+
+An overview of the major design choices and implementation. Full design files can be found in the
+Schematic, PCB, and Program listings in the appendices at the end of the report.
+
+## ADC Selection.
+
+The design of the system can be divided into several parts, although the three major components are
+the analog design, the embedded system, and the user application. Each of these sections is
+dependent on the ADC which is being used, making that part the first choice to be made. The market
+for high resolution, high bandwidth ADC's is relatively small. A summary of the parts that were
+considered for the project is present in Table [adcParts]
+
+| Part No. |    Manufacturer   | Maxi Output Data Rate | Maximum BW (-3dB) | Bit Depth | Price (qty. 1) |                                          Notes                                          |
+|----------|-------------------|--------------------------|-------------------|-----------|----------------|-----------------------------------------------------------------------------------------|
+| AK5578   | AKM Semiconductor | 768 kSPS                 | 144.5 kHz         |        32 | $19.51         | Audio grade device, offers up to 8 channels of conversion. I2S serial output.           |
+| ADS1675  | Texas Instruments | 4 MSPS                   | 1.90 MHz          |        24 | $36.21         | Single channel, CMOS or LVDS data output, LVDS required at 2 highest data output rates. |
+| AD7760   | Analog Devices    | 2.5 MSPS                 | 1.06 MHz          |        24 | $57.27         | Single channel, 16 bit parallel data bus.                                               |
+[Table [adcParts]: A selection of high speed delta sigma converters.]
+
+The AK5578 is a tempting choice. It offers lowest cost, and drastically lower cost per channel.  It
+can be set up to provide lower noise by paralleling the input channels and outputting the average of
+all channels. When all 8 channels are mixed down to a single output, the signal to noise ratio
+increases from 121 dB to 130 dB. The maximum output data rate should be more than enough to meet the
+target bandwidth, but this is where the chip fails. The -3 dB bandwidth is much lower than the
+expected 1/2 maximum sample rate. Looking at the frequency response chart, the part displays a very
+slow roll off that limits the bandwidth and does not offer true antialiasing at the output data
+rate's Nyquist limit. For the intended use this would not be a problem, there is ample bandwidth to
+create a true antialiasing filter outside of the 20 kHz audio band limit. For our broad band
+measurement device, this chip will not work.
+
+The next choice would be the ADS1675, which offers the largest bandwidth out of these options.
+However, this chip actually suffers from a similar problem as the AK5578. The digital filter that
+converts the low bit depth, modulator rate data stream to the high bit depth output data rate is not
+true antialiasing. The filters in the ADS1675 are set with their -6dB point at the output data rate
+Nyquist limit. This once again means that their must be an analog anti aliasing filter in order to
+reduce aliasing to acceptable levels. The problem is even worse when multiple data rates will be
+supported. A different anti alias filter is required at each output data rate.
+
+The AD7760 is the most expensive of the group, but it at does offer true antialiasing in the
+digital filter. This means that the analog front end only needs to provide antialiasing at the
+modulator data rate, in this case 20 MHz. With this setup, the analog filtering is greatly
+simplified and the operation is more versatile, with the ability to support multiple bandwidth
+selections without compromising performance. After choosing the AD7760, the rest of the design is
+able to proceed.
+
++++++
+
+## ADC Implementation.
+
+### Clock.
+
+
+The input clock can be selected to achieve different sample rates, but for maximum bandwidth, the
+highest speed clock of 40 MHz is picked. Clock performance has a direct relationship to ADC
+performance. Any jitter in the clock will show up as noise in the resulting signal. Because delta
+sigma converters over sample the input, the effects of jitter are reduced. From the AD7760 data
+sheet we find the following equation:
+
+![Figure [clock_jitter]: Clock RMS jitter requirements vary with OSR, input frequency, and desired 
+SNR.](Images/clock_jitter.png width="330px")
+
+Using the equation in figure [clock_jitter] with the minimum over sampling rate (OSR) of 8, the
+maximum frequency of 1 MHz, and desired SNR of 110 dB, a maximum jitter of 1.42 ps is determined. A
+CTS components model CB3 clock oscillator module is picked with a maximum rms jitter of 1 ps. It
+requires no external parts to operate. Following the recommendation in the data sheet, the clock
+signal is buffered using a On Semi NC7SZ08M5 AND gate. The resulting schematicdesign can be seen in
+figure [schemCLK].
+
+![Figure [schemCLK]: Implementation of 40 MHz clock with buffer.](Images/schemCLK.png width ="80%")
+
++++++
+
+### Reference Voltage.
+
+![Figure [schemReference]: Reference voltage and with filtering ](Images/schemReference.png width="80%")
+
+Another input directly affecting the sampling quality is the reference voltage. For maximum input
+range, the maximum reference voltage of 4.096 V is used. The recommended part is Analog Devices'
+ADR434. Low temperature coefficient of 1 ppm ensures there is little to no drift during use and
+after initial calibration. The long term stability 40 ppm during the first 1000 hours, reducing the
+need recalibrate. The signal is filtered with a large, low ESR cermaic capacitor as well as a compensation
+network near the reference IC. An additional filter placed near the ADC further reduces any
+noise that may be picked up on board.
+
+### Input Driver.
+
+The AD7760 includes a fully differential amplifier intended to drive the input of the stage. This
+built in amplifier automatically sets the common mode level to the correct half reference level. The
+recommended circuit is followed for this, but the capacitor values are increased to set the filter
+cutoff frequency at about 2 MHz. The maximum differential signal at the input to this stage is 5 V.
+
+### Digital Interface.
+
+Five control signals and a 16 bit parallel data bus is used for communication to the
+microcontroller. These are powered by the 2.5 V power source. They are tolerant to 3.3 V (and the
+microcontroller reads 2.5 V signals fine) so no level shifter is required. Each data read consists
+of two reads of the 16 bit data bus, making the maximum frequency of reads equal to twice the maximum
+output data rate (2.5 MHz), or 5 MHz. This is fairly low (in signal integrity terms) so controlled impedances, matched length
+traces or other high frequency considerations are largely unimportant here. Care is taken to ensure
+that the digital signals do not couple into the analog signal path, and this is largely achieved by
+physical separation of digital lines from the sensitive analog lines.
+
+### Power Supply Filtering.
+
+There is a lot going on inside of the AD7760, and everything needs power. Two supply voltages are
+required, 5 V and 2.5 V. The extensive decoupling detailed in the datasheet is followed closely.
+Each power pin sees a ferrite bead and 0.1 uF coupling capacitor for best isolation of power supply
+noise. The coupling caps are kept as close to the pins as possible to minimize the effects of stray
+inductance and ensure best transient performance.
+
+The 2.5 V supplies only the digital circuitry and digital communication drivers. The quality of this
+supply is not critical, but it does supply transient pulses of current (as many as 16 pins could be
+drawing switching current simultaneously), which must be kept out of the other section. This supply
+is tapped off the 15 VDC power input and regulated down to 2.5 V. This results in a lot of heat, so
+the NCV1117 in DPAK package is used for good heat transfer capabilities. It is connected to a copper
+pour on the PCB to help dissipate heat. A switching regulator would be a better choice here to
+operate more efficiently, and is recommended for the next design cycle.
+
+The 5 V regulator powers both the sensitive input amplifier, the internal reference voltage buffer,
+the external 40 MHz oscillator, and the delta sigma modulator circuit operating at 20 MHz. The 5 V
+supply is critical to overall system performance. The low noise, high performance, Analog Devices
+ADP7104 with a fixed 5V output is picked for this supply. This part is suggested for noise
+sensitive applications including ADCs, precision amplifiers, and high frequency oscillators. The
+ferrite beads on each pin help to isolate the high frequency pulses of the clock and modulator from
+the noise sensitive analog circuitry. Low ESR ceramic capacitors with X5R and X7R dielectrics round
+out the filtering here and no performance issues from this supply are detectable in the final
+product.
+
+### Input Stage.
+
+![Figure [schemInput]: The input stage provides signal buffering, filtering, and scaling.](Images/schemInput.png)
+
+The input stage in figure [schemInput] is responsible for scaling the signal appropriately and
+providing the necessary antialiasing filtering. Handling of balanced or single ended signals is
+desired, and the ADC must accept a balanced signal at the other end, so a decision to maintain a
+balanced signal path throughout is made.
+
+The main section of the circuit consists of two of Texas Instrument's OPA1632 fully differential op
+amps. These were selected for their 1.3 nV/sqrt(Hz) noise power density and extremely low harmonic
+distortion of 0.000022%. Fully differential op amps lend themselves to designs based around an
+inverting op amp. Texas Instruments Webench tool is used to design a fourth order Butterworth low
+pass filter at 2 Mhz using a multiple feedback topology. This design is adapted to the balanced
+signal path. Low value resistors are used to keep noise low through these stages. Gain in these
+stages is about 0.6 so that the input signal range can be larger than the ADC input.
+
+A buffer is placed before the OPA1632 stages because of their low input impedance. Two sections of
+an op amp are set up as non-inverting buffer amps to provide a high input impedance. The input is
+coupled through 2.2 uF capacitors and input impedance is set by 1 Mohm resistors, creating a high
+pass filter at 0.072 Hz. The stages are setup so that they can be used as gain stages if required,
+although in the current iteration they are only used as unity gain buffers. The OPA1612 is used for
+its excellent performance. At 1.1 nV/sqrt(Hz) and 0.000015% distortion this manges to exceed the
+performance of the OPA1632. Power for the input amplifiers come from a 12 VDC single supply. It
+uses the same ADP7104 series regulator as the 5V rail, but is an adjustable version setup to
+produce a 12 V output. The bias voltage used in the first stage is buffered by a Texas Instruments
+OPA207 low noise op amp to provide stable DC performance without introducing low frequency drift
+into the circuit.
+
+![Figure [spiceSim]: Schematic for LTSpice simulation of noise and ac response.](Images/spice_sim.png)
+
+These stages were simulated in LTSpice and checked for frequency response, noise performance, and
+stability. Spice models for the OPA1632 are available from Texas Instruments and were used in the
+simulation. The simulation schematic can be seen in figure [spiceSim], while the .ac and .noise
+analyses are performed resulting in the plots in figure [spiceAC] and figure [spiceNoise]
+respectively.
+
+![Figure [spiceAC]: Simulated frequency response of circuit with cursors showing the -3 dB at 
+1.1 MHz and the magnitude at the 20 MHz aliasing equal to -124 dB.](Images/spice_frequency_response.png width="90%")
+
+![Figure [spiceNoise]: Noise analysis showing the noise voltage density in linear scale (blue line, 
+left axis) and deciBel scale (green line, right axis). Also shown is the RMS noise over this 
+bandwidth. The simulated noise is incredibly low, indicating that other sources are likely to 
+dominate the system.](Images/spice_noise.png width ="90%")
+
+To analyze stability of the filter circuits, the method from an Analog Device video "LTspice:
+Stability of Op Amp Circuits"[^spiceStability] was adapted to the fully differential op amp. In this
+method, the feedback path is broken at the inverting input and a 0 VDC AC 1 source is inserted. This
+allows the op amp to operate at the correct DC bias without restricting the ratio of the feedback to
+the input, and it is this ratio which equals the open loop gain of the circuit.
+
+![Figure [spiceOpenLoop]: One method of obtaining open loop response in 
+LTSpice.](Images/spice_open_loop.png width="40%")
+
+The simulation schematic is seen in figure [spiceOpenLoop]. To adapt to the fully differential op
+amp, both feedback paths must be broken and sources of AC 1 and AC -1 are inserted. After plotting
+the ratio of fb1 to in1 (fb2 to in2 is equivalent), the phase margin is determined.
+
+![Figure [phaseMargin]: The phase margin of the filter is shown to be 
+around 78<sup>o</sup>.](Images/spice_phase_margin.png width ="90%")
+
+The phase margin is found to be adequate at about 78<sup>o</sup>. Only the second filter stage is
+shown because this stage, having less than unity gain, is the most likely to be unstable. 
+
+## Microcontroller.
+
+The STM Microelectronics Nucleo F446RE development board is used as the digital interface for this
+project. The board features an ARM cortex M4 32 bit processor and runs at a high clock rate of 180
+MHz. As well as this speed it is also selected for:
+* Large pin count (50 GPIO pins) for compatibility with parallel data bus.
+* Support for mbed RTOS to speed development time.
+* Can be USB powered.
+* Low cost (approx. $15)
+
+Additionally, the STM32F446RE processor on this board features support for USB 2.0 high speed when
+used with an external transceiver. Support for this mode of data transfer is an eventual goal of
+the project making this a good choice for future development.
+
+## PCB Design.
+
+The PCB is designed around the form factor of the Nucleo development board. It is approximately the
+same dimensions and features two 2x19 pin header connectors so that it can mount directly on top of
+the Nucleo board. To keep costs low, the board layout uses only two layers. 
+Some of the key design features of the PCB:
+* Connectors and off board wires use through hole connections, and everything else is surface mount. This allows the bottom layer to be almost entirely ground plane. 
+* To keep power supply bypass caps close to the ADC, some parts are mounted to the bottom side, but his is generally avoided.
+* The differential signal path is kept nearly symmetrical to maintain a high CMRR.
+
+## Embedded System.
+
+The embedded system is built on the mbed RTOS system. This allows a higher level abstraction of the
+underlying hardware speeding up development at the cost of additional overhead in the execution.
+While this project may eventually need to move away from mbed for performance reasons, it enabled
+the short development time available for this phase of the project.
+
+Control flow is fairly simple:
+
+1. At power on or after receiving reset, the initial state is written to the ADC including the sample rate. 
+2. A signal is received from the host computer to begin sampling. The ADC's data ready pin triggers an interrupt to read the data off the parallel bus. 
+3. After the preprogrammed number of samples is taken, the controller begins sending the data back to the host computer. 
+4. The microcontroller powers down the ADC and waits for a new control signal.
+
+The embedded system code is written in C++ and consists of four C++ source files and their
+respective header files. They are summarized as follows:
+* main.cpp: Runs the main program loop and catches the data ready flag to begin data transfer.
+* adc.cpp: Responsible for control and interaction with the ADC, including reading and writing   control registers, and collecting the data during sampling.
+* communications.cpp: Handles control signals and data transmission with the host computer.
+* pins.cpp: Pin assignment, setup, and functions for reading and writing data words. 
+
+Currently communication to the host computer happens over UART serial connection. The nucleo uses a
+virtual serial port over USB, and this allows for a baud rate of 1.5 Mbaud. Even at this rate, the
+transmission of data back to the host is the primary bottleneck in the overall update rate of the
+system.
+
+## Host Application.
+
+The host application runs on a PC and is responsible for the processing and display of the data
+received from the ADC. The host application is written in python and consists of two files.
+
+* adc_comms.py contains a class for the interaction with the ADC. It sends and receives data over the UART connection to the microcontroller. This class also contains functions that decode the data received and convert it to a correctly scaled, floating point representation.
+* pc_data.py serves the graphical user interface and performs the final data processing. This application displays the time and frequency domain signals simultaneously and provides control over the sample rate, number of samples, and FFT window functions.
+
+
+<!-- Markdeep footer -->
+    <style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
+    <link rel="stylesheet" href="report_stylesheet.css">
+    <script src="C:/Users/boxca/Google Drive/_misc/markdeep/markdeep.js"></script>
+    <script src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script>

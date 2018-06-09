@@ -894,4 +894,6 @@ Text Notes 4250 4400 0    60   ~ 0
 Orig PA5 was used here, \nbut it is connected to the \ndev board LED. \nPC7 is used instead.
 Text Label 4650 3850 0    60   ~ 0
 PC7
+Text Notes 4900 3900 0    60   ~ 0
+PC15:PC13 \nare part of \nbattery \nmanagement \nand don't \nlike to be \nGPIO
 $EndSCHEMATC

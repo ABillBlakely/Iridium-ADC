@@ -111,10 +111,14 @@ h1 ~ p, h2 ~ p, h3 ~ p, h4 ~ p, h5 ~ p, h6 ~ p {
     margin-top: 0;
 }
 
+.MathJax {
+    font-size: 200% ;
+}
+
 .md .image, div.imagecaption, .md img {
     display: block;
     margin: auto;
-    max-width: 80%;
+    max-width: 100%;
 }
 
 .md div.imagecaption, .md div.tablecaption, .md div.listingcaption {

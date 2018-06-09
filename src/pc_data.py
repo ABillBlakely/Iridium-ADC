@@ -292,7 +292,7 @@ def time_domain_update(status, show_windowed_clicks, window, relayoutData):
     try:
         magnitude = adc.decoded_data_queue[0]
         rms_mag = np.sqrt(np.mean((magnitude - np.mean(magnitude))**2))
-        # magnitude -= np.mean(magnitude)
+        magnitude -= np.mean(magnitude)
         # print('magnitude: {}'.format(magnitude))
         sample_index = 1 / adc.sample_rate * np.linspace(0, adc.number_of_samples,
                 num=adc.number_of_samples,
@@ -356,9 +356,6 @@ def freq_domain_update(status,
         logging.error(f'Input buffer size {len(magnitude)} expected {adc.number_of_samples}')
         raise de.PreventUpdate
 
-    if number_of_averages != len(freq_mag_history):
-        freq_mag_history = deque(maxlen=number_of_averages)
-
     # Compute the frequency magnitude in dBRMS
     freq_mag = np.abs(np.fft.rfft(a=freq_mag, n=adc.number_of_samples)
         * np.sqrt(2) / adc.number_of_samples
@@ -396,7 +393,7 @@ def freq_domain_update(status,
     [dd.Input('accumulated-status', 'children')])
 def statistics_display(fft_plot):
     global rms_mag
-    return(f'RMS Input: {rms_mag}')
+    return(f'AC RMS Input: {rms_mag}')
 
 if __name__ == '__main__':
     dash_log = logging.getLogger('werkzeug')
