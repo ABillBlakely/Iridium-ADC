@@ -132,11 +132,11 @@ class SerialComms():
                 # to the tangled bit order.
                 T = format(tangled_sample, '032b')
 
-                #         Bit: | 15 | 14 | 13 | 12 | 11 | 10 |  9 |  8 |  7 |  6 |  5 |  4 |  3 |  2 |  1 |  0 |
-                # Pos in Word: | 15 | 14 |  7 |  6 |  0 |  1 |  4 |  2 | 10 |  8 |  9 | 11 | 12 |  5 | 13 |  3 |
-                #  Pos in Str: |  0 |  1 |  8 |  9 | 15 | 14 | 11 | 13 |  5 |  7 |  6 |  4 |  3 | 10 |  2 | 12 |
+                #         Bit: |15|14|13|12|11|10| 9| 8| 7| 6| 5| 4| 3| 2| 1| 0|
+                # Pos in Word: |15|14| 7| 6| 0| 1| 4| 2|10| 8| 9|11|12| 5|13| 3|
+                #  Pos in Str: | 0| 1| 8| 9|15|14|11|13| 5| 7| 6| 4| 3|10| 2|12|
 
-                # Reorder Bits:        8       7       6       5       4       3      2      1      0
+                # Reorder Bits:         7       6       5       4       3        2       1      0
                 untangled_string = (  T[0]  + T[1]  + T[8]  + T[9]  + T[15] + T[14] + T[11] + T[13]
                                     + T[5]  + T[7]  + T[6]  + T[4]  + T[3]  + T[10] + T[2]  + T[12]
                                     + T[16] + T[17] + T[24] + T[25] + T[31] + T[30] + T[27] + T[29]
@@ -145,12 +145,15 @@ class SerialComms():
                     pass
                     logging.debug(f'Impossible status, Untangled String: {untangled_string}')
                 # logging.debug(f'Untangled String: {untangled_string}')
-                self.accumulated_status = format((int(self.accumulated_status, BIN) | int(untangled_string[-8:], BIN)), '#010b')
+                self.accumulated_status = format((int(self.accumulated_status, BIN)
+                                                      | int(untangled_string[-8:], BIN)), '#010b')
                 if untangled_string[0] == '1':
                     # indicates negative in twos complement
-                    untangled_buffer.append((int(untangled_string[0:24], BIN) - (1<<24)) / (2**23-1) * SCALE_FACTOR)
+                    untangled_buffer.append((int(untangled_string[0:24], BIN)
+                                             - (1<<24)) / (2**23-1) * SCALE_FACTOR)
                 else:
-                    untangled_buffer.append((int(untangled_string[1:24], BIN)) / (2**23 - 1) * SCALE_FACTOR)
+                    untangled_buffer.append((int(untangled_string[1:24], BIN))
+                                            / (2**23 - 1) * SCALE_FACTOR)
 
             self.decoded_data_queue.append(untangled_buffer)
 
@@ -203,6 +206,9 @@ class SerialComms():
         return status_reg
 
 if __name__ == '__main__':
+    '''if this file is run on its own it will perform some tests including
+    timing how long a transfer takes '''
+
     import timeit
     TEST_ITERATIONS = 10
 
@@ -223,26 +229,9 @@ if __name__ == '__main__':
     logging.info(f'Gain: 0x{ser_test.readline().upper()} default is 0xA000')
 
 
-    # logging.info('Acquisition Loop time: {}'.format(
-    #     timeit.timeit(ser_test.acquisition_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
-    # logging.info('Decode Loop time: {}'.format(
-    #     timeit.timeit(ser_test.decode_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
-    # logging.info(f'length of decoded buffers:\n\t{[len(x) for x in list(ser_test.decoded_data_queue)]}')
-
-    # for kk in range(200):
-    #     try:
-    #         ser_test.acquisition_loop()
-    #         ser_test.decode_loop()
-    #         print(ser_test.decoded_data_queue.pop()[:5])
-    #     except IndexError:
-    #         print("data queue empty")
-
-    # ser_test.reset()
-    # print('\n'.join(ser_test.status()))
-
-    # Only uncomment if you change the acquisition and decode
-    # ser_test.acquisition_loop()
-    # ser_test.decode_loop()
-    # print(ser_test.decoded_data_queue[0])
-    # print(ser_test.accumulated_status)
+    logging.info('Acquisition Loop time: {}'.format(
+        timeit.timeit(ser_test.acquisition_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
+    logging.info('Decode Loop time: {}'.format(
+        timeit.timeit(ser_test.decode_loop, number=TEST_ITERATIONS) / TEST_ITERATIONS))
+    logging.info(f'length of decoded buffers:\n\t{[len(x) for x in list(ser_test.decoded_data_queue)]}')
 

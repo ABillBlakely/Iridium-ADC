@@ -16,18 +16,6 @@ from time import sleep
 # Initialization
 adc = SerialComms()
 
-# # Set default decimation rate
-# adc.modify_sample_properties('156250', '16384')
-
-
-# # Pull some information
-# adc.write('v')
-# logging.info(f'Overrange: 0x{adc.readline().upper()} default is 0xCCCC')
-# adc.write('f')
-# logging.info(f'Offset: 0x{adc.readline().upper()} default is 0x0000')
-# adc.write('g')
-# logging.info(f'Gain: 0x{adc.readline().upper()} default is 0xA000')
-
 # Initialize various arrays, global arrays are used for preserving data between
 # function invocations.
 magnitude = [0]
